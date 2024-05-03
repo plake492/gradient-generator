@@ -32,6 +32,32 @@ type GradientStoreState = GradientStore &
   GradientStoreSetters &
   PersistConfig<unknown>
 
+const defaultGradient: ColorGroup[] = [
+  {
+    id: 0,
+    hue: 0,
+    saturation: 100,
+    lightness: 50,
+    position: 0,
+    opacity: 1,
+    hsl: "hsl(0, 100%, 50%)",
+    disabled: false,
+  },
+  {
+    id: 1,
+    hue: 180,
+    saturation: 100,
+    lightness: 50,
+    position: 100,
+    opacity: 1,
+    hsl: "hsl(180, 100%, 50%)",
+    disabled: false,
+  },
+]
+
+const defaultCackgroundGradient =
+  "linear-gradient(0deg, hsl(0, 100%, 50%), hsl(180, 100%, 50%))"
+
 /**
  * This is a helper function that generates a CSS linear-gradient string from an array of color groups and a rotation angle.
  *
@@ -51,35 +77,13 @@ const setBackgroundGradient = (gradient: ColorGroup[], rotate: number) => {
 
 export const useGradientStore = create<GradientStoreState>(
   persist(
-    (set: any) => ({
+    (set) => ({
       noiseOn: true,
       isWindowHeight: true,
-      backgroundGradient:
-        "linear-gradient(0deg, hsl(0, 100%, 50%), hsl(180, 100%, 50%))",
+      backgroundGradient: defaultCackgroundGradient,
       rotate: 0,
       bgWidth: 100,
-      gradient: [
-        {
-          id: 0,
-          hue: 0,
-          saturation: 100,
-          lightness: 50,
-          position: 0,
-          opacity: 1,
-          hsl: "hsl(0, 100%, 50%)",
-          disabled: false,
-        },
-        {
-          id: 1,
-          hue: 180,
-          saturation: 100,
-          lightness: 50,
-          position: 100,
-          opacity: 1,
-          hsl: "hsl(180, 100%, 50%)",
-          disabled: false,
-        },
-      ],
+      gradient: defaultGradient,
 
       setNoise: (noiseOn: boolean) => set({ noiseOn }),
 
@@ -120,6 +124,7 @@ export const useGradientStore = create<GradientStoreState>(
       ) => {
         set((state: GradientStore) => {
           const group = state.gradient.find((group) => group.id === id)
+
           if (group && !group.disabled) {
             group[key] = value
             group.hsl = `hsl(${group.hue}, ${group.saturation}%, ${group.lightness}%, ${group.opacity})`

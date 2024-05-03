@@ -53,9 +53,6 @@ export default function ColorSelectors({
             <IconLightOn onClick={handleDisable} width={16} height={16} />
           )
         ) : null}
-        {!disableRemove ? (
-          <IconTrash onClick={() => removeColor(id)} width={16} height={16} />
-        ) : null}
       </div>
       <div
         ref={parent}
@@ -68,11 +65,9 @@ export default function ColorSelectors({
       >
         <div className="d-flex justify-content-between align-items-center">
           <p className="text-sm mb-none text-end">Color: {index + 1}</p>
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-center gap-">
             {!hideColorText ? (
-              <p className="text-xs mb-none text-end">
-                hsl({hue}, {`${saturation}%`}, {`${lightness}%`})
-              </p>
+              <p className="text-xs mb-none text-end mr-sm">{hsl}</p>
             ) : null}
             {collapse ? (
               <IconBxCollapseVertical
@@ -80,6 +75,7 @@ export default function ColorSelectors({
                 width={16}
                 height={16}
                 onClick={() => setCollapse((prev) => !prev)}
+                border
               />
             ) : (
               <IconBxExpandVertical
@@ -87,16 +83,28 @@ export default function ColorSelectors({
                 width={16}
                 height={16}
                 onClick={() => setCollapse((prev) => !prev)}
+                border
               />
             )}
           </div>
         </div>
         {collapse ? (
           <>
-            <HexInput
-              hsl={convertHslToHex(hsl)}
-              onSubmit={(value) => setGradientHsl(id, convertHexToHsl(value))}
-            />
+            <div className="d-flex justify-content-between align-items-center">
+              {!disableRemove ? (
+                <IconTrash
+                  onClick={() => removeColor(id)}
+                  width={16}
+                  height={16}
+                />
+              ) : (
+                <div></div>
+              )}
+              <HexInput
+                hsl={convertHslToHex(hsl)}
+                onSubmit={(value) => setGradientHsl(id, convertHexToHsl(value))}
+              />
+            </div>
             <div className={bem("slider-wrapper")}>
               <label htmlFor="slider" className={bem("label")}>
                 Color ({hue.toFixed(0)})

@@ -8,6 +8,7 @@ interface IconProps {
   variant?: "light" | "dark"
   tooltip?: string
   appendText?: string
+  border?: boolean
 }
 
 function IconWrapper({
@@ -18,6 +19,7 @@ function IconWrapper({
   variant,
   tooltip,
   appendText,
+  border,
 }: IconProps & { children: React.ReactNode }) {
   const bem = useBemify("icon-btn")
 
@@ -27,6 +29,7 @@ function IconWrapper({
         "",
         [variant, `--${variant}`],
         [appendText, "--with-text"],
+        [border, "--border"],
       )}
       style={
         {

@@ -28,6 +28,7 @@ const HexInput = ({
 
   return (
     <input
+      className="input"
       type="text"
       value={hsl}
       //   onChange={handleChange}

@@ -78,8 +78,7 @@ export default function GradientBg() {
     <>
       <div
         style={{
-          // backgroundImage: backgroundGradient,
-          background: backgroundGradient,
+          backgroundImage: backgroundGradient,
           position: isWindowHeight ? "fixed" : "absolute",
           left: 0,
           top: 0,

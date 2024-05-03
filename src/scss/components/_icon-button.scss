@@ -36,6 +36,10 @@
     display: grid;
     place-content: center;
 
+    &--border {
+        border: 2px solid var(--base-color);
+    }
+
     &--with-text {
         display: grid;
         grid-template-columns: auto auto;
