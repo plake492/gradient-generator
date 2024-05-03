@@ -1,0 +1,83 @@
+.icon-btn {
+    --width: 24px;
+    --height: 24px;
+    --base-color: #dddddd11;
+    --hover: #13131322;
+    --active: #13131344;
+    --tooltip-scale: 0.5;
+    --tooltop-opacity: 0;
+    // --tooltip-scale: 1;
+    // --tooltop-opacity: 1;
+
+    &--light {
+        --base-color: #dddddd11;
+        --hover: #dddddd88;
+        --active: #dddddd44;
+    }
+
+    &--dark {
+        --base-color: #13131311;
+        --hover: #13131322;
+        --active: #13131344;
+    }
+
+    &--bg {
+        background-color: var(--base-color);
+    }
+
+    width: var(--width);
+    height: var(--height);
+    position: relative;
+    cursor: pointer;
+    padding: $space-md;
+    transition: background-color 300ms,
+    transform 300ms;
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+
+    &--with-text {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-gap: $space-md;
+        border-radius: 40px;
+        width: fit-content;
+    }
+
+    &__append-text {
+        font-size: var(--text-xs-size);
+        line-height: var(--text-xs-line-height);
+        color: var(--text-color);
+        white-space: nowrap;
+    }
+
+
+    &__tooltip {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%, 0) scale(var(--tooltip-scale));
+        background-color: var(--active);
+        color: inherit;
+        padding: calc($space-xs / 2) $space-md;
+        border-radius: $border-radius;
+        font-size: var(--text-xs-size);
+        line-height: var(--text-xs-line-height);
+        white-space: nowrap;
+        opacity: var(--tooltop-opacity);
+        transition: opacity 300ms, transform 300ms;
+    }
+
+
+    &:hover {
+        background-color: var(--hover);
+        --tooltop-opacity: 1;
+        --tooltip-scale: 1;
+    }
+
+    &:active {
+        background-color: var(--active);
+        transform: scale(0.95);
+    }
+
+}

@@ -10,12 +10,15 @@
 @import "./layout/base";
 @import "./layout/color-picker";
 
+@import "./utils//columns";
 @import "./utils/containers";
 @import "./utils/display";
 @import "./utils/images";
 @import "./utils/margin-padding";
 @import "./utils/flex";
 @import "./utils/row-scroll";
+@import "./utils/text";
 
 @import "./components/card";
 @import "./components/control-panel";
+@import "./components/icon-button";

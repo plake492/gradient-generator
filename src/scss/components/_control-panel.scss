@@ -1,8 +1,11 @@
 .control-panel {
     $offset: $space-sm;
 
+    --width: 550px;
+    --position: 0;
+
     position: fixed;
-    left: 0;
+    left: var(--position);
     top: 0;
     margin: $offset;
     background-color: #131313aa;
@@ -11,63 +14,33 @@
     border-radius: 16px;
     color: #eeeeee;
     padding: $space-md $space-lg $space-md $space-md;
-    width: min(550px, calc(100% - (2 * $offset)));
+    width: min(var(--width), calc(100% - (2 * $offset)));
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - ($offset * 8));
     overflow: auto;
+    transition: width 300ms, left 300ms;
 
     &__open-btn {
         position: fixed;
         left: 0;
         top: 0;
         margin: calc($offset + $space-md);
-        cursor: pointer;
-        padding: $space-sm;
-        transition: background-color 300ms;
-        border-radius: 50%;
-
-        &:hover {
-            background-color: #13131322;
-        }
-
-        &:active {
-            background-color: #13131344;
-        }
     }
 
-    &__close-btn {
-        align-self: start;
-        padding: $space-sm;
-        transition: background-color 300ms;
-        border-radius: 50%;
-        cursor: pointer;
-
-        &:hover {
-            background-color: #dddddd88;
-        }
-
-        &:active {
-            background-color: #dddddd44;
-        }
+    &__slide-group-wrapper {
+        display: grid;
+        grid-template-columns: 48px 1fr;
     }
 
     &__slide-group {
         --slider-thumb-color: 0;
         --slider-thumb-saturation: 100%;
         --slider-thumb-lightness: 50%;
-        --grad-1-color: 0;
-        --grad-1-saturation: 100%;
-        --grad-1-lightness: 50%;
-        --grad-2-color: 0;
-        --grad-2-saturation: 100%;
-        --grad-2-lightness: 50%;
-        --rotate: 0deg;
-
 
         position: relative;
-        padding-bottom: $space-md;
-        margin-bottom: $space-md;
+        padding-bottom: $space-sm;
+        margin-bottom: $space-sm;
 
         &::after {
             content: "";
@@ -81,8 +54,8 @@
 
         }
 
-        &.child {
-            margin-left: $space-md;
+        &--child {
+            margin-left: $space-sm;
         }
     }
 
@@ -93,19 +66,25 @@
     }
 
     &__label {
-        margin-bottom: $space-sm;
+        --base-font-size: var(--text-xs-size);
+        --base-line-height: calc(var(--text-xs-size) * var(--line-height-ratio) * 1.15);
+        margin-bottom: $space-xs;
         text-align: start;
-        @extend .text-xs;
-        margin-bottom: $space-sm;
+        line-height: var(--base-line-height);
+        font-size: var(--base-font-size);
     }
 
     &__slider {
-        width: 100%; // Make the slider full width
-
-        &.rotate {
-            background: linear-gradient(var(--rotate), hsl(var(--grad-1-color, 0), var(--grad-1-saturation), var(--grad-1-lightness, 50%)) 0%, hsl(var(--grad-2-color, 0), var(--grad-2-saturation), var(--grad-2-lightness, 50%)), 100%);
-
+        &--child {
+            --thumb-color: var(--child-gradient);
         }
+
+        &--parent {
+            --thumb-color: var(--parent-gradient, #ffffff);
+        }
+
+
+        width: 100%; // Make the slider full width
 
         /********** Range Input Styles **********/
         /*Range Reset*/
@@ -139,7 +118,7 @@
             /* Centers thumb on the track */
 
             /*custom styles*/
-            background: hsl(var(--slider-thumb-color, 0), var(--slider-thumb-saturation), var(--slider-thumb-lightness, 50%));
+            background: var(--thumb-color);
             border-radius: 50%;
             height: 24px;
             width: 24px;
@@ -184,17 +163,15 @@
         // }
     }
 
-
-
     &__animation {
         &-enter {
             opacity: 0;
-            transform: scale(0.9);
+            transform: scale(0.95) translateX(-100%);
         }
 
         &-enter-active {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateX(0) scale(1);
             transition: opacity 300ms, transform 300ms;
         }
 
@@ -204,7 +181,8 @@
 
         &-exit-active {
             opacity: 0;
-            transform: scale(0.9);
+            transform: scale(0.95) translateX(-100%);
+
             transition: opacity 300ms, transform 300ms;
         }
     }

@@ -1,0 +1,24 @@
+@include class-with-responsive-val-only($text-alignment, text, text-align);
+
+.text-light {
+  --text-color: #{$white};
+  color: var(--text-color);
+}
+
+.text-dark {
+  --text-color: #{$black};
+  color: var(--text-color);
+}
+
+@each $key, $var in $target-colors {
+  .text-#{'' + $key} {
+    --text-color: #{$var};
+    color: var(--text-color);
+  }
+}
+
+@include class-with-responsive-val-only(
+  $vertical-alignment,
+  align,
+  vertical-align
+);

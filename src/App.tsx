@@ -10,7 +10,7 @@ function App() {
     <>
       <GradientBg />
       <Particles />
-      {/* <SvgNoise /> */}
+      <SvgNoise />
       <div style={{ position: "relative", zIndex: 2 }}>
         <ControlPanel />
         <div
@@ -18,7 +18,7 @@ function App() {
           style={{ minHeight: "100vh", width: "100%" }}
         >
           <h1>
-            Hello <i>There</i> <b>Buddy</b>
+            Hello <i>There</i>
           </h1>
           <p className="mt-xxl">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam enim
@@ -32,7 +32,7 @@ function App() {
           style={{ minHeight: "100vh", width: "100%" }}
         >
           <h1>
-            Hello <i>There</i> <b>Buddy</b>
+            Hello <i>There</i>
           </h1>
           <p className="mt-xxl">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam enim
@@ -46,7 +46,7 @@ function App() {
           style={{ minHeight: "100vh", width: "100%" }}
         >
           <h1>
-            Hello <i>There</i> <b>Buddy</b>
+            Hello <i>There</i>
           </h1>
           <p className="mt-xxl">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam enim

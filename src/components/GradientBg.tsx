@@ -1,126 +1,91 @@
-import React from "react"
-import useAnimationFrame from "../hooks/useAnimationFrame"
-import { easeOutCubic } from "../helpers/easings"
+// import useAnimationFrame from "../hooks/useAnimationFrame"
+// import { easeOutCubic } from "../helpers/easings"
 import { useGradientStore } from "../store"
 
 // const steps = ["0%", "100%"]
 // const colorChunk = 66 / steps.length
 
 export default function GradientBg() {
-  const {
-    startColor,
-    saturation,
-    lightness,
-    position,
-    setStartColor,
-    setSaturation,
-    setLightness,
-    setPosition,
-    startColor2,
-    saturation2,
-    lightness2,
-    position2,
-    setStartColor2,
-    setSaturation2,
-    setLightness2,
-    setPosition2,
-    rotate,
-    setRotate,
-    bgWidth,
-    setBgWidth,
-  } = useGradientStore()
+  // React.useEffect(() => {
+  //   const hslColors = gradient
+  //     .map((color: ColorGroup) => `${color.hsl} ${color.position}%`)
+  //     .join(", ")
 
-  const inertia = 0.04 // Adjust this value to change the speed of the interpolation
+  //   const hslGradient = `linear-gradient( ${rotate}deg, ${hslColors})`
 
-  const startingColor = 200
-  const startingRotate = 100
+  //   setBackgroundGradient(hslGradient)
+  // }, [gradient, rotate, setBackgroundGradient])
 
-  const colorRange = 120
-  const rotateRange = 80
+  // const inertia = 0.04 // Adjust this value to change the speed of the interpolation
 
-  const endingColor = startingColor + colorRange
-  const endingRotate = startingRotate + rotateRange
+  // const startingColor = hue
+  // const startingRotate = rotate
+
+  // const rotateRange = 80
+
+  // const endingColor = startColor2
+  // const endingRotate = startingRotate + rotateRange
 
   // const [color, setColor] = React.useState(startingColor)
-  // const [targetColor, setTargetColor] = React.useState(startingColor)
   // const [rotate, setRotate] = React.useState(startingRotate)
+  // const [targetColor, setTargetColor] = React.useState(startingColor)
   // const [targetRotate, setTargetRotate] = React.useState(startingRotate)
 
-  React.useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY
-      const height = document.documentElement.scrollHeight - window.innerHeight
-      const hue =
-        startingColor + (scrollY / height) * (endingColor - startingColor)
-      const rotate =
-        startingRotate + (scrollY / height) * (endingRotate - startingRotate)
+  // React.useEffect(() => {
+  //   const handleScroll = () => {
+  //     const scrollY = window.scrollY
+  //     const height = document.documentElement.scrollHeight - window.innerHeight
+  //     const hue =
+  //       startingColor + (scrollY / height) * (endingColor - startingColor)
+  //     const rotate =
+  //       startingRotate + (scrollY / height) * (endingRotate - startingRotate)
 
-      setTargetColor(hue)
-      setTargetRotate(rotate)
-    }
+  //     setTargetColor(hue)
+  //     setTargetRotate(rotate)
+  //   }
 
-    window.addEventListener("scroll", handleScroll)
+  //   window.addEventListener("scroll", handleScroll)
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll)
+  //   }
+  // }, [])
 
-  const animation = (animationFrameId: number): void => {
-    setColor((prevColor) => {
-      const t = Math.abs(targetColor - prevColor) / 360
-      const easedT = easeOutCubic(t)
+  // const animation = (animationFrameId: number): void => {
+  //   const t = Math.abs(targetColor - hue) / 360
+  //   const easedT = easeOutCubic(t)
+  //   if (easedT < 0.14) {
+  //     cancelAnimationFrame(animationFrameId)
+  //     setStartColor(hue)
+  //   }
+  //   setStartColor(hue + (targetColor - hue) * easedT * inertia)
 
-      if (easedT < 0.14) {
-        cancelAnimationFrame(animationFrameId)
-        return prevColor
-      }
+  //   const tR = Math.abs(targetRotate - rotate) / 180
+  //   const easedTR = easeOutCubic(tR)
 
-      return prevColor + (targetColor - prevColor) * easedT * inertia
-    })
+  //   if (easedTR < 0.14) {
+  //     cancelAnimationFrame(animationFrameId)
+  //     setRotate(rotate)
+  //   }
+  //   setRotate(rotate + (targetRotate - rotate) * easedT * inertia)
+  // }
 
-    const t1 = Math.abs(targetColor - startColor) / 360
-    const easedT = easeOutCubic(t1)
+  // useAnimationFrame(animation, targetColor)
 
-    setStartColor(startColor + (targetColor - startColor) * easedT * inertia)
-
-    setRotate((prevRotate) => {
-      const t = Math.abs(targetRotate - prevRotate) / 180
-      const easedT = easeOutCubic(t)
-
-      if (easedT < 0.14) {
-        cancelAnimationFrame(animationFrameId)
-        return prevRotate
-      }
-
-      return prevRotate + (targetRotate - prevRotate) * easedT * inertia
-    })
-  }
-
-  useAnimationFrame(animation, targetColor)
-
-  const hslGradient = `linear-gradient(${rotate}deg, hsl(${startColor} ${saturation}%, ${lightness}%) ${position}%, hsl(${startColor2} ${saturation2}%, ${lightness2}%) ${position2}%)`
-
-  // const colorSteps = steps
-  //   .map((step, i) => `hsl(${color + colorChunk * i} 88%, 45%) ${step}`)
-  //   .join(", ")
-
-  // const hslGradient = `
-  //   linear-gradient(0deg, hsl(${startColor} 75%, 33%) 0%, rgba(0,0,0,0) 50%),
-  //   linear-gradient(${rotate}deg, ${colorSteps})
-  //   `
+  const { bgWidth, backgroundGradient, isWindowHeight } = useGradientStore()
 
   return (
     <>
       <div
         style={{
-          backgroundImage: hslGradient,
-          position: "fixed",
+          // backgroundImage: backgroundGradient,
+          background: backgroundGradient,
+          position: isWindowHeight ? "fixed" : "absolute",
           left: 0,
           top: 0,
           zIndex: -1,
           width: "100vw",
-          height: "100vh",
+          height: isWindowHeight ? "100vh" : "100%",
           backgroundSize: `${bgWidth}% 100%`,
           backgroundPosition: "33% 33%", // Start the gradient from the middle of the div
         }}

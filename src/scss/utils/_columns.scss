@@ -1,0 +1,69 @@
+$col-chunk: calc(100 / $number-of-columns);
+
+.row {
+  --col-gutter-row: #{$space-none};
+  --col-gutter-column: #{$space-none};
+
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--col-gutter-column);
+  row-gap: var(--col-gutter-row);
+  justify-content: start;
+}
+
+@for $i from 1 through $number-of-columns {
+  $col-width: $i * $col-chunk;
+  // Multiplier to use with gutter size
+  $gap-offset: calc((100 - $col-width) / 100);
+  // convert amount to percentage
+  $col-width-as-percentage: calc($col-width * 1%);
+
+  // Column width
+  .col-#{$i} {
+    width: calc(
+      $col-width-as-percentage - (var(--col-gutter-column) * $gap-offset)
+    );
+  }
+}
+
+// Column width responsive
+@each $bp, $px in $breakpoints {
+  @for $i from 1 through $number-of-columns {
+    $col-width: $i * $col-chunk;
+    // Multiplier to use with gutter size
+    $gap-offset: calc((100 - $col-width) / 100);
+    // convert amount to percentage
+    $col-width-as-percentage: calc($col-width * 1%);
+    @include respond-to(#{$px}) {
+      .col-#{$bp}-#{$i} {
+        width: calc(
+          $col-width-as-percentage - (var(--col-gutter-column) * $gap-offset)
+        ) !important;
+      }
+    }
+  }
+}
+
+@each $key, $val in $spacers {
+  .g-#{$key} {
+    --col-gutter-row: #{$val};
+    --col-gutter-column: #{$val};
+  }
+
+  @each $bp, $px in $breakpoints {
+    @include respond-to(#{$px}) {
+      .g-#{$bp}-#{$key} {
+        --col-gutter-row: #{$val} !important;
+        --col-gutter-column: #{$val} !important;
+      }
+    }
+  }
+}
+
+@include class-with-responsive-key-and-val(
+  $spacers,
+  g-col,
+  --col-gutter-column
+);
+
+@include class-with-responsive-key-and-val($spacers, g-row, --col-gutter-row);
