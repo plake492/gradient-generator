@@ -1,0 +1,71 @@
+$number-per-row: (
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+);
+
+.row-scroll,
+.row-scroll-reverse {
+    --row-scroll-width-sizer: 1; // How many cards fit in the container
+    // Use the column var from the row gutter classes to set these gaps
+    --row-scroll-flex-gap: #{var(--col-gutter-column, $space-md)};
+
+    --row-scroll-padding-spacer: calc((var(--container-padding) * 2) / 2);
+
+    --row-scroll-spacer: calc(100vw - var(--container-width) + var(--row-scroll-padding-spacer));
+    --row-scroll-spacer-negative: calc(var(--row-scroll-spacer) * -1);
+
+    // * Child width: Get the percentage of the container that each card should take up
+    --row-scroll-width-base: calc(100% / var(--row-scroll-width-sizer));
+    // * Child width: Generate a multiplier to offset the gap width
+    --row-scroll-gap-offset: calc((100 - (100 / var(--row-scroll-width-sizer))) / 100);
+    // * Child width: Calculate the width of the cards based on the number of cards that fit in the container
+    --row-scroll-width: calc(var(--row-scroll-width-base) - (var(--row-scroll-flex-gap) * var(--row-scroll-gap-offset)));
+
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: var(--row-scroll-flex-gap);
+    margin-left: var(--row-scroll-spacer-negative);
+    margin-right: var(--row-scroll-spacer-negative);
+    padding-left: var(--row-scroll-spacer);
+    padding-right: var(--row-scroll-spacer);
+    overflow: auto;
+    scroll-snap-type: x mandatory;
+
+    &--stretch {
+        align-items: stretch;
+    }
+
+    &>* {
+        scroll-snap-align: center;
+        width: 100%;
+        min-width: var(--row-scroll-width);
+        max-width: var(--row-scroll-width);
+
+        transition: max-width 300ms ease-in-out, min-width 300ms ease-in-out;
+    }
+
+    @each $num in $number-per-row {
+        &.r-#{$num} {
+            --row-scroll-width-sizer: #{$num};
+        }
+    }
+
+    @each $bp, $px in $breakpoints {
+        @include respond-to(#{$px}) {
+            @each $num in $number-per-row {
+                &.r-#{$bp}-#{$num} {
+                    --row-scroll-width-sizer: #{$num} !important;
+                }
+            }
+        }
+    }
+}
+
+.row-scroll-reverse {
+    flex-direction: row-reverse;
+}

@@ -1,0 +1,174 @@
+// Global
+$base-font-size: 16;
+$base-spacing: 1rem;
+
+// Responsive Sizes
+$screen-sm-min: rem(576);
+$screen-md-min: rem(768);
+$screen-lg-min: rem(992);
+$screen-xl-min: rem(1200);
+$screen-xxl-min: rem(1400);
+
+// **************************************************
+// ******************** Colors **********************
+// **************************************************
+
+$transparent: #00000000;
+$transparent-partial: #0000005e;
+
+$black: #121212;
+$white: #f5f5f5;
+$red: #ff0000;
+$orange: #ffa500;
+$yellow: #ffff00;
+$green: #008000;
+$cyan: #00ffff;
+$blue: #0000ff;
+$indigo: #4b0082;
+$violet: #473198;
+$purple: #800080;
+$grey: #292a2b;
+$error: #e52525;
+
+// **************************************************
+// **************** Colors Themeing *****************
+// **************************************************
+
+// /* Bg color vars */
+$bg-primary: #dfdfdf;
+$bg-secondary: #333333;
+$bg-accent: rgb(123, 11, 204);
+$bg-tertiary: #000000;
+$bg-dark: #000000;
+
+// /* Text colors */
+$text-light: #ffffff;
+$text-dark: #000000;
+$text-header-light: #ccc0c0;
+$text-header-dark: #1b1a1a;
+$link-color: #0000ff;
+
+$shadow-color: #000000;
+
+// **************************************************
+// ***************** TYPEOGRAPHY ********************
+// **************************************************
+
+// /**************************************************/
+// /* Fonts */
+// /**************************************************/
+$primary-font: Arial, sans-serif;
+$secondary-font: Verdana, sans-serif;
+
+// /**************************************************/
+// /* Responsive fonts */
+// /**************************************************/
+
+// ratio to update the header font / line-height sizes
+// will be applied to the first item in $header-font-responsive-sizes
+$header-font-modifier-base: 0.33;
+
+// Amount to increase by for every proceeding item in $header-font-responsive-sizes
+$header-breakpoint-increase: 0.05;
+
+// Placeholder for changing header sizes by breakpoints
+$header-increase: 0;
+
+$font-size-standard: rem(20);
+
+// /**************************************************/
+// /* Line Height Ratios */
+// /**************************************************/
+$line-height-ratio: 1.6;
+
+// This values will affect the Header font-sizes
+$line-height-ratio-headers: 1.2;
+
+$underline-bottom: 0px;
+
+// **************************************************
+// ***************** Borders ************************
+// **************************************************
+
+$border-radius: rem(8);
+$border-radius-pill: rem(40);
+$border-radius-circle: 50%;
+
+$border-width: rem(1);
+$border-color: #ffffff;
+$border-style: solid;
+
+$box-shadow: 2px 2px 7px 2px rgb(0 0 0 / 8%);
+
+$shadow-1: rem(2) rem(4) rem(4);
+$shadow-2: rem(2) rem(4) rem(4);
+$shadow-3: rem(4) rem(6) rem(6);
+$shadow-4: rem(6) rem(8) rem(8);
+$shadow-5: rem(8) rem(10) rem(10);
+
+// **************************************************
+// ***************** Columns ************************
+// **************************************************
+
+$number-of-columns: 12;
+
+// **************************************************
+// ******************** container *******************
+// **************************************************
+
+$container-base-size: 1320px;
+$container-width-decrease: 180px;
+
+// **************************************************
+// ***************** Misc ***************************
+// **************************************************
+
+// $list-item-icon: '\276F'; // Chevron Arrow
+// $list-item-icon: '\262F'; // Yin Yang
+// $list-item-icon: '\25E6'; // Black border bullet
+// $list-item-icon: '\26AC'; // Black border bullet (bigger)
+// $list-item-icon: '\25CF'; // Black dot
+// $list-item-icon: '\273A'; // Astrisk Special
+// $list-item-icon: '\002A'; // Astrisk
+// $list-item-icon: '\25AA'; // Bullet (square)
+$list-item-icon: '\2022'; // Bullet (circle)
+
+// **************************************************
+// ***************** SETTINGS ***********************
+// **************************************************
+// These settings allow the user to toggle on, off, or between settings
+
+// Headers container margin on top by default, set be $base-text-margin-top
+$headers-with-margin-top: false;
+
+// toggle on or off if headers should lose their margin top and bottom when flex aligned
+$headers-remove-margin-when-aligned: true;
+
+$font-increase-on-xl: true;
+
+// Nav links have underline on hover
+$nav-link-underline: true;
+
+// True = links inherit text color | false = links inherit $link-color
+$links-have-text-color: false;
+
+// Set Tertiary buttons to have udnerline on hover
+$btn-tertiary-has-underline: true;
+
+// Set any button without a border to be capitalzed
+$btn-none-border-text-is-caps: true;
+
+// Add color tone classes
+$color-classes-with-tones: false;
+
+// Prevents nested containers from applying container padding,
+// If it's unlikely that containers will become nested, set this to false,
+// in order to remove a large amout of unnessicary css
+$unset-nested-containers: true;
+
+// Sets the default media query to use 'min-width' if true, 'max-width' if false
+// ! Setting this to false will break a lot of classes from behaving as expected
+$is-mobile-first: true;
+
+// If true, all browse default button styles will be removed
+$btn-reset: true;

@@ -1,0 +1,238 @@
+@use 'sass:map';
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+// Holder map for setting header font sizes
+$header-font-modifiers: (
+);
+
+// Generate the header-font-modifiers map for determining the font size of each header
+@for $i from 1 through length($header-font-responsive-sizes) {
+    $key: nth($header-font-responsive-sizes, $i);
+    $map: (
+        $key: $header-font-modifier-base + $header-increase,
+        );
+    $header-font-modifiers: map-merge($header-font-modifiers, $map);
+    // Increase the ratio for the next iteration
+    $header-increase: $header-breakpoint-increase * $i;
+}
+
+// Bases for header margin
+$base-text-margin-bottom: $space-md;
+$base-text-margin-top: $space-lg;
+
+:root {
+    // Create responsive text vars
+    @include make-responsive-var(--text-xs-size, $font-xs-sizes);
+    @include make-responsive-var(--text-sm-size, $font-sm-sizes);
+    @include make-responsive-var(--base-font-size, $font-base-sizes);
+    @include make-responsive-var(--text-lg-size, $font-lg-sizes);
+
+    // Set Responsive header values
+    @include make-responsive-var(--header-font-modifier,
+        $header-font-modifiers,
+        map.get($header-font-modifiers, 'sm'));
+
+    --line-height-ratio: #{$line-height-ratio};
+    --line-height-ratio-headers: #{$line-height-ratio-headers};
+    --base-font-weight: 400;
+    --base-header-font-weight: 600;
+    --base-line-height: calc(var(--base-font-size) * var(--line-height-ratio));
+    --base-text-margin-bottom: #{$base-text-margin-bottom};
+    --base-text-margin-top: #{$base-text-margin-top};
+
+    --primary-font: #{$primary-font};
+    --secondary-font: #{$secondary-font};
+    --font-family: var(--primary-font);
+}
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+    font-size: #{$base-font-size}px;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--base-font-size);
+    font-style: normal;
+    font-weight: var(--base-font-weight);
+    letter-spacing: 0.085rem;
+    line-height: var(--base-line-height);
+}
+
+// /**************************************************/
+// /* Establish base text sizes and line heights */
+// /**************************************************/
+.text-lg {
+    --base-font-size: var(--text-lg-size);
+    --base-line-height: calc(var(--base-font-size) * var(--line-height-ratio));
+    line-height: var(--base-line-height);
+    font-size: var(--base-font-size);
+    font-weight: var(--base-font-weight);
+
+    &:not(:last-child) {
+        margin-bottom: var(--base-text-margin-bottom);
+    }
+}
+
+p,
+blockquote,
+.text,
+.text-md {
+    line-height: var(--base-line-height);
+    font-size: var(--base-font-size);
+    font-weight: var(--base-font-weight);
+    color: var(--text-color);
+
+    &:not(:last-child) {
+        margin-bottom: var(--base-text-margin-bottom);
+    }
+}
+
+.text-sm {
+    --base-font-size: var(--text-sm-size);
+    --base-line-height: calc(var(--base-font-size) * var(--line-height-ratio) * 1.075);
+    line-height: var(--base-line-height);
+    font-size: var(--base-font-size);
+
+    &:not(:last-child) {
+        margin-bottom: var(--base-text-margin-bottom);
+    }
+}
+
+small,
+.text-xs {
+    --base-font-size: var(--text-xs-size);
+    --base-line-height: calc(var(--text-xs-size) * var(--line-height-ratio) * 1.15);
+    line-height: var(--base-line-height);
+    font-size: var(--base-font-size);
+
+    &:not(:last-child) {
+        margin-bottom: var(--base-text-margin-bottom);
+    }
+}
+
+// /**************************************************/
+// /* Generate Header fonts and line heights */
+// /**************************************************/
+@for $i from 1 through 6 {
+    $font-modifier: calc((7 - $i) * var(--header-font-modifier));
+    $header-font-size: calc($font-size-standard * var(--line-height-ratio-headers) * $font-modifier );
+    // Ensure that no header goes below $font-size-standard (16px)
+    $font-size: max(#{$header-font-size}, #{$font-size-standard});
+    $line-height: calc($font-size * var(--line-height-ratio-headers));
+
+    :root {
+        --h#{$i}-font-size: #{$font-size};
+        --h#{$i}-line-height: #{$line-height};
+    }
+
+    h#{$i},
+    .h#{$i} {
+        font-family: var(--secondary-font);
+        font-size: $font-size;
+        line-height: $line-height;
+        font-weight: var(--base-header-font-weight);
+        color: var(--color-header);
+        margin-bottom: var(--base-text-margin-bottom);
+
+        @if $headers-with-margin-top {
+            margin-top: var(--base-text-margin-top);
+        }
+    }
+}
+
+// /**************************************************/
+// /* Generate Font Weight Classes */
+// /**************************************************/
+@include class-with-responsive-val-only($font-weights,
+    font-weight,
+    font-weight);
+
+// /**************************************************/
+// /* Utility Tags */
+// /**************************************************/
+blockquote {
+    padding: 0px $space-md;
+
+    @include md-size() {
+        padding: 0px $space-xl;
+    }
+}
+
+ul {
+    margin-bottom: var(--base-text-margin-bottom);
+
+    &:not(.no-list-style) {
+        li:not(.no-list-style) {
+            > :not(ul) {
+                position: relative;
+
+                &:before {
+                    content: $list-item-icon;
+                    padding-right: $space-sm;
+                }
+            }
+
+            &>ul {
+                padding-left: $space-md;
+            }
+        }
+    }
+}
+
+ol {
+    list-style: decimal;
+    margin-left: calc($space-md * 1.5);
+    margin-bottom: var(--base-text-margin-bottom);
+
+    li {
+        &>ol {
+            margin-left: $space-md;
+        }
+    }
+}
+
+li {
+    color: var(--text-color);
+}
+
+u {
+    text-decoration: none;
+    position: relative;
+
+    &:before {
+        content: '';
+        position: absolute;
+        bottom: $underline-bottom;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: var(--text-color);
+    }
+}
+
+i {
+    font-style: italic;
+}
+
+.drop-cap:first-letter {
+    float: left;
+    font-size: calc(var(--base-font-size) * 3);
+    line-height: calc(var(--base-line-height) * 2);
+    padding-right: $space-sm;
+}
+
+.secondary-font {
+    --font-family: var(--secondary-font);
+    font-family: var(--font-family);
+}
+
+.indent {
+    text-indent: $space-xl;
+}

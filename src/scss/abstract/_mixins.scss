@@ -1,0 +1,266 @@
+@use 'sass:map';
+@use 'sass:meta';
+
+@mixin respond-to($breakpoint) {
+    $dir: if($is-mobile-first, min-width, max-width);
+
+    @media (#{$dir}: $breakpoint) {
+        @content;
+    }
+}
+
+@mixin xl-size() {
+    @include respond-to($screen-xl-min) {
+        @content;
+    }
+}
+
+@mixin lg-size() {
+    @include respond-to($screen-lg-min) {
+        @content;
+    }
+}
+
+@mixin md-size() {
+    @include respond-to($screen-md-min) {
+        @content;
+    }
+}
+
+@mixin sm-size() {
+    @include respond-to($screen-sm-min) {
+        @content;
+    }
+}
+
+@mixin xs-size() {
+    @include respond-to($screen-xs-min) {
+        @content;
+    }
+}
+
+@mixin hover {
+    @media (hover: hover) {
+        @content;
+    }
+}
+
+@mixin flex-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+//  * Generate a responsive css variable
+//  *
+//  * @param {text} $var-to-update: the css variable, --css-var
+//  * @param {SASS Map} $map: must be a sass map containing keys of sm, md, lg, xl
+//  * @param {any} $starting-val: optional, the default value, will set value for xs devices
+//  */
+@mixin make-responsive-var($var-to-update, $map, $starting-val: null) {
+    @if ($starting-val) {
+        #{$var-to-update}: $starting-val;
+    }
+
+    @else if (map-has-key($map, 'md')) {
+        $val: map.get($map, 'md');
+        #{$var-to-update}: #{$val};
+    }
+
+    @else if (map-has-key($map, 'lg')) {
+        $val: map.get($map, 'lg');
+        #{$var-to-update}: #{$val};
+    }
+
+    $break-points-in-map: map.keys($map);
+    // this requires the map to container
+    // keys equal to the either (sm, md, lg ,xl or, xxl)
+
+    @each $key
+
+    /* = sm, md, lg, xl, xxl */
+    in $break-points-in-map {
+        $bp: map.get($breakpoints, $key); // Get bp by key
+        $val: map.get($map, $key);
+
+        @include respond-to($bp) {
+            #{$var-to-update}: #{$val};
+        }
+    }
+}
+
+//  * Generate a css class with responsive classes
+//  *
+//  * @param {SASS Map} $map: must be a sass map containing only values
+//  * @param {text} $class: the name of the class to output
+//  * @param {text} $property: the css property to effect
+//  */
+@mixin class-with-responsive-val-only($map, $class, $property) {
+    @each $val in $map {
+        .#{$class}-#{$val} {
+            #{$property}: $val;
+        }
+
+        @each $bp, $px in $breakpoints {
+            @include respond-to(#{$px}) {
+                .#{$class}-#{$bp}-#{$val} {
+                    #{$property}: $val !important;
+                }
+            }
+        }
+    }
+}
+
+//  * Generate a css class with responsive classes using key and value from map
+//  *
+//  * @param {SASS Map} $map: must be a sass map containing key value pairs
+//  * @param {text} $class: the css property to effect
+//  * @param {text} $property: the css property to effect
+//  * @param {boolean} $calc-value: toggle for using calcualted value, must be paired with `$var-name`
+//  * @param {CSS var} $var-name: A css var to use for calculating the output value
+//  */
+@mixin class-with-responsive-key-and-val($map,
+    $class,
+    $property,
+    $calc-value: null,
+    $var-name: null) {
+    @each $key, $val in $map {
+        .#{$class}-#{$key} {
+            @if $calc-value and $var-name {
+                @if meta.type-of($property)=='list' {
+                    @each $key in $property {
+                        #{$key}: calc($val - var($var-name, 0px));
+                    }
+                }
+
+                @else {
+                    #{$property}: calc($val - var($var-name, 0px));
+                }
+            }
+
+            @else {
+                @if meta.type-of($property)=='list' {
+                    @each $key in $property {
+                        #{$key}: $val;
+                    }
+                }
+
+                @else {
+                    #{$property}: $val;
+                }
+            }
+        }
+
+        @each $bp, $px in $breakpoints {
+            @include respond-to(#{$px}) {
+                .#{$class}-#{$bp}-#{$key} {
+                    @if $calc-value and $var-name {
+                        @if meta.type-of($property)=='list' {
+                            @each $key in $property {
+                                #{$key}: calc($val - var($var-name, 0px)) !important;
+                            }
+                        }
+
+                        @else {
+                            #{$property}: calc($val - var($var-name, 0px)) !important;
+                        }
+                    }
+
+                    @else {
+                        @if meta.type-of($property)=='list' {
+                            @each $key in $property {
+                                #{$key}: $val !important;
+                            }
+                        }
+
+                        @else {
+                            #{$property}: $val !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// * Generate eiather a single transition property, or a list of transitions
+//  *
+//  * @param {SASS list | string} the property to transition
+//  * @param {number?} Transition time
+//  * @param {ease?} Transition Ease
+@mixin transition($target, $time: 300, $ease: ease-in-out) {
+    $transition: (
+    );
+
+// Check type
+@if meta.type-of($target)=='list' {
+    @each $val in $target {
+        // set up transition properties
+        $prop: $val #{$time}ms $ease;
+        // Create comma seperated list of transition properties
+        $transition: append($transition, $prop, comma);
+    }
+}
+
+@else {
+    $transition: $target #{$time}ms $ease;
+}
+
+transition: $transition;
+}
+
+@mixin border-rounded($radius: $border-radius) {
+    border-radius: $radius;
+    overflow: hidden;
+}
+
+// @mixin hui_tooltip($content: attr(data-tooltip), $direction: top) {
+//   position: relative;
+//   &:before,
+//   &:after {
+//     display: none;
+//     z-index: 98;
+//   }
+//   &:hover {
+//     &:after {
+//       // for text bubble
+//       content: $content;
+//       display: block;
+//       position: absolute;
+//       height: 12px; // (makes total height including padding 22px)
+//       padding: 6px;
+//       font-size: 12px;
+//       white-space: nowrap;
+//       color: #fff;
+//       @include text-shadow(1px 1px #000);
+//       background-color: #222;
+//     }
+//     @if ($direction == 'top') {
+//       &:before {
+//         @include triangle(down, 6px, #222);
+//         top: -6px;
+//         margin-top: 0;
+//         left: 47%;
+//       }
+//       &:after {
+//         top: -28px;
+//         left: 47%;
+//         margin-left: -20px;
+//       }
+//     } @else if ($direction == 'bottom') {
+//       &:before {
+//         @include triangle(up, 6px, #222);
+//         top: auto;
+//         margin-top: 0;
+//         bottom: -6px;
+//         left: 47%;
+//       }
+//       &:after {
+//         bottom: -28px;
+//         left: 47%;
+//         margin-left: -20px;
+//       }
+//     }
+//   }
+// }

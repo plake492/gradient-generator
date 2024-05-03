@@ -1,0 +1,522 @@
+@use 'sass:map';
+
+/**************************************************/
+/* Global Spacers */
+/**************************************************/
+
+$space-none: 0rem;
+$space-xs: $base-spacing * 0.25;
+$space-sm: $base-spacing * 0.5;
+$space-md: $base-spacing;
+$space-lg: $base-spacing * 2;
+$space-xl: $base-spacing * 3;
+$space-xxl: $base-spacing * 4;
+$space-xxxl: $base-spacing * 8;
+
+$spacers: (
+    none: $space-none,
+    xs: $space-xs,
+    sm: $space-sm,
+    md: $space-md,
+    lg: $space-lg,
+    xl: $space-xl,
+    xxl: $space-xxl,
+    xxxl: $space-xxxl,
+    auto: auto,
+);
+
+$breakpoints: (
+    sm: $screen-sm-min,
+    md: $screen-md-min,
+    lg: $screen-lg-min,
+    xl: $screen-xl-min,
+    xxl: $screen-xxl-min,
+);
+
+// **************************************************
+// ******************** Typography ******************
+// **************************************************
+
+$font-xs-sizes: (
+    md: rem(14),
+    lg: rem($base-font-size),
+);
+
+$font-sm-sizes: (
+    sm: rem(14),
+    md: rem($base-font-size),
+    xl: if($font-increase-on-xl, rem(18), rem($base-font-size)),
+);
+
+$font-base-sizes: (
+    sm: rem($base-font-size),
+    md: rem(18),
+    xl: if($font-increase-on-xl, rem(20), rem(18)),
+);
+
+$font-lg-sizes: (
+    sm: rem(18),
+    md: rem(20),
+    xl: if($font-increase-on-xl, rem(22), rem(20)),
+);
+
+$font-weights: (
+    100,
+    200,
+    300,
+    400,
+    500,
+    600,
+    700,
+    800,
+    900
+);
+
+// Determian which breakpoints update the Header sizes
+$header-font-responsive-sizes: (
+    sm,
+    md,
+    lg,
+    xl
+);
+
+$headers: (
+    '6',
+    '5',
+    '4',
+    '3',
+    '2',
+    '1'
+);
+
+// **************************************************
+// ************* Additional Colors ******************
+// **************************************************
+$bg-colors: (
+    primary: $bg-primary,
+    secondary: $bg-secondary,
+    accent: $bg-accent,
+    tertiary: $bg-tertiary,
+    dark: $bg-dark,
+    light: #ededed,
+);
+
+$target-colors: (
+    black: $black,
+    white: $white,
+    red: $red,
+    orange: $orange,
+    yellow: $yellow,
+    green: $green,
+    blue: $blue,
+    cyan: $cyan,
+    indigo: $indigo,
+    violet: $violet,
+    purple: $purple,
+    grey: $grey,
+);
+
+// Combine BG color map with the target color map
+$target-colors: map.merge($bg-colors, $target-colors);
+
+$tones: 10, 20, 30, 40, 50, 60, 70, 80;
+
+// **************************************************
+// ******************* Displays *********************
+// **************************************************
+
+// todo Add grid
+// Only Adding currently used displays for this project
+$displays: (
+    block,
+    inline,
+    inline-block,
+    flex,
+    inline-flex,
+    none
+);
+
+// **************************************************
+// *************** Containers ***********************
+// **************************************************
+
+$container-max-widths: (
+    container: (value: calc($container-base-size - ($container-width-decrease * 4)),
+        include: (sm,
+            md,
+            lg,
+            xl,
+            xxl,
+        ),
+    ),
+    sm: (value: calc($container-base-size - ($container-width-decrease * 4)),
+        include: (sm,
+            md,
+            lg,
+            xl,
+            xxl,
+        ),
+    ),
+    md: (value: calc($container-base-size - ($container-width-decrease * 3)),
+        include: (md,
+            lg,
+            xl,
+            xxl,
+        ),
+    ),
+    lg: (value: calc($container-base-size - ($container-width-decrease * 2)),
+        include: (lg,
+            xl,
+            xxl,
+        ),
+    ),
+    xl: (value: calc($container-base-size - ($container-width-decrease * 1)),
+        include: (xl,
+            xxl,
+        ),
+    ),
+    xxl: (value: calc($container-base-size - ($container-width-decrease * 0)),
+        include: (xxl,
+        ),
+    ),
+);
+
+// **************************************************
+// ******************* Images *********************
+// **************************************************
+
+$aspect-ratios: (
+    'auto': 'auto',
+    '1x1': '1 / 1',
+    '4x3': '4 / 3',
+    '3x2': '3 / 2',
+    '16x9': '16 / 9',
+    '3x4': '3 / 4',
+);
+
+$object-positions: (
+    'tl': 0% 0%,
+    'tr': 100% 0%,
+    'bl': 0% 100%,
+    'br': 100% 100%,
+    'center': 50% 50%,
+);
+
+/// *************************************************
+// *************** Margin & Padding *****************
+// **************************************************
+
+$types: (
+    p: 'padding',
+    m: 'margin',
+    mn: 'margin',
+);
+
+$directions: (
+    t: 'top',
+    r: 'right',
+    b: 'bottom',
+    l: 'left',
+);
+
+$combinationDirections: (
+    x: ('left',
+        'right',
+    ),
+    y: ('top',
+        'bottom',
+    ),
+);
+
+$allDirections: (
+    'left',
+    'right',
+    'top',
+    'bottom'
+);
+
+// **************************************************
+// **************** Opacity *************************
+// **************************************************
+
+$opacities: (
+    0: 0,
+    25: 0.25,
+    33: 0.33,
+    50: 0.5,
+    66: 0.66,
+    75: 0.75,
+    100: 1,
+);
+
+// **************************************************
+// **************** Overflow ************************
+// **************************************************
+
+$overflow: (
+    auto,
+    hidden,
+    visible,
+    scroll
+);
+
+// **************************************************
+// ***************** Text Alignment *****************
+// **************************************************
+
+$text-alignment: (
+    start,
+    end,
+    center,
+    right,
+    left
+);
+
+$vertical-alignment: (
+    baseline top middle bottom text-bottom text-top
+);
+
+// **************************************************
+// ************* Width & Height *********************
+// **************************************************
+
+$width--height-percentages: (
+    25: 25%,
+    33: 33%,
+    50: 50%,
+    66: 66%,
+    75: 75%,
+    100: 100%,
+);
+
+$height-vh: (
+    25: 25vh,
+    33: 33vh,
+    50: 50vh,
+    66: 66vh,
+    75: 75vh,
+    100: 100vh,
+);
+
+$width-vw: (
+    25: 25vw,
+    33: 33vw,
+    50: 50vw,
+    66: 66vw,
+    75: 75vw,
+    100: 100vw,
+);
+
+// **************************************************
+// ***************** Z-indicies *********************
+// **************************************************
+$z-indecies: (
+    n1: -1,
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+    10: 10,
+    100: 100,
+    200: 200,
+    300: 300,
+    400: 400,
+    500: 500,
+    600: 600,
+    700: 700,
+    800: 800,
+    900: 900,
+    1000: 1000,
+);
+
+$above-everyhting: 999999;
+
+// **************************************************
+// ***************** Positioning ********************
+// **************************************************
+
+$positions: (
+    relative,
+    absolute,
+    fixed,
+    static,
+    sticky,
+    unset
+);
+
+$position-placements: (
+    top,
+    bottom,
+    left,
+    right
+);
+
+$position-values: (
+    0: 0,
+    25: 25%,
+    33: 33%,
+    50: 50%,
+    66: 66%,
+    75: 75%,
+    100: 100%,
+    n25: -25%,
+    n33: -33%,
+    n50: -50%,
+    n66: -66%,
+    n75: -75%,
+    n100: -100%,
+);
+
+// **************************************************
+// ***************** Borders ************************
+// **************************************************
+
+$border-sides: (
+    top,
+    right,
+    bottom,
+    left,
+    all
+);
+
+$border-widths: (
+    1: rem(1),
+    2: rem(2),
+    3: rem(3),
+    4: rem(4),
+    5: rem(5),
+    0: 0,
+);
+
+$border-radius-sides: (
+    tl: 'top-left',
+    tr: 'top-right',
+    bl: 'bottom-left',
+    br: 'bottom-right',
+    all: 'all',
+);
+
+$border-rounded-edges: (
+    rounded: $border-radius,
+    pill: $border-radius-pill,
+    circle: $border-radius-circle,
+);
+
+$border-colors: (
+);
+$border-colors: map.merge($border-colors, $target-colors);
+
+// **************************************************
+// ******************** Box Shadows *****************
+// **************************************************
+
+$shadows: (
+    '0': ('spread': 0 0 0,
+        'opacity': 0,
+    ),
+    '1': ('spread': $shadow-1,
+        'opacity': 0.15,
+    ),
+    '2': ('spread': $shadow-2,
+        'opacity': 0.15,
+    ),
+    '3': ('spread': $shadow-3,
+        'opacity': 0.2,
+    ),
+    '4': ('spread': $shadow-4,
+        'opacity': 0.25,
+    ),
+    '5': ('spread': $shadow-5,
+        'opacity': 0.3,
+    ),
+);
+
+// **************************************************
+// ******************** Flexbox *********************
+// **************************************************
+
+$flex-basis: (
+    25: 25%,
+    33: 33%,
+    50: 50%,
+    66: 66%,
+    75: 75%,
+    100: 100%,
+);
+
+$placements: (
+    center: center,
+    start: flex-start,
+    end: flex-end,
+    flex-start: flex-start,
+    flex-end: flex-end,
+    between: space-between,
+    around: space-around,
+    even: space-evenly,
+    stretch: stretch,
+);
+
+$align-items: (
+    center: center,
+    start: flex-start,
+    end: flex-end,
+    flex-start: flex-start,
+    flex-end: flex-end,
+    baseline: baseline,
+    stretch: stretch,
+);
+
+$flex-direction: (
+    row: row,
+    row-reverse: row-reverse,
+    col: column,
+    col-reverse: column-reverse,
+);
+
+$flex-wrap: (
+    wrap: wrap,
+    no-wrap: nowrap,
+    wrap-reverse: wrap-reverse,
+);
+
+$order: (
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+);
+
+// The first key equals the CSS prop to be targeted
+// The nested key will set the base class name
+// EX: .flex-row {flex-direction: row}
+$flex: (
+    justify-content: (justify-content: $placements,
+    ),
+    align-content: (align-content: $placements,
+    ),
+    align-items: (align-items: $align-items,
+    ),
+    align-self: (align-self: $align-items,
+    ),
+    flex-direction: (flex: $flex-direction,
+    ),
+    flex-wrap: (flex: $flex-wrap,
+    ),
+    order: (order: $order,
+    ),
+    gap: (gap: $spacers,
+    ),
+    column-gap: (gap-col: $spacers,
+    ),
+    row-gap: (gap-row: $spacers,
+    ),
+    flex-basis: (flex-basis: $flex-basis,
+    ),
+);

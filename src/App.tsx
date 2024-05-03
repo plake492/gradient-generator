@@ -1,33 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import GradientBg from "./components/GradientBg"
+import Particles from "./components/Particles"
+import SvgNoise from "./components/SvgNoise"
+import ControlPanel from "./components/ControlPanel"
+
+import "./scss/app.scss"
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <GradientBg />
+      <Particles />
+      {/* <SvgNoise /> */}
+      <div style={{ position: "relative", zIndex: 2 }}>
+        <ControlPanel />
+        <div
+          className="container d-flex flex-col justify-content-center align-items-center"
+          style={{ minHeight: "100vh", width: "100%" }}
+        >
+          <h1>
+            Hello <i>There</i> <b>Buddy</b>
+          </h1>
+          <p className="mt-xxl">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam enim
+            ipsum nulla odio sit ab, amet eum laborum deserunt mollitia quam,
+            quos minima sunt incidunt. Obcaecati maiores dicta rerum sint.
+          </p>
+        </div>
+
+        <div
+          className="container d-flex flex-col justify-content-center align-items-center"
+          style={{ minHeight: "100vh", width: "100%" }}
+        >
+          <h1>
+            Hello <i>There</i> <b>Buddy</b>
+          </h1>
+          <p className="mt-xxl">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam enim
+            ipsum nulla odio sit ab, amet eum laborum deserunt mollitia quam,
+            quos minima sunt incidunt. Obcaecati maiores dicta rerum sint.
+          </p>
+        </div>
+
+        <div
+          className="container d-flex flex-col justify-content-center align-items-center"
+          style={{ minHeight: "100vh", width: "100%" }}
+        >
+          <h1>
+            Hello <i>There</i> <b>Buddy</b>
+          </h1>
+          <p className="mt-xxl">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ullam enim
+            ipsum nulla odio sit ab, amet eum laborum deserunt mollitia quam,
+            quos minima sunt incidunt. Obcaecati maiores dicta rerum sint.
+          </p>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }

@@ -1,0 +1,211 @@
+.control-panel {
+    $offset: $space-sm;
+
+    position: fixed;
+    left: 0;
+    top: 0;
+    margin: $offset;
+    background-color: #131313aa;
+    backdrop-filter: blur(8px);
+    box-shadow: 8px 8px 32px 4px rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+    color: #eeeeee;
+    padding: $space-md $space-lg $space-md $space-md;
+    width: min(550px, calc(100% - (2 * $offset)));
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - ($offset * 8));
+    overflow: auto;
+
+    &__open-btn {
+        position: fixed;
+        left: 0;
+        top: 0;
+        margin: calc($offset + $space-md);
+        cursor: pointer;
+        padding: $space-sm;
+        transition: background-color 300ms;
+        border-radius: 50%;
+
+        &:hover {
+            background-color: #13131322;
+        }
+
+        &:active {
+            background-color: #13131344;
+        }
+    }
+
+    &__close-btn {
+        align-self: start;
+        padding: $space-sm;
+        transition: background-color 300ms;
+        border-radius: 50%;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #dddddd88;
+        }
+
+        &:active {
+            background-color: #dddddd44;
+        }
+    }
+
+    &__slide-group {
+        --slider-thumb-color: 0;
+        --slider-thumb-saturation: 100%;
+        --slider-thumb-lightness: 50%;
+        --grad-1-color: 0;
+        --grad-1-saturation: 100%;
+        --grad-1-lightness: 50%;
+        --grad-2-color: 0;
+        --grad-2-saturation: 100%;
+        --grad-2-lightness: 50%;
+        --rotate: 0deg;
+
+
+        position: relative;
+        padding-bottom: $space-md;
+        margin-bottom: $space-md;
+
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: calc(100%);
+            border-radius: 40px;
+            height: 4px;
+            background-color: #333333;
+
+        }
+
+        &.child {
+            margin-left: $space-md;
+        }
+    }
+
+    &__slider-wrapper {
+        display: flex;
+        flex-direction: column;
+        margin: $space-sm 0;
+    }
+
+    &__label {
+        margin-bottom: $space-sm;
+        text-align: start;
+        @extend .text-xs;
+        margin-bottom: $space-sm;
+    }
+
+    &__slider {
+        width: 100%; // Make the slider full width
+
+        &.rotate {
+            background: linear-gradient(var(--rotate), hsl(var(--grad-1-color, 0), var(--grad-1-saturation), var(--grad-1-lightness, 50%)) 0%, hsl(var(--grad-2-color, 0), var(--grad-2-saturation), var(--grad-2-lightness, 50%)), 100%);
+
+        }
+
+        /********** Range Input Styles **********/
+        /*Range Reset*/
+        &[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Removes default focus */
+        &[type="range"]:focus {
+            outline: none;
+        }
+
+        /***** Chrome, Safari, Opera and Edge Chromium styles *****/
+        /* slider track */
+        &[type="range"]::-webkit-slider-runnable-track {
+            background-color: #dddddd;
+            border-radius: 0.5rem;
+            height: 0.5rem;
+        }
+
+        /* slider thumb */
+        &[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            /* Override default look */
+            appearance: none;
+            margin-top: -8px;
+            /* Centers thumb on the track */
+
+            /*custom styles*/
+            background: hsl(var(--slider-thumb-color, 0), var(--slider-thumb-saturation), var(--slider-thumb-lightness, 50%));
+            border-radius: 50%;
+            height: 24px;
+            width: 24px;
+            border: 2px solid #dddddd;
+        }
+
+        &[type="range"]:focus::-webkit-slider-thumb {
+            border: 1px solid #053a5f;
+            outline: 3px solid #053a5f;
+            outline-offset: 0.125rem;
+        }
+
+        /******** Firefox styles ********/
+        /* slider track */
+        &[type="range"]::-moz-range-track {
+            background-color: #053a5f;
+            border-radius: 0.5rem;
+            height: 0.5rem;
+        }
+
+        /* slider thumb */
+        &[type="range"]::-moz-range-thumb {
+            border: none;
+            /*Removes extra border that FF applies*/
+            border-radius: 0;
+            /*Removes default border-radius that FF applies*/
+
+            /*custom styles*/
+            background-color: #5cd5eb;
+            height: 1rem;
+            width: 1rem;
+        }
+
+        &[type="range"]:focus::-moz-range-thumb {
+            border: 1px solid #053a5f;
+            outline: 3px solid #053a5f;
+            outline-offset: 0.125rem;
+        }
+
+        // &.rotate[type="range"]::-webkit-slider-thumb {
+        //     background: linear-gradient(var(--rotate), hsl(var(--grad-1-color, 0), var(--grad-1-saturation), var(--grad-1-lightness, 50%)) 0%, hsl(var(--grad-2-color, 0), var(--grad-2-saturation), var(--grad-2-lightness, 50%)), 100%);
+        // }
+    }
+
+
+
+    &__animation {
+        &-enter {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        &-enter-active {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 300ms, transform 300ms;
+        }
+
+        &-exit {
+            opacity: 1;
+        }
+
+        &-exit-active {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 300ms, transform 300ms;
+        }
+    }
+}

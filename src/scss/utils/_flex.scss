@@ -1,0 +1,82 @@
+/*****************************************************/
+/* Flex Position Classes */
+/*****************************************************/
+@each $flex-prop-target, $values1 in $flex {
+    @each $flex-titles, $values2 in $values1 {
+        @each $flex-spec, $flex-val in $values2 {
+            .#{$flex-titles}-#{$flex-spec} {
+                @if ($flex-titles =='gap' or $flex-titles =='gap-col') {
+                    --gap-offset: #{calc($flex-val / 2)};
+                }
+
+                // Only remove margin if setting is true
+                @if $headers-remove-margin-when-aligned {
+                    @if ($flex-titles =='align-items' or $flex-titles =='align-items') {
+                        --base-text-margin-top: 0; // !This could have unwanted side effects
+                        --base-text-margin-bottom: 0; // !This could have unwanted side effects
+                    }
+                }
+
+                #{$flex-prop-target}: $flex-val;
+            }
+        }
+    }
+}
+
+@for $i from 1 to 11 {
+    .flex-#{$i} {
+        flex: $i;
+    }
+}
+
+/*****************************************************/
+/* Responsive Classes */
+/*****************************************************/
+@each $bp, $px in $breakpoints {
+    @include respond-to(#{$px}) {
+        @each $flex-prop-target, $values1 in $flex {
+            @each $flex-titles, $values2 in $values1 {
+                @each $flex-spec, $flex-val in $values2 {
+                    .#{$flex-titles}-#{$bp}-#{$flex-spec} {
+                        @if ($flex-titles =='gap' or $flex-titles =='gap-col') {
+                            --gap-offset: #{calc($flex-val / 2)};
+                        }
+
+                        // Only remove margin if setting is true
+                        @if $headers-remove-margin-when-aligned {
+                            @if ($flex-titles =='align-items' or $flex-titles =='align-items'
+
+                            ) {
+                                --base-text-margin-top: 0; // !This could have unwanted side effects
+                                --base-text-margin-bottom: 0; // !This could have unwanted side effects
+                            }
+                        }
+
+                        #{$flex-prop-target}: $flex-val;
+                    }
+                }
+            }
+        }
+
+        @for $i from 1 to 11 {
+            .flex-#{$bp}-#{$i} {
+                flex: $i !important;
+            }
+        }
+    }
+}
+
+.flex-center {
+    @include flex-center;
+}
+
+@each $bp, $px in $breakpoints {
+    @include respond-to(#{$px}) {
+        .flex-#{$bp}-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}

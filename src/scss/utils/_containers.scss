@@ -1,0 +1,114 @@
+@use 'sass:map';
+
+:root {
+    // This will be automatically changed be the container class media query
+    // Defualtig this to 100vw allows the .escape-container class to offset the
+    // padding even after the container is full width
+    --container-width: 100vw;
+    --container-padding: #{$space-md};
+}
+
+.container,
+.container-fluid {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+    width: 100%;
+
+    @if $unset-nested-containers {
+        @each $key, $_ in $container-max-widths {
+            @if $key ==container {
+                .container {
+                    padding-left: unset;
+                    padding-right: unset;
+                }
+            }
+
+            @else {
+                .container-#{$key} {
+                    padding-left: unset;
+                    padding-right: unset;
+                }
+            }
+        }
+    }
+}
+
+.escape-container {
+    width: 100vw;
+    max-width: unset;
+    margin-left: calc(((100vw - var(--container-width) + (var(--container-padding) * 2)) / 2) * -1);
+    margin-right: calc(((100vw - var(--container-width) + (var(--container-padding) * 2)) / 2) * -1);
+}
+
+.escape-container-padding {
+    margin-left: calc(((var(--container-padding) * 2) / 2) * -1);
+    margin-right: calc(((var(--container-padding) * 2) / 2) * -1);
+}
+
+/**
+* Handle setting up responsive containers
+* Each container must recive the screen breakpoints and 
+* associated max-width values for those breakpoints
+* See the variable at "/src/variables/utils-variables/_containers.scss"
+*/
+@each $key, $val in $container-max-widths {
+
+    // Establish the base container class properties
+    .container-#{$key} {
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: var(--container-padding);
+        padding-right: var(--container-padding);
+
+        // Check if this needs to account for nested containers
+        // The defualt is true.
+        @if $unset-nested-containers {
+            @each $keyInner, $_ in $container-max-widths {
+                @if $keyInner ==container {
+                    .container {
+                        padding-left: unset;
+                        padding-right: unset;
+                    }
+                }
+
+                @else {
+                    .container-#{$keyInner} {
+                        padding-left: unset;
+                        padding-right: unset;
+                    }
+                }
+            }
+        }
+    }
+
+    // Get the map of Breakpoints to include in the current container map
+    $width-breakpoints: map.get($val, 'include');
+
+    // Loop over the list of breakpoints to include
+    @each $include-breakpoint in $width-breakpoints {
+        // Extract the matching screen breakpoint with the currentl list item
+        $screen-bp: map.get($breakpoints, $include-breakpoint);
+        // Get the map prop that matches the current screen breakpoint key
+        $width-at-breakpoint: map.get($container-max-widths, $include-breakpoint);
+        // Finally, get the value of the max-width property at that breakpoint
+        $width-value-at-breakpoint: map.get($width-at-breakpoint, 'value');
+
+        @include respond-to($screen-bp) {
+            @if $key ==container {
+                .container {
+                    --container-width: #{$width-value-at-breakpoint};
+                    max-width: var(--container-width);
+                }
+            }
+
+            @else {
+                .container-#{$key} {
+                    --container-width: #{$width-value-at-breakpoint};
+                    max-width: var(--container-width);
+                }
+            }
+        }
+    }
+}

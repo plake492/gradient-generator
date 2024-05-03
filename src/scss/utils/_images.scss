@@ -1,0 +1,59 @@
+@each $key, $val in $aspect-ratios {
+    .ratio-#{$key} {
+        --aspect-ratio: #{$val};
+        aspect-ratio: var(--aspect-ratio);
+    }
+}
+
+@each $bp, $px in $breakpoints {
+    @include respond-to(#{$px}) {
+        @each $key, $val in $aspect-ratios {
+            .ratio-#{$bp}-#{$key} {
+                --aspect-ratio: #{$val};
+                aspect-ratio: var(--aspect-ratio);
+            }
+        }
+    }
+}
+
+@each $key, $val in $object-positions {
+    .object-position-#{$key} {
+        --object-position: #{$val};
+        object-position: var(--object-position);
+    }
+}
+
+@each $bp, $px in $breakpoints {
+    @include respond-to(#{$px}) {
+        @each $key, $val in $object-positions {
+            .object-position-#{$bp}-#{$key} {
+                --object-position: #{$val};
+                object-position: var(--object-position);
+            }
+        }
+    }
+}
+
+.img-wrapper {
+    width: 100%;
+    aspect-ratio: var(--aspect-ratio, 4 / 3);
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: var(--object-position, 50% 50%);
+    }
+
+    &--rounded {
+        @include border-rounded($border-radius);
+    }
+
+    &--rounded-pill {
+        @include border-rounded($border-radius-pill);
+    }
+
+    &--rounded-circle {
+        @include border-rounded($border-radius-circle);
+    }
+}
