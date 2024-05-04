@@ -21,7 +21,7 @@ import React from "react"
  */
 export default function useAnimationFrame(
   cb: (timestamp: number) => void,
-  ...deps: any[]
+  ...deps: unknown[]
 ): void {
   React.useEffect(() => {
     let animationFrameId: number
@@ -34,5 +34,5 @@ export default function useAnimationFrame(
     animate(performance.now())
 
     return () => cancelAnimationFrame(animationFrameId)
-  }, [...deps])
+  }, [cb, ...deps])
 }

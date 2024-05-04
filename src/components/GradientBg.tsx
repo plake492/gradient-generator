@@ -27,7 +27,7 @@ export default function GradientBg() {
   // const endingRotate = startingRotate + rotateRange
 
   // const [color, setColor] = React.useState(startingColor)
-  // const [rotate, setRotate] = React.useState(startingRotate)
+  // const [rotate, setGradientRotate] = React.useState(startingRotate)
   // const [targetColor, setTargetColor] = React.useState(startingColor)
   // const [targetRotate, setTargetRotate] = React.useState(startingRotate)
 
@@ -65,9 +65,9 @@ export default function GradientBg() {
 
   //   if (easedTR < 0.14) {
   //     cancelAnimationFrame(animationFrameId)
-  //     setRotate(rotate)
+  //     setGradientRotate(rotate)
   //   }
-  //   setRotate(rotate + (targetRotate - rotate) * easedT * inertia)
+  //   setGradientRotate(rotate + (targetRotate - rotate) * easedT * inertia)
   // }
 
   // useAnimationFrame(animation, targetColor)

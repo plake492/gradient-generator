@@ -51,7 +51,6 @@
             border-radius: 40px;
             height: 1px;
             background-color: #cccccc;
-
         }
 
         &--child {
@@ -63,6 +62,28 @@
         display: flex;
         flex-direction: column;
         margin: $space-sm 0;
+
+        &--child {
+            margin-left: 48px;
+        }
+    }
+
+    &__gradient-group {
+        position: relative;
+        padding-bottom: $space-sm;
+        margin-bottom: $space-sm;
+
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: calc(100%);
+            border-radius: 40px;
+            height: 1px;
+            background-color: #cccccc;
+
+        }
     }
 
     &__label {
@@ -157,9 +178,7 @@
             outline-offset: 0.125rem;
         }
 
-        // &.rotate[type="range"]::-webkit-slider-thumb {
-        //     background: linear-gradient(var(--rotate), hsl(var(--grad-1-color, 0), var(--grad-1-saturation), var(--grad-1-lightness, 50%)) 0%, hsl(var(--grad-2-color, 0), var(--grad-2-saturation), var(--grad-2-lightness, 50%)), 100%);
-        // }
+
     }
 
     &__animation {

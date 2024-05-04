@@ -2,10 +2,10 @@ import * as React from "react"
 import useBemify from "../hooks/useBemify"
 
 interface IconProps {
+  variant?: "light" | "dark"
   width?: number
   height?: number
   onClick?: React.MouseEventHandler<HTMLDivElement>
-  variant?: "light" | "dark"
   tooltip?: string
   appendText?: string
   border?: boolean
@@ -27,9 +27,9 @@ function IconWrapper({
     <div
       className={bem(
         "",
-        [variant, `--${variant}`],
-        [appendText, "--with-text"],
-        [border, "--border"],
+        [!!variant, `--${variant}`],
+        [!!appendText, "--with-text"],
+        [!!border, "--border"],
       )}
       style={
         {
@@ -174,11 +174,32 @@ export function IconLightOff(iconProps: IconProps) {
     </IconWrapper>
   )
 }
+
 export function IconLightOn(iconProps: IconProps) {
   return (
     <IconWrapper {...iconProps}>
       <svg fill="currentColor" viewBox="0 0 16 16" height="100%" width="100%">
         <path d="M2 6a6 6 0 1110.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0110.5 13a.5.5 0 010 1 .5.5 0 010 1l-.224.447a1 1 0 01-.894.553H6.618a1 1 0 01-.894-.553L5.5 15a.5.5 0 010-1 .5.5 0 010-1 .5.5 0 01-.46-.302l-.761-1.77a1.964 1.964 0 00-.453-.618A5.984 5.984 0 012 6zm6-5a5 5 0 00-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 008 1z" />
+      </svg>
+    </IconWrapper>
+  )
+}
+
+export function IconRandomArrows(iconProps: IconProps) {
+  return (
+    <IconWrapper {...iconProps}>
+      <svg
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        viewBox="0 0 24 24"
+        height="100%"
+        width="100%"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" />
+        <path d="M20 21.004h-4v-4M16 21.004l5-5M6.5 9.504l-3.5-2L5 4M3 7.504l6.83-1.87M4 16.004l4-1 1 4M8 15.004l-3.5 6M21 5.004l-.5 4-4-.5M20.5 9.004l-4.5-5.5" />
       </svg>
     </IconWrapper>
   )

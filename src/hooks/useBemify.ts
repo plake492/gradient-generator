@@ -1,29 +1,32 @@
 import { useMemo } from "react"
 
-const bemify = (block: string) => {
+// type ClassValue = string | true | [boolean | string, string, string | null]
+type ClassValue =
+  | string
+  | true
+  | [boolean, string, string | null]
+  | [boolean, string]
+  | [string, string, string | null]
+  | [string, string]
+
+const bemify = (block?: string) => {
   // Return a closure
-  return (element: string, ...classes: string[]) => {
+  return (element?: string, ...classes: ClassValue[]) => {
     // Combine the block and element or return the block itself
     const combined = element ? `${block}__${element}` : block
 
     const formedClasses =
       classes && classes.length
         ? classes
-            .map((c: any) => {
-              if (!c) {
-                return ""
-              }
+            .map((c: ClassValue) => {
+              if (!c) return ""
 
               // Initialize the base classname
               let className = c
 
               // Check if c is a conditional array
               if (className && Array.isArray(className)) {
-                const [condition, activeClass, fallbackClass]: [
-                  boolean | string,
-                  string,
-                  string | null,
-                ] = c
+                const [condition, activeClass, fallbackClass] = className
 
                 if (condition) {
                   className =
@@ -53,7 +56,7 @@ const bemify = (block: string) => {
 }
 
 // Let's make a hook that makes this easier to use. We can wrap it in a useMemo so we don't have to waste resources by instantiating it on every render
-export default (block: string): Function => useMemo(() => bemify(block), [])
+export default (block?: string) => useMemo(() => bemify(block), [block])
 
 /*
   This is a helpful utility function that makes class concatenation in react easier

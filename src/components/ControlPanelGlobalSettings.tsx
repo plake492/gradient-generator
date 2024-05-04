@@ -2,21 +2,21 @@ import React from "react"
 import { useGradientStore } from "../store"
 import { IconClose, IconGrow, IconShrink } from "./BaseIcons"
 
+interface ControlPanelGlobalSettingsProps {
+  bem: (element?: string | undefined, ...classes: string[]) => string
+  handleSetShow: () => void
+  widthSmall: boolean
+  setWidthSmall: React.Dispatch<React.SetStateAction<boolean>>
+}
+
 export default function ControlPanelGlobalSettings({
   bem,
   handleSetShow,
   widthSmall,
   setWidthSmall,
-}: {
-  bem: Function
-  handleSetShow: () => void
-  widthSmall: boolean
-  setWidthSmall: React.Dispatch<React.SetStateAction<boolean>>
-}) {
+}: ControlPanelGlobalSettingsProps) {
   const {
     backgroundGradient,
-    rotate,
-    setRotate,
     bgWidth,
     setBgWidth,
     noiseOn,
@@ -26,6 +26,10 @@ export default function ControlPanelGlobalSettings({
   } = useGradientStore()
 
   const [showHslText, setShowHslText] = React.useState(false)
+
+  const handleGrowShrinkClick = () => {
+    setWidthSmall((prev) => !prev)
+  }
 
   return (
     <>
@@ -54,9 +58,9 @@ export default function ControlPanelGlobalSettings({
                 {position !== 0 ? "Left" : "Right"}
               </button> */}
         {widthSmall ? (
-          <IconGrow onClick={() => setWidthSmall((prev) => !prev)} />
+          <IconGrow onClick={handleGrowShrinkClick} />
         ) : (
-          <IconShrink onClick={() => setWidthSmall((prev) => !prev)} />
+          <IconShrink onClick={handleGrowShrinkClick} />
         )}
       </div>
       <div
@@ -66,7 +70,7 @@ export default function ControlPanelGlobalSettings({
           left: 0,
           background: "black",
           zIndex: 3,
-          padding: "0.25rem",
+          padding: "0.5rem",
           borderRadius: "10px",
         }}
       >
@@ -101,22 +105,6 @@ export default function ControlPanelGlobalSettings({
             id="bgWidth"
             value={bgWidth}
             onChange={(e) => setBgWidth(Number(e.target.value))}
-            className={bem("slider", "--parent")}
-          />
-        </div>
-
-        <div className={bem("slider-wrapper")}>
-          <label htmlFor="rotate" className={bem("label")}>
-            Rotate ({rotate}deg)
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="360"
-            step="1"
-            id="rotate"
-            value={rotate}
-            onChange={(e) => setRotate(Number(e.target.value))}
             className={bem("slider", "--parent")}
           />
         </div>

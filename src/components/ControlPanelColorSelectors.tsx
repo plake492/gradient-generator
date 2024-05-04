@@ -1,7 +1,7 @@
 import React from "react"
 import { useGradientStore } from "../store"
 import useBemify from "../hooks/useBemify"
-import { ColorGroup } from "../types"
+import { HslaObj, HslaColorOptions } from "../types"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import {
   IconBxCollapseVertical,
@@ -13,35 +13,39 @@ import {
 import HexInput from "./HexInput"
 import { convertHexToHsl, convertHslToHex } from "../helpers/utils"
 
-export default function ColorSelectors({
-  colorGroup,
-  index,
-  disableRemove,
-  hideColorText,
-}: {
-  colorGroup: ColorGroup
+interface ColorSelectorsProps {
+  colorGroup: HslaObj
+  parentId: string
   index: number
   disableRemove: boolean
   hideColorText?: boolean
-}) {
-  const [parent] = useAutoAnimate()
+}
 
+export default function ColorSelectors({
+  colorGroup,
+  parentId,
+  index,
+  disableRemove,
+  hideColorText,
+}: ColorSelectorsProps) {
+  const [parent] = useAutoAnimate()
   const [collapse, setCollapse] = React.useState(false)
 
-  const { setGradient, removeColor, setGradientHsl, setGradientDisabled } =
+  const { setColorValue, removeColor, setGradientHsl, setColorDisabled } =
     useGradientStore()
   const { id, hue, saturation, lightness, position, opacity, hsl, disabled } =
     colorGroup
 
   const bem = useBemify("control-panel")
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGradient(colorGroup.id, {
-      key: e.target.name,
+    setColorValue(colorGroup.id, parentId, {
+      key: e.target.name as HslaColorOptions,
       value: Number(e.target.value),
     })
   }
 
-  const handleDisable = () => setGradientDisabled(id, !disabled)
+  const handleDisable = () => setColorDisabled(id, parentId)
 
   return (
     <section className={bem("slide-group-wrapper")}>
@@ -93,7 +97,7 @@ export default function ColorSelectors({
             <div className="d-flex justify-content-between align-items-center">
               {!disableRemove ? (
                 <IconTrash
-                  onClick={() => removeColor(id)}
+                  onClick={() => removeColor(id, parentId)}
                   width={16}
                   height={16}
                 />
