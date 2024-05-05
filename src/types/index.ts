@@ -2,6 +2,7 @@ export interface GradientObj {
   id: string
   rotate: number
   disabled: boolean
+  gradient: string
   colors: HslaObj[]
 }
 
@@ -10,9 +11,9 @@ export interface HslaObj {
   hue: number
   saturation: number
   lightness: number
-  opacity: number
+  alpha: number
   position: number
-  hsl: string
+  hsla: string
   disabled?: boolean
 }
 
@@ -20,7 +21,7 @@ export type HslaColorOptions =
   | "hue"
   | "saturation"
   | "lightness"
-  | "opacity"
+  | "alpha"
   | "position"
 
 export type GradientList = GradientObj[]

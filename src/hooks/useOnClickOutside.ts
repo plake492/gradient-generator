@@ -4,7 +4,7 @@ export const useOnClickOutside = (
   handler: (e: Event) => void,
   exception?: MutableRefObject<HTMLElement> | undefined,
 ) => {
-  const reference = useRef<HTMLElement | null>(null)
+  const reference = useRef<HTMLElement | undefined>(null)
 
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent): void => {

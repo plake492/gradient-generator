@@ -58,17 +58,30 @@
         }
     }
 
+    &__slide-group-color-indicator {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: var(--child-gradient);
+        vertical-align: middle;
+
+        margin-right: $space-sm;
+    }
+
+
     &__slider-wrapper {
         display: flex;
         flex-direction: column;
         margin: $space-sm 0;
 
         &--child {
-            margin-left: 48px;
+            margin-left: calc(48px + 0.5rem);
         }
     }
 
     &__gradient-group {
+        --linear-gradient: #00000000;
         position: relative;
         padding-bottom: $space-sm;
         margin-bottom: $space-sm;
@@ -85,6 +98,17 @@
 
         }
     }
+
+    &__gradient-indicator {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--linear-gradient);
+        vertical-align: middle;
+        margin-right: $space-sm;
+    }
+
 
     &__label {
         --base-font-size: var(--text-xs-size);

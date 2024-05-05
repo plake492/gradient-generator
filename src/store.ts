@@ -8,13 +8,17 @@ interface GradientStore {
   backgroundGradient: string
   bgWidth: number
   noiseOn: boolean
+  gridOn: boolean
+  particlesOn: boolean
   isWindowHeight?: boolean
 }
 
 type GradientStoreSetters = {
   setNoise: (noiseOn: boolean) => void
+  setParticlesOn: (particlesOn: boolean) => void
   setIsWindowHeight: (isWindowHeight: boolean) => void
   setBgWidth: (width: number) => void
+  setGridOn: (gridOn: boolean) => void
 
   addGradient: () => void
   removeGradient: (id: string) => void
@@ -29,7 +33,7 @@ type GradientStoreSetters = {
   addColor: (parentId: string) => void
   removeColor: (id: string, parentId: string) => void
   setColorDisabled: (id: string, parentId: string) => void
-  setGradientHsl: (id: string, hsl: string) => void
+  setGradientHsl: (id: string, hsla: string) => void
 
   randomAll: () => void
   randomGradient: (id: string) => void
@@ -46,15 +50,17 @@ const defaultGradientList: GradientList = [
     id: uuid(),
     rotate: 0,
     disabled: false,
+    gradient:
+      "linear-gradient(0deg, hsla(0, 100%, 50%), hsla(180, 100%, 50%, 0.5))",
     colors: [
       {
         id: uuid(),
         hue: 0,
         saturation: 100,
         lightness: 50,
-        opacity: 0.5,
+        alpha: 0.5,
         position: 0,
-        hsl: "hsl(0, 100%, 50%, 0.5)",
+        hsla: "hsla(0, 100%, 50%, 0.5)",
         disabled: false,
       },
       {
@@ -63,8 +69,8 @@ const defaultGradientList: GradientList = [
         saturation: 100,
         lightness: 50,
         position: 100,
-        opacity: 0.5,
-        hsl: "hsl(180, 100%, 50%, 0.5)",
+        alpha: 0.5,
+        hsla: "hsla(180, 100%, 50%, 0.5)",
         disabled: false,
       },
     ],
@@ -73,6 +79,8 @@ const defaultGradientList: GradientList = [
     id: uuid(),
     rotate: 90,
     disabled: false,
+    gradient:
+      "linear-gradient(90deg, hsla(45, 100%, 50%), hsla(225, 100%, 50%, 0))",
     colors: [
       {
         id: uuid(),
@@ -80,8 +88,8 @@ const defaultGradientList: GradientList = [
         saturation: 100,
         lightness: 50,
         position: 0,
-        opacity: 1,
-        hsl: "hsl(45, 100%, 50%)",
+        alpha: 1,
+        hsla: "hsla(45, 100%, 50%)",
         disabled: false,
       },
       {
@@ -90,8 +98,8 @@ const defaultGradientList: GradientList = [
         saturation: 100,
         lightness: 50,
         position: 100,
-        opacity: 0,
-        hsl: "hsl(225, 100%, 50%, 0)",
+        alpha: 0,
+        hsla: "hsla(225, 100%, 50%, 0)",
         disabled: false,
       },
     ],
@@ -112,7 +120,7 @@ const formatGradientsFromObject = (gradientList: GradientList) =>
         const hslColors = group.colors.reduce(
           (acc: string[], color: HslaObj) => {
             if (!color.disabled) {
-              acc.push(`${color.hsl} ${color.position.toFixed(2)}%`)
+              acc.push(`${color.hsla} ${color.position.toFixed(2)}%`)
             }
             return acc
           },
@@ -142,10 +150,49 @@ const findObj = <T extends Identifiable>(id: string, array: T[]): T => {
   return item
 }
 
+/**
+ * Updates the gradient property of a parent object in the gradient list.
+ *
+ * This function finds the parent object in the gradient list using its ID,
+ * then updates its gradient property based on its child colors. The gradient
+ * is a linear gradient CSS string that includes the rotation and the HSLA
+ * color values and positions of the child colors.
+ *
+ * This function should be called whenever a child color is updated to ensure
+ * that the parent's gradient is kept in sync.
+ *
+ * @param gradientList - The list of gradient objects.
+ * @param parentId - The ID of the parent object to update.
+ */
+
+const updateParentGradient = (
+  gradientList: GradientList,
+  parentId?: string,
+) => {
+  if (!parentId) {
+    gradientList.forEach((group: GradientObj) => {
+      const hslColors = group.colors
+        .map((color: HslaObj) => `${color.hsla} ${color.position}%`)
+        .join(", ")
+
+      group.gradient = `linear-gradient( ${group.rotate}deg, ${hslColors})`
+    })
+  } else {
+    const parentArray = findObj(parentId, gradientList)
+    const hslColors = parentArray.colors
+      .map((color: HslaObj) => `${color.hsla} ${color.position}%`)
+      .join(", ")
+
+    parentArray.gradient = `linear-gradient( ${parentArray.rotate}deg, ${hslColors})`
+  }
+}
+
 export const useGradientStore = create<GradientStoreState>()(
   persist(
     (set) => ({
       noiseOn: true,
+      particlesOn: true,
+      gridOn: false,
       isWindowHeight: true,
       bgWidth: 100,
       gradientList: defaultGradientList,
@@ -153,6 +200,10 @@ export const useGradientStore = create<GradientStoreState>()(
 
       // ******************* Global setters ******************* //
       setNoise: (noiseOn: boolean) => set({ noiseOn }),
+
+      setParticlesOn: (particlesOn: boolean) => set({ particlesOn }),
+
+      setGridOn: (gridOn: boolean) => set({ gridOn }),
 
       setIsWindowHeight: (isWindowHeight: boolean) => set({ isWindowHeight }),
 
@@ -169,6 +220,7 @@ export const useGradientStore = create<GradientStoreState>()(
             id: uuid(),
             rotate: 0,
             disabled: false,
+            gradient: `linear-gradient(0deg, hsla(${randomColor1}, 100%, 50%, 0.5), hsla(${randomColor2}, 100%, 50%, 0.5))`,
             colors: [
               {
                 id: uuid(),
@@ -176,8 +228,8 @@ export const useGradientStore = create<GradientStoreState>()(
                 saturation: 100,
                 lightness: 50,
                 position: 0,
-                opacity: 0.5,
-                hsl: `hsl(${randomColor1}, 100%, 50%, 0.5)`,
+                alpha: 0.5,
+                hsla: `hsla(${randomColor1}, 100%, 50%, 0.5)`,
               },
               {
                 id: uuid(),
@@ -185,8 +237,8 @@ export const useGradientStore = create<GradientStoreState>()(
                 saturation: 100,
                 lightness: 50,
                 position: 100,
-                opacity: 0.5,
-                hsl: `hsl(${randomColor2}, 100%, 50%, 0.5)`,
+                alpha: 0.5,
+                hsla: `hsla(${randomColor2}, 100%, 50%, 0.5)`,
               },
             ],
           }
@@ -250,14 +302,14 @@ export const useGradientStore = create<GradientStoreState>()(
       setGradientRotate: (rotate: number, parentId: string) => {
         set((state: GradientStore) => {
           const parentArray = findObj(parentId, state.gradientList)
-          parentArray
-
-          parentArray!.rotate = rotate
+          parentArray.rotate = rotate
 
           // Update the background gradient
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+
+          updateParentGradient(state.gradientList, parentId)
 
           return {
             gradientList: state.gradientList,
@@ -269,6 +321,7 @@ export const useGradientStore = create<GradientStoreState>()(
       // ******************************************************** //
 
       // ********************* Color setters ******************** //
+
       setColorValue: (
         id: string,
         parentId: string,
@@ -279,12 +332,14 @@ export const useGradientStore = create<GradientStoreState>()(
           const color = findObj(id, parentArray.colors)
 
           color[key] = value
-          color.hsl = `hsl(${color.hue}, ${color.saturation}%, ${color.lightness}%, ${color.opacity})`
+          color.hsla = `hsla(${color.hue}, ${color.saturation}%, ${color.lightness}%, ${color.alpha})`
 
           // Update the background gradient
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+
+          updateParentGradient(state.gradientList, parentId)
 
           return {
             gradientList: state.gradientList,
@@ -313,8 +368,8 @@ export const useGradientStore = create<GradientStoreState>()(
               hue: randomColor,
               saturation: 100,
               lightness: 50,
-              opacity: 1,
-              hsl: `hsl(${randomColor}, 100%, 50%, 1)`,
+              alpha: 1,
+              hsla: `hsla(${randomColor}, 100%, 50%, 1)`,
               position: newPosition,
               disabled: false,
             },
@@ -327,6 +382,8 @@ export const useGradientStore = create<GradientStoreState>()(
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+
+          updateParentGradient(state.gradientList, parentId)
 
           return {
             gradientList: state.gradientList,
@@ -352,6 +409,8 @@ export const useGradientStore = create<GradientStoreState>()(
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+
+          updateParentGradient(state.gradientList, parentId)
 
           return {
             gradientList: state.gradientList,
@@ -382,6 +441,8 @@ export const useGradientStore = create<GradientStoreState>()(
             state.gradientList,
           )
 
+          updateParentGradient(state.gradientList, parentId)
+
           return {
             gradientList: state.gradientList,
             backgroundGradient: newBackgroundGradient,
@@ -394,8 +455,8 @@ export const useGradientStore = create<GradientStoreState>()(
         // set((state: GradientStore) => {
         //   const updatedGradient = state.gradient.map((colorGroup) => {
         //     if (colorGroup.id === id) {
-        //       const [hue, saturation, lightness, opacity] = hsl
-        //         .replace(/hsla\(|hsl\(|\)|%/g, "")
+        //       const [hue, saturation, lightness, alpha] = hsla
+        //         .replace(/hsla\(|hsla\(|\)|%/g, "")
         //         .split(",")
         //         .map((value) => Number(value))
         //       return {
@@ -403,8 +464,8 @@ export const useGradientStore = create<GradientStoreState>()(
         //         hue,
         //         saturation,
         //         lightness,
-        //         opacity,
-        //         hsl,
+        //         alpha,
+        //         hsla,
         //       }
         //     }
         //     return colorGroup
@@ -431,7 +492,7 @@ export const useGradientStore = create<GradientStoreState>()(
                 return {
                   ...color,
                   hue: randomColor,
-                  hsl: `hsl(${randomColor}, 100%, 50%, 0.5)`,
+                  hsla: `hsla(${randomColor}, 100%, 50%, 0.5)`,
                 }
               })
 
@@ -446,6 +507,8 @@ export const useGradientStore = create<GradientStoreState>()(
           const newBackgroundGradient =
             formatGradientsFromObject(updatedGradientList)
 
+          updateParentGradient(updatedGradientList)
+
           return {
             gradientList: updatedGradientList,
             backgroundGradient: newBackgroundGradient,
@@ -453,16 +516,16 @@ export const useGradientStore = create<GradientStoreState>()(
         })
       },
 
-      randomGradient: (id: string) => {
+      randomGradient: (parentId: string) => {
         set((state: GradientStore) => {
-          const parentArray = findObj(id, state.gradientList)
+          const parentArray = findObj(parentId, state.gradientList)
 
           const updatedColors = parentArray.colors.map((color: HslaObj) => {
             const randomColor = Math.floor(Math.random() * 360)
             return {
               ...color,
               hue: randomColor,
-              hsl: `hsl(${randomColor}, 100%, 50%, 0.5)`,
+              hsla: `hsla(${randomColor}, 100%, 50%, 0.5)`,
             }
           })
 
@@ -472,6 +535,8 @@ export const useGradientStore = create<GradientStoreState>()(
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+
+          updateParentGradient(state.gradientList, parentId)
 
           return {
             gradientList: state.gradientList,

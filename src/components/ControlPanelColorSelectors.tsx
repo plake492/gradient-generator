@@ -10,8 +10,8 @@ import {
   IconLightOn,
   IconLightOff,
 } from "./BaseIcons"
-import HexInput from "./HexInput"
-import { convertHexToHsl, convertHslToHex } from "../helpers/utils"
+// import HexInput from "./HexInput"
+// import { convertHexToHsl, convertHslToHex } from "../helpers/utils"
 
 interface ColorSelectorsProps {
   colorGroup: HslaObj
@@ -31,9 +31,13 @@ export default function ColorSelectors({
   const [parent] = useAutoAnimate()
   const [collapse, setCollapse] = React.useState(false)
 
-  const { setColorValue, removeColor, setGradientHsl, setColorDisabled } =
-    useGradientStore()
-  const { id, hue, saturation, lightness, position, opacity, hsl, disabled } =
+  const {
+    setColorValue,
+    removeColor,
+    setColorDisabled,
+    // setGradientHsl,
+  } = useGradientStore()
+  const { id, hue, saturation, lightness, position, alpha, hsla, disabled } =
     colorGroup
 
   const bem = useBemify("control-panel")
@@ -63,15 +67,18 @@ export default function ColorSelectors({
         className={bem("slide-group", "--child", "flex-1")}
         style={
           {
-            "--child-gradient": hsl,
+            "--child-gradient": hsla,
           } as React.CSSProperties
         }
       >
         <div className="d-flex justify-content-between align-items-center">
-          <p className="text-sm mb-none text-end">Color: {index + 1}</p>
+          <p className="text-sm mb-none text-end">
+            <span className={bem("slide-group-color-indicator")}></span>
+            Color: {index + 1}
+          </p>
           <div className="d-flex align-items-center gap-">
             {!hideColorText ? (
-              <p className="text-xs mb-none text-end mr-sm">{hsl}</p>
+              <p className="text-xs mb-none text-end mr-sm">{hsla}</p>
             ) : null}
             {collapse ? (
               <IconBxCollapseVertical
@@ -104,10 +111,10 @@ export default function ColorSelectors({
               ) : (
                 <div></div>
               )}
-              <HexInput
-                hsl={convertHslToHex(hsl)}
+              {/* <HexInput
+                hsla={convertHslToHex(hsla)}
                 onSubmit={(value) => setGradientHsl(id, convertHexToHsl(value))}
-              />
+              /> */}
             </div>
             <div className={bem("slider-wrapper")}>
               <label htmlFor="slider" className={bem("label")}>
@@ -158,6 +165,22 @@ export default function ColorSelectors({
               />
             </div>
             <div className={bem("slider-wrapper")}>
+              <label htmlFor="alpha" className={bem("label")}>
+                Alpha ({alpha.toFixed(2)}%)
+              </label>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                id="alpha"
+                value={alpha}
+                name="alpha"
+                onChange={handleChange}
+                className={bem("slider", "--child")}
+              />
+            </div>
+            <div className={bem("slider-wrapper")}>
               <label htmlFor="position" className={bem("label")}>
                 Position ({position.toFixed(0)}%)
               </label>
@@ -169,22 +192,6 @@ export default function ColorSelectors({
                 id="position"
                 value={position}
                 name="position"
-                onChange={handleChange}
-                className={bem("slider", "--child")}
-              />
-            </div>
-            <div className={bem("slider-wrapper")}>
-              <label htmlFor="opacity" className={bem("label")}>
-                Opacity ({opacity.toFixed(2)}%)
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                id="opacity"
-                value={opacity}
-                name="opacity"
                 onChange={handleChange}
                 className={bem("slider", "--child")}
               />

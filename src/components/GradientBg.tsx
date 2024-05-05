@@ -1,6 +1,7 @@
 // import useAnimationFrame from "../hooks/useAnimationFrame"
 // import { easeOutCubic } from "../helpers/easings"
 import { useGradientStore } from "../store"
+import GradientGrid from "./GradientGrid"
 
 // const steps = ["0%", "100%"]
 // const colorChunk = 66 / steps.length
@@ -8,7 +9,7 @@ import { useGradientStore } from "../store"
 export default function GradientBg() {
   // React.useEffect(() => {
   //   const hslColors = gradient
-  //     .map((color: ColorGroup) => `${color.hsl} ${color.position}%`)
+  //     .map((color: ColorGroup) => `${color.hsla} ${color.position}%`)
   //     .join(", ")
 
   //   const hslGradient = `linear-gradient( ${rotate}deg, ${hslColors})`
@@ -76,6 +77,7 @@ export default function GradientBg() {
 
   return (
     <>
+      <GradientGrid />
       <div
         style={{
           backgroundImage: backgroundGradient,

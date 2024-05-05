@@ -62,7 +62,7 @@ export default function ParticlesComponent() {
           },
           value: 200,
         },
-        opacity: {
+        alpha: {
           value: {
             min: 0.2,
             max: 0.6,

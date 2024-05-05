@@ -23,6 +23,10 @@ export default function ControlPanelGlobalSettings({
     setNoise,
     isWindowHeight,
     setIsWindowHeight,
+    // particlesOn,
+    // setParticlesOn,
+    gridOn,
+    setGridOn,
   } = useGradientStore()
 
   const [showHslText, setShowHslText] = React.useState(false)
@@ -64,15 +68,17 @@ export default function ControlPanelGlobalSettings({
         )}
       </div>
       <div
-        style={{
-          position: "sticky",
-          top: 0,
-          left: 0,
-          background: "black",
-          zIndex: 3,
-          padding: "0.5rem",
-          borderRadius: "10px",
-        }}
+        style={
+          {
+            // position: "sticky",
+            // top: 0,
+            // left: 0,
+            // background: "black",
+            // zIndex: 3,
+            // padding: "0.5rem",
+            // borderRadius: "10px",
+          }
+        }
       >
         <input
           id="showCode"
@@ -111,18 +117,6 @@ export default function ControlPanelGlobalSettings({
 
         <div>
           <input
-            id="noiseOn"
-            className="mr-sm"
-            type="checkbox"
-            checked={noiseOn}
-            onChange={() => setNoise(!noiseOn)}
-          />
-          <label htmlFor="noiseOn" className="text-xs font-weight-700 d-inline">
-            Noise overlay
-          </label>
-        </div>
-        <div>
-          <input
             id="windowHeight"
             className="mr-sm"
             type="checkbox"
@@ -136,6 +130,48 @@ export default function ControlPanelGlobalSettings({
             Fixed to window height
           </label>
         </div>
+
+        <div>
+          <input
+            id="noiseOn"
+            className="mr-sm"
+            type="checkbox"
+            checked={noiseOn}
+            onChange={() => setNoise(!noiseOn)}
+          />
+          <label htmlFor="noiseOn" className="text-xs font-weight-700 d-inline">
+            Noise overlay
+          </label>
+        </div>
+
+        <div>
+          <input
+            id="gridOn"
+            className="mr-sm"
+            type="checkbox"
+            checked={gridOn}
+            onChange={() => setGridOn(!gridOn)}
+          />
+          <label htmlFor="gridOn" className="text-xs font-weight-700 d-inline">
+            Grid overlay
+          </label>
+        </div>
+
+        {/* <div>
+          <input
+            id="particelEffect"
+            className="mr-sm"
+            type="checkbox"
+            checked={particlesOn}
+            onChange={() => setParticlesOn(!particlesOn)}
+          />
+          <label
+            htmlFor="particelEffect"
+            className="text-xs font-weight-700 d-inline"
+          >
+            Particle Effect
+          </label>
+        </div> */}
       </div>
     </>
   )

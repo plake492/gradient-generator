@@ -7,12 +7,12 @@ import { convertHslToHex } from "../helpers/utils"
  */
 const HexInput = ({
   onSubmit,
-  hsl,
+  hsla,
 }: {
   onSubmit: (hex: string) => void
-  hsl: string
+  hsla: string
 }) => {
-  //   const [value, setValue] = useState(hsl)
+  //   const [value, setValue] = useState(hsla)
 
   //   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //     setValue(event.target.value)
@@ -30,7 +30,7 @@ const HexInput = ({
     <input
       className="input"
       type="text"
-      value={hsl}
+      value={hsla}
       //   onChange={handleChange}
       placeholder="Enter a hex color..."
     />
