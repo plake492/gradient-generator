@@ -17,8 +17,10 @@
   }
 }
 
-@include class-with-responsive-val-only(
-  $vertical-alignment,
+@include class-with-responsive-val-only($vertical-alignment,
   align,
-  vertical-align
-);
+  vertical-align);
+
+.no-wrap {
+  white-space: nowrap;
+}

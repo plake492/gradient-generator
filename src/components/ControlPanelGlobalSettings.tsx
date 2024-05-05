@@ -1,19 +1,16 @@
 import React from "react"
 import { useGradientStore } from "../store"
 import { IconClose, IconGrow, IconShrink } from "./BaseIcons"
+import { ClassValue } from "../types"
 
 interface ControlPanelGlobalSettingsProps {
-  bem: (element?: string | undefined, ...classes: string[]) => string
+  bem: (block: string, ...classes: ClassValue[]) => string
   handleSetShow: () => void
-  widthSmall: boolean
-  setWidthSmall: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function ControlPanelGlobalSettings({
   bem,
   handleSetShow,
-  widthSmall,
-  setWidthSmall,
 }: ControlPanelGlobalSettingsProps) {
   const {
     backgroundGradient,
@@ -27,12 +24,14 @@ export default function ControlPanelGlobalSettings({
     // setParticlesOn,
     gridOn,
     setGridOn,
+    setWidthSmall,
+    widthSmall,
   } = useGradientStore()
 
   const [showHslText, setShowHslText] = React.useState(false)
 
   const handleGrowShrinkClick = () => {
-    setWidthSmall((prev) => !prev)
+    setWidthSmall(!widthSmall)
   }
 
   return (

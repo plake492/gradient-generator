@@ -11,6 +11,7 @@ interface GradientStore {
   gridOn: boolean
   particlesOn: boolean
   isWindowHeight?: boolean
+  widthSmall: boolean
 }
 
 type GradientStoreSetters = {
@@ -19,10 +20,12 @@ type GradientStoreSetters = {
   setIsWindowHeight: (isWindowHeight: boolean) => void
   setBgWidth: (width: number) => void
   setGridOn: (gridOn: boolean) => void
+  setWidthSmall: (widthSmall: boolean) => void
 
   addGradient: () => void
   removeGradient: (id: string) => void
   setGradientDisabled: (id: string) => void
+  setGradeintLock: (id: string) => void
   setGradientRotate: (rotate: number, parentId: string) => void
 
   setColorValue: (
@@ -33,6 +36,7 @@ type GradientStoreSetters = {
   addColor: (parentId: string) => void
   removeColor: (id: string, parentId: string) => void
   setColorDisabled: (id: string, parentId: string) => void
+  setColorLock: (id: string, parentId: string) => void
   setGradientHsl: (id: string, hsla: string) => void
 
   randomAll: () => void
@@ -50,6 +54,7 @@ const defaultGradientList: GradientList = [
     id: uuid(),
     rotate: 0,
     disabled: false,
+    locked: false,
     gradient:
       "linear-gradient(0deg, hsla(0, 100%, 50%), hsla(180, 100%, 50%, 0.5))",
     colors: [
@@ -62,6 +67,7 @@ const defaultGradientList: GradientList = [
         position: 0,
         hsla: "hsla(0, 100%, 50%, 0.5)",
         disabled: false,
+        locked: false,
       },
       {
         id: uuid(),
@@ -72,6 +78,7 @@ const defaultGradientList: GradientList = [
         alpha: 0.5,
         hsla: "hsla(180, 100%, 50%, 0.5)",
         disabled: false,
+        locked: false,
       },
     ],
   },
@@ -79,6 +86,7 @@ const defaultGradientList: GradientList = [
     id: uuid(),
     rotate: 90,
     disabled: false,
+    locked: false,
     gradient:
       "linear-gradient(90deg, hsla(45, 100%, 50%), hsla(225, 100%, 50%, 0))",
     colors: [
@@ -91,6 +99,7 @@ const defaultGradientList: GradientList = [
         alpha: 1,
         hsla: "hsla(45, 100%, 50%)",
         disabled: false,
+        locked: false,
       },
       {
         id: uuid(),
@@ -101,6 +110,7 @@ const defaultGradientList: GradientList = [
         alpha: 0,
         hsla: "hsla(225, 100%, 50%, 0)",
         disabled: false,
+        locked: false,
       },
     ],
   },
@@ -172,6 +182,7 @@ const updateParentGradient = (
   if (!parentId) {
     gradientList.forEach((group: GradientObj) => {
       const hslColors = group.colors
+        .filter((color) => !color.disabled)
         .map((color: HslaObj) => `${color.hsla} ${color.position}%`)
         .join(", ")
 
@@ -180,6 +191,7 @@ const updateParentGradient = (
   } else {
     const parentArray = findObj(parentId, gradientList)
     const hslColors = parentArray.colors
+      .filter((color) => !color.disabled)
       .map((color: HslaObj) => `${color.hsla} ${color.position}%`)
       .join(", ")
 
@@ -195,6 +207,7 @@ export const useGradientStore = create<GradientStoreState>()(
       gridOn: false,
       isWindowHeight: true,
       bgWidth: 100,
+      widthSmall: false,
       gradientList: defaultGradientList,
       backgroundGradient: formatGradientsFromObject(defaultGradientList),
 
@@ -208,6 +221,8 @@ export const useGradientStore = create<GradientStoreState>()(
       setIsWindowHeight: (isWindowHeight: boolean) => set({ isWindowHeight }),
 
       setBgWidth: (width: number) => set({ bgWidth: width }),
+
+      setWidthSmall: (widthSmall: boolean) => set({ widthSmall }),
       // ******************************************************** //
 
       // ******************* Garient setters ******************* //
@@ -220,6 +235,7 @@ export const useGradientStore = create<GradientStoreState>()(
             id: uuid(),
             rotate: 0,
             disabled: false,
+            locked: false,
             gradient: `linear-gradient(0deg, hsla(${randomColor1}, 100%, 50%, 0.5), hsla(${randomColor2}, 100%, 50%, 0.5))`,
             colors: [
               {
@@ -227,18 +243,20 @@ export const useGradientStore = create<GradientStoreState>()(
                 hue: randomColor1,
                 saturation: 100,
                 lightness: 50,
-                position: 0,
                 alpha: 0.5,
                 hsla: `hsla(${randomColor1}, 100%, 50%, 0.5)`,
+                position: 0,
+                locked: false,
               },
               {
                 id: uuid(),
                 hue: randomColor2,
                 saturation: 100,
                 lightness: 50,
-                position: 100,
                 alpha: 0.5,
                 hsla: `hsla(${randomColor2}, 100%, 50%, 0.5)`,
+                position: 100,
+                locked: false,
               },
             ],
           }
@@ -299,6 +317,27 @@ export const useGradientStore = create<GradientStoreState>()(
         })
       },
 
+      setGradeintLock: (id: string) => {
+        set((state: GradientStore) => {
+          const updatedGradient = state.gradientList.map(
+            (group: GradientObj) => {
+              if (group.id === id) {
+                return {
+                  ...group,
+                  locked: !group.locked,
+                }
+              }
+
+              return group
+            },
+          )
+
+          return {
+            gradientList: updatedGradient,
+          }
+        })
+      },
+
       setGradientRotate: (rotate: number, parentId: string) => {
         set((state: GradientStore) => {
           const parentArray = findObj(parentId, state.gradientList)
@@ -317,11 +356,9 @@ export const useGradientStore = create<GradientStoreState>()(
           }
         })
       },
-
       // ******************************************************** //
 
       // ********************* Color setters ******************** //
-
       setColorValue: (
         id: string,
         parentId: string,
@@ -372,6 +409,7 @@ export const useGradientStore = create<GradientStoreState>()(
               hsla: `hsla(${randomColor}, 100%, 50%, 1)`,
               position: newPosition,
               disabled: false,
+              locked: false,
             },
           ]
 
@@ -450,6 +488,29 @@ export const useGradientStore = create<GradientStoreState>()(
         })
       },
 
+      setColorLock: (id: string, parentId: string) => {
+        set((state: GradientStore) => {
+          const parentArray = findObj(parentId, state.gradientList)
+
+          const updatedGradient = parentArray.colors.map((colorGroup) => {
+            if (colorGroup.id === id) {
+              return {
+                ...colorGroup,
+                locked: !colorGroup.locked,
+              }
+            }
+
+            return colorGroup
+          })
+
+          parentArray.colors = updatedGradient
+
+          return {
+            gradientList: state.gradientList,
+          }
+        })
+      },
+
       // TODO Complete this
       setGradientHsl: () => {
         // set((state: GradientStore) => {
@@ -483,11 +544,18 @@ export const useGradientStore = create<GradientStoreState>()(
       },
       // ******************************************************** //
 
+      // ********************* Randomize setters ******************** //
       randomAll: () => {
         set((state: GradientStore) => {
           const updatedGradientList = state.gradientList.map(
             (group: GradientObj) => {
+              if (group.locked) {
+                return group
+              }
               const updatedColors = group.colors.map((color: HslaObj) => {
+                if (color.locked) {
+                  return color
+                }
                 const randomColor = Math.floor(Math.random() * 360)
                 return {
                   ...color,
@@ -521,6 +589,9 @@ export const useGradientStore = create<GradientStoreState>()(
           const parentArray = findObj(parentId, state.gradientList)
 
           const updatedColors = parentArray.colors.map((color: HslaObj) => {
+            if (color.locked) {
+              return color
+            }
             const randomColor = Math.floor(Math.random() * 360)
             return {
               ...color,

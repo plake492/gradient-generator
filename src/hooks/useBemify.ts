@@ -1,13 +1,5 @@
 import { useMemo } from "react"
-
-// type ClassValue = string | true | [boolean | string, string, string | null]
-type ClassValue =
-  | string
-  | true
-  | [boolean, string, string | null]
-  | [boolean, string]
-  | [string, string, string | null]
-  | [string, string]
+import { ClassValue } from "../types"
 
 const bemify = (block?: string) => {
   // Return a closure

@@ -107,6 +107,13 @@
         background: var(--linear-gradient);
         vertical-align: middle;
         margin-right: $space-sm;
+        transition: all 300ms;
+        cursor: pointer;
+
+        &.expand {
+            width: 48px;
+            height: 48px;
+        }
     }
 
 

@@ -12,16 +12,19 @@ export default function ControlPanel() {
   const [gradientParent] = useAutoAnimate()
 
   const [show, setShow] = React.useState(false)
+  // const [position, setPosition] = React.useState(0)
+
   const handleSetShow = () => setShow((prev) => !prev)
 
-  const { gradientList, randomAll, addGradient } = useGradientStore()
-
-  const [widthSmall, setWidthSmall] = React.useState(false)
-  // const [position, setPosition] = React.useState(0)
+  const { gradientList, randomAll, addGradient, widthSmall } =
+    useGradientStore()
 
   const bem = useBemify("control-panel")
 
-  const outsideClickRef = useOnClickOutside(() => setShow(false))
+  const outsideClickRef = useOnClickOutside<HTMLDivElement>(() =>
+    setShow(false),
+  )
+
   const panelStyleVars = {
     "--width": `${widthSmall ? 250 : 500}px`,
     // "--position": position,
@@ -42,12 +45,7 @@ export default function ControlPanel() {
       >
         <aside className={bem()} style={panelStyleVars} ref={outsideClickRef}>
           {/* Gloabl Settings */}
-          <ControlPanelGlobalSettings
-            bem={bem}
-            handleSetShow={handleSetShow}
-            widthSmall={widthSmall}
-            setWidthSmall={setWidthSmall}
-          />
+          <ControlPanelGlobalSettings bem={bem} handleSetShow={handleSetShow} />
 
           <div ref={gradientParent}>
             {/* Gradient Section */}
@@ -55,7 +53,6 @@ export default function ControlPanel() {
               <ControlPanelGradient
                 gradientObj={gradientObj}
                 parentIndex={parentIndex}
-                widthSmall={widthSmall}
                 bem={bem}
                 disableOffOptions={arr.length === 1}
               />
@@ -63,8 +60,14 @@ export default function ControlPanel() {
           </div>
 
           <div className="d-flex align-items-center gap-sm">
-            <IconPlus appendText="Add new Gradient" onClick={addGradient} />
-            <IconRandomArrows onClick={randomAll} appendText={"Random"} />
+            <IconPlus
+              appendText={!widthSmall ? "Add new Gradient" : undefined}
+              onClick={addGradient}
+            />
+            <IconRandomArrows
+              onClick={randomAll}
+              appendText={!widthSmall ? "Random" : undefined}
+            />
           </div>
         </aside>
       </CSSTransition>

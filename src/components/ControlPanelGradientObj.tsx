@@ -2,7 +2,7 @@ import React from "react"
 import { useGradientStore } from "../store"
 import ControlPanelColorSelectors from "./ControlPanelColorSelectors"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
-import { GradientObj } from "../types"
+import { GradientObj, ClassValue } from "../types"
 
 import {
   IconPlusList,
@@ -12,38 +12,50 @@ import {
   IconLightOn,
   IconLightOff,
   IconRandomArrows,
+  IconLock,
+  IconUnlock,
 } from "./BaseIcons"
 import DropMenu from "./DropMenu"
 
 interface ControlPanelGradientObjProps {
   gradientObj: GradientObj
   parentIndex: number
-  widthSmall: boolean
-  bem: (element?: string | undefined, ...classes: string[]) => string
+  bem: (block: string, ...rest: ClassValue[]) => string
   disableOffOptions: boolean
 }
 
 export default function ControlPanelGradientObj({
   gradientObj,
   parentIndex,
-  widthSmall,
   bem,
   disableOffOptions,
 }: ControlPanelGradientObjProps) {
   const [collapseGradient, setCollapseGradient] = React.useState(false)
   const [gradientParent] = useAutoAnimate()
   const [colorParent] = useAutoAnimate()
-  const { id: parentId, colors, rotate, disabled, gradient } = gradientObj
+  const {
+    id: parentId,
+    colors,
+    rotate,
+    disabled,
+    gradient,
+    locked,
+  } = gradientObj
+
   const {
     addColor,
     setGradientRotate,
     removeGradient,
     setGradientDisabled,
     randomGradient,
+    widthSmall,
+    setGradeintLock,
   } = useGradientStore()
 
   const handleDisable = () => setGradientDisabled(parentId)
-  console.log("gradient ==>", gradient)
+  const handleLock = () => setGradeintLock(parentId)
+
+  const [expand, setExpand] = React.useState<boolean>(false)
 
   return (
     <div
@@ -55,11 +67,19 @@ export default function ControlPanelGradientObj({
       }
     >
       <div className="d-flex justify-content-between align-items-center">
-        <p className="mb-none">
-          <span className={bem("gradient-indicator")}></span>Gradient:{" "}
-          {parentIndex + 1}
-        </p>
+        <div className="mb-none no-wrap d-flex align-items-center gap-sm">
+          <span
+            onClick={() => setExpand((prev) => !prev)}
+            className={bem("gradient-indicator", [expand, "expand"])}
+          ></span>
+          <span>{!widthSmall ? `Gradient: ${parentIndex + 1}` : ""}</span>
+        </div>
         <div className="d-flex align-item-center gap-sm">
+          {!locked ? (
+            <IconUnlock onClick={handleLock} width={16} height={16} />
+          ) : (
+            <IconLock onClick={handleLock} width={16} height={16} />
+          )}
           {!disableOffOptions ? (
             !disabled ? (
               <IconLightOn onClick={handleDisable} width={16} height={16} />
@@ -123,22 +143,21 @@ export default function ControlPanelGradientObj({
                   index={index}
                   parentId={parentId}
                   disableRemove={arr.length === 2}
-                  hideColorText={widthSmall}
                 />
               ))}
               <div className="ml-xl d-flex align-items-center justify-content-between">
                 <div className="d-flex align-items-center gap-sm">
                   <IconPlusList
                     onClick={() => addColor(parentId)}
-                    appendText={"Add color"}
+                    appendText={!widthSmall ? "Add color" : undefined}
                   />
                   <IconRandomArrows
                     onClick={() => randomGradient(parentId)}
-                    appendText={"Random"}
+                    appendText={!widthSmall ? "Random" : undefined}
                   />
                 </div>
                 <div>
-                  <DropMenu />
+                  <DropMenu>Test</DropMenu>
                 </div>
               </div>
             </div>

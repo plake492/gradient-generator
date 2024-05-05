@@ -9,7 +9,10 @@ import {
   IconTrash,
   IconLightOn,
   IconLightOff,
+  IconUnlock,
+  IconLock,
 } from "./BaseIcons"
+import DropMenu from "./DropMenu"
 // import HexInput from "./HexInput"
 // import { convertHexToHsl, convertHslToHex } from "../helpers/utils"
 
@@ -18,7 +21,6 @@ interface ColorSelectorsProps {
   parentId: string
   index: number
   disableRemove: boolean
-  hideColorText?: boolean
 }
 
 export default function ColorSelectors({
@@ -26,19 +28,29 @@ export default function ColorSelectors({
   parentId,
   index,
   disableRemove,
-  hideColorText,
 }: ColorSelectorsProps) {
   const [parent] = useAutoAnimate()
   const [collapse, setCollapse] = React.useState(false)
 
   const {
+    widthSmall,
     setColorValue,
     removeColor,
     setColorDisabled,
+    setColorLock,
     // setGradientHsl,
   } = useGradientStore()
-  const { id, hue, saturation, lightness, position, alpha, hsla, disabled } =
-    colorGroup
+  const {
+    id,
+    hue,
+    saturation,
+    lightness,
+    position,
+    alpha,
+    hsla,
+    disabled,
+    locked,
+  } = colorGroup
 
   const bem = useBemify("control-panel")
 
@@ -50,6 +62,7 @@ export default function ColorSelectors({
   }
 
   const handleDisable = () => setColorDisabled(id, parentId)
+  const handleLock = () => setColorLock(id, parentId)
 
   return (
     <section className={bem("slide-group-wrapper")}>
@@ -72,14 +85,28 @@ export default function ColorSelectors({
         }
       >
         <div className="d-flex justify-content-between align-items-center">
-          <p className="text-sm mb-none text-end">
+          <p className="text-sm mb-none text-end no-wrap">
             <span className={bem("slide-group-color-indicator")}></span>
-            Color: {index + 1}
+            {!widthSmall ? `Color: ${index + 1}` : ""}
           </p>
           <div className="d-flex align-items-center gap-">
-            {!hideColorText ? (
+            <DropMenu>
               <p className="text-xs mb-none text-end mr-sm">{hsla}</p>
-            ) : null}
+            </DropMenu>
+            {!locked ? (
+              <IconUnlock onClick={handleLock} width={16} height={16} />
+            ) : (
+              <IconLock onClick={handleLock} width={16} height={16} />
+            )}
+            {!disableRemove ? (
+              <IconTrash
+                onClick={() => removeColor(id, parentId)}
+                width={16}
+                height={16}
+              />
+            ) : (
+              <div></div>
+            )}
             {collapse ? (
               <IconBxCollapseVertical
                 tooltip="Collapse"

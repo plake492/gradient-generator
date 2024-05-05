@@ -3,6 +3,7 @@ export interface GradientObj {
   rotate: number
   disabled: boolean
   gradient: string
+  locked: boolean
   colors: HslaObj[]
 }
 
@@ -15,6 +16,7 @@ export interface HslaObj {
   position: number
   hsla: string
   disabled?: boolean
+  locked: boolean
 }
 
 export type HslaColorOptions =
@@ -25,3 +27,11 @@ export type HslaColorOptions =
   | "position"
 
 export type GradientList = GradientObj[]
+
+export type ClassValue =
+  | string
+  | true
+  | [boolean, string, string | null]
+  | [boolean, string]
+  | [string, string, string | null]
+  | [string, string]
