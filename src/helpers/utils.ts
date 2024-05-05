@@ -28,10 +28,6 @@ export const convertHexToHsl = (hex: string): string => {
     r = "0x" + hex[1] + hex[1]
     g = "0x" + hex[2] + hex[2]
     b = "0x" + hex[3] + hex[3]
-    console.log(
-      'parseInt("0x" + hex[4] + hex[4], 16) ==>',
-      parseInt("0x" + hex[4] + hex[4], 16),
-    )
 
     a = (parseInt("0x" + hex[4] + hex[4], 16) / 255).toFixed(2)
   }
@@ -72,8 +68,6 @@ export const convertHexToHsl = (hex: string): string => {
 
     h /= 6
   }
-
-  console.log("a ==>", a)
 
   return `hsla(${(h * 360).toFixed(0)}, ${(s * 100).toFixed(0)}%, ${(
     l * 100

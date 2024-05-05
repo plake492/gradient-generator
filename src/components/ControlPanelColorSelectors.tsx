@@ -12,7 +12,7 @@ import {
   IconUnlock,
   IconLock,
 } from "./BaseIcons"
-import DropMenu from "./DropMenu"
+// import DropMenu from "./DropMenu"
 // import HexInput from "./HexInput"
 // import { convertHexToHsl, convertHslToHex } from "../helpers/utils"
 
@@ -21,6 +21,7 @@ interface ColorSelectorsProps {
   parentId: string
   index: number
   disableRemove: boolean
+  positionDefault: number
 }
 
 export default function ColorSelectors({
@@ -28,9 +29,11 @@ export default function ColorSelectors({
   parentId,
   index,
   disableRemove,
+  positionDefault,
 }: ColorSelectorsProps) {
   const [parent] = useAutoAnimate()
   const [collapse, setCollapse] = React.useState(false)
+  const bem = useBemify("control-panel")
 
   const {
     widthSmall,
@@ -52,13 +55,24 @@ export default function ColorSelectors({
     locked,
   } = colorGroup
 
-  const bem = useBemify("control-panel")
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setColorValue(colorGroup.id, parentId, {
       key: e.target.name as HslaColorOptions,
       value: Number(e.target.value),
     })
+  }
+
+  const handleAltClick = (
+    e: React.MouseEvent<HTMLInputElement>,
+    value: number,
+  ) => {
+    if (e.altKey) {
+      const target = e.target as HTMLInputElement
+      setColorValue(colorGroup.id, parentId, {
+        key: target.name as HslaColorOptions,
+        value: value,
+      })
+    }
   }
 
   const handleDisable = () => setColorDisabled(id, parentId)
@@ -67,13 +81,13 @@ export default function ColorSelectors({
   return (
     <section className={bem("slide-group-wrapper")}>
       <div>
-        {!disableRemove ? (
+        {/* {!disableRemove ? (
           disabled ? (
             <IconLightOff onClick={handleDisable} width={16} height={16} />
           ) : (
             <IconLightOn onClick={handleDisable} width={16} height={16} />
           )
-        ) : null}
+        ) : null} */}
       </div>
       <div
         ref={parent}
@@ -90,9 +104,16 @@ export default function ColorSelectors({
             {!widthSmall ? `Color: ${index + 1}` : ""}
           </p>
           <div className="d-flex align-items-center gap-">
-            <DropMenu>
+            {/* <DropMenu>
               <p className="text-xs mb-none text-end mr-sm">{hsla}</p>
-            </DropMenu>
+            </DropMenu> */}
+            {!disableRemove ? (
+              disabled ? (
+                <IconLightOff onClick={handleDisable} width={16} height={16} />
+              ) : (
+                <IconLightOn onClick={handleDisable} width={16} height={16} />
+              )
+            ) : null}
             {!locked ? (
               <IconUnlock onClick={handleLock} width={16} height={16} />
             ) : (
@@ -127,17 +148,8 @@ export default function ColorSelectors({
           </div>
         </div>
         {collapse ? (
-          <>
+          <div className={bem("color-slide-group")}>
             <div className="d-flex justify-content-between align-items-center">
-              {!disableRemove ? (
-                <IconTrash
-                  onClick={() => removeColor(id, parentId)}
-                  width={16}
-                  height={16}
-                />
-              ) : (
-                <div></div>
-              )}
               {/* <HexInput
                 hsla={convertHslToHex(hsla)}
                 onSubmit={(value) => setGradientHsl(id, convertHexToHsl(value))}
@@ -172,6 +184,7 @@ export default function ColorSelectors({
                 value={saturation}
                 name="saturation"
                 onChange={handleChange}
+                onClick={(e) => handleAltClick(e, 100)}
                 className={bem("slider", "--child")}
               />
             </div>
@@ -189,6 +202,7 @@ export default function ColorSelectors({
                 name="lightness"
                 onChange={handleChange}
                 className={bem("slider", "--child")}
+                onClick={(e) => handleAltClick(e, 50)}
               />
             </div>
             <div className={bem("slider-wrapper")}>
@@ -205,6 +219,7 @@ export default function ColorSelectors({
                 name="alpha"
                 onChange={handleChange}
                 className={bem("slider", "--child")}
+                onClick={(e) => handleAltClick(e, 0.5)}
               />
             </div>
             <div className={bem("slider-wrapper")}>
@@ -220,10 +235,11 @@ export default function ColorSelectors({
                 value={position}
                 name="position"
                 onChange={handleChange}
+                onClick={(e) => handleAltClick(e, positionDefault)}
                 className={bem("slider", "--child")}
               />
             </div>
-          </>
+          </div>
         ) : null}
       </div>
     </section>

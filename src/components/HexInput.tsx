@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react"
-import { convertHslToHex } from "../helpers/utils"
+// import React, { useState, useEffect } from "react"
+// import { convertHslToHex } from "../helpers/utils"
 
 /**
  * A component that renders an input box for hex color values.
  * It automatically triggers the `onSubmit` function when a valid hex color is entered.
  */
 const HexInput = ({
-  onSubmit,
+  // onSubmit,
   hsla,
 }: {
   onSubmit: (hex: string) => void
@@ -20,7 +20,6 @@ const HexInput = ({
 
   //   useEffect(() => {
   //     if (/^#([0-9A-F]{3}){1,2}$/i.test(value)) {
-  //       console.log("value ==>", value)
 
   //       onSubmit(value)
   //     }

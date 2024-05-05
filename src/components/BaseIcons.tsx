@@ -17,7 +17,7 @@ function IconWrapper({
   height = 24,
   onClick,
   variant,
-  tooltip,
+  // tooltip,
   appendText,
   border,
 }: IconProps & { children: React.ReactNode }) {
@@ -39,7 +39,7 @@ function IconWrapper({
       }
       onClick={onClick}
     >
-      {tooltip ? <div className={bem("tooltip")}>{tooltip}</div> : null}
+      {/* {tooltip ? <div className={bem("tooltip")}>{tooltip}</div> : null} */}
       {children}
       {appendText ? (
         <span className={bem("append-text")}>{appendText}</span>

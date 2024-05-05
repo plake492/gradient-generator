@@ -3,7 +3,6 @@ import { useGradientStore } from "../store"
 import ControlPanelColorSelectors from "./ControlPanelColorSelectors"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { GradientObj, ClassValue } from "../types"
-
 import {
   IconPlusList,
   IconBxCollapseVertical,
@@ -15,7 +14,7 @@ import {
   IconLock,
   IconUnlock,
 } from "./BaseIcons"
-import DropMenu from "./DropMenu"
+// import DropMenu from "./DropMenu"
 
 interface ControlPanelGradientObjProps {
   gradientObj: GradientObj
@@ -114,10 +113,10 @@ export default function ControlPanelGradientObj({
         </div>
       </div>
 
-      <div ref={gradientParent}>
+      <div ref={gradientParent} className={bem("color-children")}>
         {collapseGradient ? (
           <>
-            <div className={bem("slider-wrapper", "--child")}>
+            <div className={bem("slider-wrapper", "--child", "mb-md")}>
               <label htmlFor="rotate" className={bem("label")}>
                 Rotate ({rotate}deg)
               </label>
@@ -143,6 +142,9 @@ export default function ControlPanelGradientObj({
                   index={index}
                   parentId={parentId}
                   disableRemove={arr.length === 2}
+                  positionDefault={Number(
+                    ((index / (arr.length - 1)) * 100).toFixed(0),
+                  )}
                 />
               ))}
               <div className="ml-xl d-flex align-items-center justify-content-between">
@@ -156,9 +158,9 @@ export default function ControlPanelGradientObj({
                     appendText={!widthSmall ? "Random" : undefined}
                   />
                 </div>
-                <div>
+                {/* <div>
                   <DropMenu>Test</DropMenu>
-                </div>
+                </div> */}
               </div>
             </div>
           </>

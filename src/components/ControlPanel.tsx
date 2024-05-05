@@ -10,16 +10,14 @@ import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 export default function ControlPanel() {
   const [gradientParent] = useAutoAnimate()
+  const bem = useBemify("control-panel")
 
-  const [show, setShow] = React.useState(false)
   // const [position, setPosition] = React.useState(0)
-
+  const [show, setShow] = React.useState(false)
   const handleSetShow = () => setShow((prev) => !prev)
 
   const { gradientList, randomAll, addGradient, widthSmall } =
     useGradientStore()
-
-  const bem = useBemify("control-panel")
 
   const outsideClickRef = useOnClickOutside<HTMLDivElement>(() =>
     setShow(false),

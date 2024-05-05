@@ -1,19 +1,21 @@
-import React from "react"
+// import React from "react"
 import { IconThreeDots } from "./BaseIcons"
-import { CSSTransition } from "react-transition-group"
-import useBemify from "../hooks/useBemify"
+// import { CSSTransition } from "react-transition-group"
+// import useBemify from "../hooks/useBemify"
+// import { useOnClickOutside } from "../hooks/useOnClickOutside"
 
-import { useOnClickOutside } from "../hooks/useOnClickOutside"
-
-export default function DropMenu({ children }: { children: React.ReactNode }) {
-  const [show, setShow] = React.useState(false)
-  const dropMenuRef = useOnClickOutside<HTMLDivElement>(() => setShow(false))
-  const bem = useBemify("drop-menu")
+export default function DropMenu() {
+  // { children }: { children: React.ReactNode }
+  // const [show, setShow] = React.useState(false)
+  // const dropMenuRef = useOnClickOutside<HTMLDivElement>(() => setShow(false))
+  // const bem = useBemify("drop-menu")
 
   return (
     <>
-      <IconThreeDots onClick={() => setShow(true)} />
-
+      <IconThreeDots
+      //  onClick={() => setShow(true)}
+      />
+      {/* 
       <CSSTransition
         in={show}
         nodeRef={dropMenuRef}
@@ -28,7 +30,7 @@ export default function DropMenu({ children }: { children: React.ReactNode }) {
         ) : (
           <></>
         )}
-      </CSSTransition>
+      </CSSTransition> */}
     </>
   )
 }

@@ -28,9 +28,15 @@
         margin: calc($offset + $space-md);
     }
 
-    &__slide-group-wrapper {
-        display: grid;
-        grid-template-columns: 48px 1fr;
+    &__color-children {
+        margin-left: $space-lg;
+    }
+
+    &__color-slide-group {
+        margin-left: $space-md;
+
+        // display: grid;
+        // grid-template-columns: 48px 1fr;
     }
 
     &__slide-group {
@@ -53,9 +59,9 @@
             background-color: #cccccc;
         }
 
-        &--child {
-            margin-left: $space-sm;
-        }
+        // &--child {
+        //     margin-left: $space-sm;
+        // }
     }
 
     &__slide-group-color-indicator {
@@ -75,9 +81,9 @@
         flex-direction: column;
         margin: $space-sm 0;
 
-        &--child {
-            margin-left: calc(48px + 0.5rem);
-        }
+        // &--child {
+        //     margin-left: calc(48px + 0.5rem);
+        // }
     }
 
     &__gradient-group {
