@@ -147,14 +147,16 @@ export default function ControlPanelGradientObj({
                   )}
                 />
               ))}
-              <div className="ml-xl d-flex align-items-center justify-content-between">
+              <div className="d-flex align-items-center justify-content-between">
                 <div className="d-flex align-items-center gap-sm">
                   <IconPlusList
                     onClick={() => addColor(parentId)}
+                    border
                     appendText={!widthSmall ? "Add color" : undefined}
                   />
                   <IconRandomArrows
                     onClick={() => randomGradient(parentId)}
+                    border
                     appendText={!widthSmall ? "Random" : undefined}
                   />
                 </div>

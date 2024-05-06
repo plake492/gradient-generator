@@ -28,6 +28,19 @@ export type HslaColorOptions =
 
 export type GradientList = GradientObj[]
 
+export interface CssProps {
+  position: "fixed" | "absolute"
+  left: string
+  top: string
+  width: string
+  height: "100vh" | "100%"
+  "z-index": string
+  "background-size": string
+  "background-position": string
+  "background-image": string
+  css: string
+}
+
 export type ClassValue =
   | string
   | true

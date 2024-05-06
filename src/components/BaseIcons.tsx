@@ -1,3 +1,5 @@
+/* https://reactsvgicons.com/ */
+
 import * as React from "react"
 import useBemify from "../hooks/useBemify"
 
@@ -260,7 +262,10 @@ export function IconLock(iconProps: IconProps) {
         height="100%"
         width="100%"
       >
-        <path d="M5 11 H19 A2 2 0 0 1 21 13 V20 A2 2 0 0 1 19 22 H5 A2 2 0 0 1 3 20 V13 A2 2 0 0 1 5 11 z" />
+        <path
+          fill="currentColor"
+          d="M5 11 H19 A2 2 0 0 1 21 13 V20 A2 2 0 0 1 19 22 H5 A2 2 0 0 1 3 20 V13 A2 2 0 0 1 5 11 z"
+        />
         <path d="M7 11V7a5 5 0 0110 0v4" />
       </svg>
     </IconWrapper>

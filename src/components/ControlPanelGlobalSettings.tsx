@@ -1,7 +1,9 @@
 import React from "react"
 import { useGradientStore } from "../store"
 import { IconClose, IconGrow, IconShrink } from "./BaseIcons"
+import ControlPanelCodeDisplay from "./ControlPanelCodeDisplay"
 import { ClassValue } from "../types"
+import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 interface ControlPanelGlobalSettingsProps {
   bem: (block: string, ...classes: ClassValue[]) => string
@@ -12,6 +14,7 @@ export default function ControlPanelGlobalSettings({
   bem,
   handleSetShow,
 }: ControlPanelGlobalSettingsProps) {
+  const [parent] = useAutoAnimate()
   const {
     backgroundGradient,
     bgWidth,
@@ -28,14 +31,12 @@ export default function ControlPanelGlobalSettings({
     widthSmall,
   } = useGradientStore()
 
-  const [showHslText, setShowHslText] = React.useState(false)
-
   const handleGrowShrinkClick = () => {
     setWidthSmall(!widthSmall)
   }
 
   return (
-    <>
+    <section ref={parent}>
       <div
         className={bem(
           "close-btn",
@@ -49,47 +50,16 @@ export default function ControlPanelGlobalSettings({
           variant="dark"
           tooltip="Close Panel"
         />
-        {/* <button
-                onClick={() =>
-                  setPosition((prev) =>
-                    prev === 0
-                      ? `calc(100% - ${widthSmall ? 250 : 500}px - 4rem)`
-                      : 0,
-                  )
-                }
-              >
-                {position !== 0 ? "Left" : "Right"}
-              </button> */}
+
         {widthSmall ? (
           <IconGrow onClick={handleGrowShrinkClick} />
         ) : (
           <IconShrink onClick={handleGrowShrinkClick} />
         )}
       </div>
-      <div
-        style={
-          {
-            // position: "sticky",
-            // top: 0,
-            // left: 0,
-            // background: "black",
-            // zIndex: 3,
-            // padding: "0.5rem",
-            // borderRadius: "10px",
-          }
-        }
-      >
-        <input
-          id="showCode"
-          className="mr-sm"
-          type="checkbox"
-          checked={showHslText}
-          onChange={() => setShowHslText((prev) => !prev)}
-        />
-        <label htmlFor="showCode" className="text-xs font-weight-700 d-inline">
-          {showHslText ? backgroundGradient : "Show Code"}
-        </label>
-      </div>
+
+      <ControlPanelCodeDisplay />
+
       <div
         className={bem("slide-group")}
         style={
@@ -172,6 +142,6 @@ export default function ControlPanelGlobalSettings({
           </label>
         </div> */}
       </div>
-    </>
+    </section>
   )
 }

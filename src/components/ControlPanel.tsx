@@ -60,11 +60,13 @@ export default function ControlPanel() {
           <div className="d-flex align-items-center gap-sm">
             <IconPlus
               appendText={!widthSmall ? "Add new Gradient" : undefined}
+              border
               onClick={addGradient}
             />
             <IconRandomArrows
               onClick={randomAll}
               appendText={!widthSmall ? "Random" : undefined}
+              border
             />
           </div>
         </aside>

@@ -1,9 +1,16 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import { GradientList, GradientObj, HslaObj, HslaColorOptions } from "./types"
+import {
+  GradientList,
+  GradientObj,
+  HslaObj,
+  HslaColorOptions,
+  CssProps,
+} from "./types"
 import { v4 as uuid } from "uuid"
 
 interface GradientStore {
+  cssProps: CssProps
   gradientList: GradientList
   backgroundGradient: string
   bgWidth: number
@@ -116,6 +123,55 @@ const defaultGradientList: GradientList = [
   },
 ]
 
+const cssStringCunstructor = (
+  cssProps: CssProps,
+  ...styleProps: [keyof CssProps, string][]
+): string => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { css: _, ...rest } = cssProps
+
+  const cssString = Object.entries(rest).reduce((acc, cur) => {
+    let styleValue = cur[1]
+    styleProps.forEach((prop) => {
+      if (prop[0] === cur[0]) {
+        styleValue = prop[1]
+      }
+    })
+    return (acc += `${cur[0]}: ${styleValue};`)
+  }, "")
+
+  console.log(cssString)
+
+  return cssString
+}
+
+const defualtCss: CssProps = {
+  position: "fixed",
+  left: "0px",
+  top: "0px",
+  width: "100vw",
+  height: "100vh",
+  "z-index": "-1",
+  "background-size": "100% 100%",
+  "background-position": "50% 50%",
+  "background-image": `
+    linear-gradient(0deg, hsla(0, 100%, 50%, 0.5) 0%, hsla(180, 100%, 50%, 0.5)) 100%),
+    linear-gradient(90deg, hsla(45, 100%, 50%) 0%, hsla(225, 100%, 50%, 0)) 100%)
+  `,
+
+  css: `
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background-size: 100% 100%;
+    background-position: 50% 50%;
+    background-image: linear-gradient(0deg, hsla(0, 100%, 50%, 0.5) 0%, hsla(180, 100%, 50%, 0.5)) 100%), linear-gradient(90deg, hsla(45, 100%, 50%) 0%, hsla(225, 100%, 50%, 0)) 100%)
+  `,
+}
+
 /**
  * This function takes an array of gradient objects and returns a string representation of linear gradients.
  *
@@ -123,8 +179,8 @@ const defaultGradientList: GradientList = [
  *
  * @returns {string} A string representation of the gradients. Each gradient is represented as 'linear-gradient(rotateValue deg, color1 position1%, color2 position2%, ...)', and the gradients are separated by commas. Only gradients and colors that are not disabled are included in the output. The position values are formatted to two decimal places.
  */
-const formatGradientsFromObject = (gradientList: GradientList) =>
-  gradientList
+const formatGradientsFromObject = (gradientList: GradientList): string => {
+  const newGradient = gradientList
     .reduce((acc: string[], group: GradientObj) => {
       if (!group.disabled) {
         const hslColors = group.colors.reduce(
@@ -141,6 +197,9 @@ const formatGradientsFromObject = (gradientList: GradientList) =>
       return acc
     }, [])
     .join(", ")
+
+  return newGradient
+}
 
 /**
  * This function is used to find and return the parent gradient object of a given id.
@@ -210,6 +269,7 @@ export const useGradientStore = create<GradientStoreState>()(
       widthSmall: false,
       gradientList: defaultGradientList,
       backgroundGradient: formatGradientsFromObject(defaultGradientList),
+      cssProps: defualtCss,
 
       // ******************* Global setters ******************* //
       setNoise: (noiseOn: boolean) => set({ noiseOn }),
@@ -218,9 +278,32 @@ export const useGradientStore = create<GradientStoreState>()(
 
       setGridOn: (gridOn: boolean) => set({ gridOn }),
 
-      setIsWindowHeight: (isWindowHeight: boolean) => set({ isWindowHeight }),
+      setIsWindowHeight: (isWindowHeight: boolean) =>
+        set((state: GradientStore) => {
+          const height = isWindowHeight ? "100vh" : "100%"
+          const position = isWindowHeight ? "fixed" : "absolute"
+          // Update the css prop objstate.cssProps.height = height
+          state.cssProps.position = position
+          state.cssProps.css = cssStringCunstructor(
+            state.cssProps,
+            ["height", height],
+            ["position", position],
+          )
 
-      setBgWidth: (width: number) => set({ bgWidth: width }),
+          return { isWindowHeight }
+        }),
+
+      setBgWidth: (width: number) =>
+        set((state: GradientStore) => {
+          const bgSize = `${width}% 100%`
+          state.cssProps["background-size"] = bgSize
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-size",
+            bgSize,
+          ])
+          return { bgWidth: width }
+        }),
 
       setWidthSmall: (widthSmall: boolean) => set({ widthSmall }),
       // ******************************************************** //
@@ -266,6 +349,11 @@ export const useGradientStore = create<GradientStoreState>()(
           // Update the background gradient
           const newBackgroundGradient =
             formatGradientsFromObject(updatedGradient)
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
 
           return {
             gradientList: updatedGradient,
@@ -283,6 +371,11 @@ export const useGradientStore = create<GradientStoreState>()(
           // Update the background gradient
           const newBackgroundGradient =
             formatGradientsFromObject(updatedGradient)
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
 
           return {
             gradientList: updatedGradient,
@@ -309,6 +402,11 @@ export const useGradientStore = create<GradientStoreState>()(
           // Update the background gradient
           const newBackgroundGradient =
             formatGradientsFromObject(updatedGradient)
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
 
           return {
             gradientList: updatedGradient,
@@ -347,11 +445,15 @@ export const useGradientStore = create<GradientStoreState>()(
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
 
           updateParentGradient(state.gradientList, parentId)
 
           return {
-            gradientList: state.gradientList,
             backgroundGradient: newBackgroundGradient,
           }
         })
@@ -375,11 +477,15 @@ export const useGradientStore = create<GradientStoreState>()(
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
 
           updateParentGradient(state.gradientList, parentId)
 
           return {
-            gradientList: state.gradientList,
             backgroundGradient: newBackgroundGradient,
           }
         }),
@@ -420,11 +526,15 @@ export const useGradientStore = create<GradientStoreState>()(
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
 
           updateParentGradient(state.gradientList, parentId)
 
           return {
-            gradientList: state.gradientList,
             backgroundGradient: newBackgroundGradient,
           }
         })
@@ -447,11 +557,15 @@ export const useGradientStore = create<GradientStoreState>()(
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
 
           updateParentGradient(state.gradientList, parentId)
 
           return {
-            gradientList: state.gradientList,
             backgroundGradient: newBackgroundGradient,
           }
         })
@@ -478,11 +592,15 @@ export const useGradientStore = create<GradientStoreState>()(
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
 
           updateParentGradient(state.gradientList, parentId)
 
           return {
-            gradientList: state.gradientList,
             backgroundGradient: newBackgroundGradient,
           }
         })
@@ -574,11 +692,15 @@ export const useGradientStore = create<GradientStoreState>()(
           // Update the background gradient
           const newBackgroundGradient =
             formatGradientsFromObject(updatedGradientList)
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
 
           updateParentGradient(updatedGradientList)
 
           return {
-            gradientList: updatedGradientList,
             backgroundGradient: newBackgroundGradient,
           }
         })
@@ -606,11 +728,15 @@ export const useGradientStore = create<GradientStoreState>()(
           const newBackgroundGradient = formatGradientsFromObject(
             state.gradientList,
           )
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
 
           updateParentGradient(state.gradientList, parentId)
 
           return {
-            gradientList: state.gradientList,
             backgroundGradient: newBackgroundGradient,
           }
         })
