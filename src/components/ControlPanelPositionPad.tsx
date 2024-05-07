@@ -8,13 +8,25 @@ import { useGradientStore } from "../store"
 
 const size = 150
 
+const foramtAtValue = (at: string): { x: number; y: number } => {
+  const [xValue, yValue] = at.split(" ")
+  return {
+    x: parseFloat(xValue),
+    y: parseFloat(yValue),
+  }
+}
+
 export default function ControlPanelPositionPad({
   parentId,
+  at,
 }: {
   parentId: string
+  at: string
 }) {
+  console.log("at ==>", at)
+
   const { setGradientAt } = useGradientStore()
-  const [position, setPosition] = React.useState({ x: 0, y: 0 })
+  const [position, setPosition] = React.useState(foramtAtValue(at))
 
   const handleDrag = (_e: DraggableEvent, data: DraggableData) => {
     const x = data.x

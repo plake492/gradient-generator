@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "author": {
+    "name": "Patrick Lake",
+    "email": "plake.dev@gmail.com"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

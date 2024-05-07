@@ -42,6 +42,7 @@ export default function ControlPanelGradientObj({
     gradient,
     locked,
     type,
+    at,
   } = gradientObj
 
   const {
@@ -59,6 +60,8 @@ export default function ControlPanelGradientObj({
 
   const showDegrees = type !== "radial"
   const showPositionPad = type === "conic"
+
+  console.log("at ==>", at)
 
   const [expand, setExpand] = React.useState<boolean>(false)
 
@@ -148,7 +151,7 @@ export default function ControlPanelGradientObj({
             ) : null}
 
             {showPositionPad ? (
-              <ControlPanelPositionPad parentId={parentId} />
+              <ControlPanelPositionPad parentId={parentId} at={at} />
             ) : null}
 
             <div ref={colorParent}>
