@@ -469,7 +469,7 @@ export const useGradientStore = create<GradientStoreState>()(
             state.gradientList,
           )
           // Update the css prop obj
-          const css = cssStringCunstructor(state.cssProps, [
+          cssStringCunstructor(state.cssProps, [
             "background-image",
             newBackgroundGradient,
           ])
