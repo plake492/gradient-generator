@@ -7,54 +7,13 @@ import {
   HslaColorOptions,
   CssProps,
 } from "./types"
+import { Identifiable, GradientStore, GradientStoreState } from "./types/store"
 import { v4 as uuid } from "uuid"
 
-interface Identifiable {
-  id: string
-}
-
-interface GradientStore {
-  cssProps: CssProps
-  gradientList: GradientList
-  backgroundGradient: string
-  bgWidth: number
-  noiseOn: boolean
-  gridOn: boolean
-  particlesOn: boolean
-  isWindowHeight?: boolean
-  widthSmall: boolean
-}
-
-type GradientStoreSetters = {
-  setNoise: (noiseOn: boolean) => void
-  setParticlesOn: (particlesOn: boolean) => void
-  setIsWindowHeight: (isWindowHeight: boolean) => void
-  setBgWidth: (width: number) => void
-  setGridOn: (gridOn: boolean) => void
-  setWidthSmall: (widthSmall: boolean) => void
-
-  addGradient: () => void
-  removeGradient: (id: string) => void
-  setGradientDisabled: (id: string) => void
-  setGradeintLock: (id: string) => void
-  setGradientRotate: (rotate: number, parentId: string) => void
-
-  setColorValue: (
-    id: string,
-    parentId: string,
-    { key, value }: { key: HslaColorOptions; value: number },
-  ) => void
-  addColor: (parentId: string) => void
-  removeColor: (id: string, parentId: string) => void
-  setColorDisabled: (id: string, parentId: string) => void
-  setColorLock: (id: string, parentId: string) => void
-  setGradientHsl: (id: string, hsla: string) => void
-
-  randomAll: () => void
-  randomGradient: (id: string) => void
-}
-
-type GradientStoreState = GradientStore & GradientStoreSetters
+const startingColor1 = "hsla(0, 100%, 50%, 0.5)"
+const startingColor2 = "hsla(180, 100%, 50%, 0.5)"
+const startingColor3 = "hsla(45, 100%, 50%, 1)"
+const startingColor4 = "hsla(225, 100%, 50%, 0.1)"
 
 const defaultGradientList: GradientList = [
   {
@@ -62,8 +21,9 @@ const defaultGradientList: GradientList = [
     rotate: 0,
     disabled: false,
     locked: false,
-    gradient:
-      "linear-gradient(0deg, hsla(0, 100%, 50%, 0.5), hsla(180, 100%, 50%, 0.5))",
+    gradient: `linear-gradient(0deg, ${startingColor1}, ${startingColor2})`,
+    type: "linear",
+    at: "50% 50%",
     colors: [
       {
         id: uuid(),
@@ -72,7 +32,7 @@ const defaultGradientList: GradientList = [
         lightness: 50,
         alpha: 0.5,
         position: 0,
-        hsla: "hsla(0, 100%, 50%, 0.5)",
+        hsla: startingColor1,
         disabled: false,
         locked: false,
       },
@@ -83,7 +43,7 @@ const defaultGradientList: GradientList = [
         lightness: 50,
         position: 100,
         alpha: 0.5,
-        hsla: "hsla(180, 100%, 50%, 0.5)",
+        hsla: startingColor2,
         disabled: false,
         locked: false,
       },
@@ -94,8 +54,9 @@ const defaultGradientList: GradientList = [
     rotate: 90,
     disabled: false,
     locked: false,
-    gradient:
-      "linear-gradient(90deg, hsla(45, 100%, 50%, 1), hsla(225, 100%, 50%, 0.1))",
+    at: "50% 50%",
+    gradient: `linear-gradient(90deg, ${startingColor3}, ${startingColor4})`,
+    type: "linear",
     colors: [
       {
         id: uuid(),
@@ -104,7 +65,7 @@ const defaultGradientList: GradientList = [
         lightness: 50,
         position: 0,
         alpha: 1,
-        hsla: "hsla(45, 100%, 50%, 1)",
+        hsla: startingColor3,
         disabled: false,
         locked: false,
       },
@@ -115,7 +76,7 @@ const defaultGradientList: GradientList = [
         lightness: 50,
         position: 100,
         alpha: 0,
-        hsla: "hsla(225, 100%, 50%, 0.1)",
+        hsla: startingColor4,
         disabled: false,
         locked: false,
       },
@@ -123,8 +84,10 @@ const defaultGradientList: GradientList = [
   },
 ]
 
-const startingLinearBackground =
-  "linear-gradient(0deg, hsla(0, 100%, 50%, 0.5) 0%, hsla(180, 100%, 50%, 0.5) 100%), linear-gradient(90deg, hsla(45, 100%, 50%, 1) 0%, hsla(225, 100%, 50%, 0.1) 100%)"
+const startingLinearBackground = `
+  linear-gradient(0deg, ${startingColor1} 0%, ${startingColor2} 100%), 
+  linear-gradient(90deg, ${startingColor3} 0%, ${startingColor4} 100%)
+`
 
 const defualtCss: CssProps = {
   position: "fixed",
@@ -189,14 +152,55 @@ const cssStringCunstructor = (
 }
 
 /**
+ * Formats a CSS gradient string based on the provided type, rotation angle, and colors.
+ *
+ * @param type - The type of gradient. Can be "linear", "radial", or "conic". If an unrecognized type is provided, defaults to "linear".
+ * @param rotate - The rotation angle for the gradient, in degrees. Only applicable for linear gradients.
+ * @param colors - An array of CSS color values to be used in the gradient.
+ *
+ * @returns A string representing the CSS gradient. For example, "linear-gradient(45deg, red, blue)".
+ *
+ * @example
+ * formatGradientString("linear", 45, ["red", "blue"]); // Returns "linear-gradient(45deg, red, blue)"
+ * formatGradientString("radial", 0, ["red", "blue"]); // Returns "radial-gradient(red, blue)"
+ * formatGradientString("conic", 0, ["red", "blue"]); // Returns "conic-gradient(red, blue)"
+ */
+const formatGradientString = (
+  type: string,
+  rotate: number,
+  at: string,
+  colors: string[],
+) => {
+  const linearGradient = (rotate: number, colors: string[]) =>
+    `linear-gradient(${rotate}deg, ${colors})`
+
+  const radialGradient = (colors: string[]) =>
+    `radial-gradient(circle at 100%, ${colors})`
+
+  const conicGradient = (rotate: number, at: string, colors: string[]) =>
+    `conic-gradient(from ${rotate}deg at ${at}, ${colors})`
+
+  switch (type) {
+    case "linear":
+      return linearGradient(rotate, colors)
+    case "radial":
+      return radialGradient(colors)
+    case "conic":
+      return conicGradient(rotate, at, colors)
+    default:
+      return linearGradient(rotate, colors)
+  }
+}
+
+/**
  * This function takes an array of gradient objects and returns a string representation of linear gradients.
  *
  * @param {GradientList} gradientList - An array of gradient objects. Each object represents a gradient and contains a rotation value, a disabled flag, and an array of color objects. Each color object contains an HSL color string, a position value, and a disabled flag.
  *
  * @returns {string} A string representation of the gradients. Each gradient is represented as 'linear-gradient(rotateValue deg, color1 position1%, color2 position2%, ...)', and the gradients are separated by commas. Only gradients and colors that are not disabled are included in the output. The position values are formatted to two decimal places.
  */
-const formatGradientsFromObject = (gradientList: GradientList): string => {
-  const newGradient = gradientList
+const formatGradientsFromObject = (gradientList: GradientList): string =>
+  gradientList
     .reduce((acc: string[], group: GradientObj) => {
       if (!group.disabled) {
         const hslColors = group.colors.reduce(
@@ -208,14 +212,19 @@ const formatGradientsFromObject = (gradientList: GradientList): string => {
           },
           [],
         )
-        acc.push(`linear-gradient( ${group.rotate}deg, ${hslColors})`)
+
+        const gradient = formatGradientString(
+          group.type,
+          group.rotate,
+          group.at,
+          hslColors,
+        )
+
+        acc.push(gradient)
       }
       return acc
     }, [])
     .join(", ")
-
-  return newGradient
-}
 
 /**
  * This function is used to find and return the parent gradient object of a given id.
@@ -258,18 +267,26 @@ const updateParentGradient = (
       const hslColors = group.colors
         .filter((color) => !color.disabled)
         .map((color: HslaObj) => `${color.hsla} ${color.position}%`)
-        .join(", ")
 
-      group.gradient = `linear-gradient( ${group.rotate}deg, ${hslColors})`
+      group.gradient = formatGradientString(
+        group.type,
+        group.rotate,
+        group.at,
+        hslColors,
+      )
     })
   } else {
     const parentArray = findObj(parentId, gradientList)
     const hslColors = parentArray.colors
       .filter((color) => !color.disabled)
       .map((color: HslaObj) => `${color.hsla} ${color.position}%`)
-      .join(", ")
 
-    parentArray.gradient = `linear-gradient( ${parentArray.rotate}deg, ${hslColors})`
+    parentArray.gradient = formatGradientString(
+      parentArray.type,
+      parentArray.rotate,
+      parentArray.at,
+      hslColors,
+    )
   }
 }
 
@@ -277,21 +294,13 @@ export const useGradientStore = create<GradientStoreState>()(
   persist(
     (set) => ({
       noiseOn: true,
-
       particlesOn: true,
-
       gridOn: false,
-
       isWindowHeight: true,
-
       bgWidth: 100,
-
       widthSmall: false,
-
       gradientList: defaultGradientList,
-
       backgroundGradient: formatGradientsFromObject(defaultGradientList),
-
       cssProps: defualtCss,
 
       // ******************* Global setters ******************* //
@@ -343,6 +352,8 @@ export const useGradientStore = create<GradientStoreState>()(
             disabled: false,
             locked: false,
             gradient: `linear-gradient(0deg, hsla(${randomColor1}, 100%, 50%, 0.5), hsla(${randomColor2}, 100%, 50%, 0.5))`,
+            type: "linear",
+            at: "50% 50%",
             colors: [
               {
                 id: uuid(),
@@ -470,6 +481,58 @@ export const useGradientStore = create<GradientStoreState>()(
           )
           // Update the css prop obj
           cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
+
+          updateParentGradient(state.gradientList, parentId)
+
+          return {
+            backgroundGradient: newBackgroundGradient,
+          }
+        })
+      },
+
+      setGradientType: (
+        type: "linear" | "radial" | "conic",
+        parentId: string,
+      ) => {
+        set((state: GradientStore) => {
+          const parentArray = findObj(parentId, state.gradientList)
+          parentArray.type = type
+
+          // Update the background gradient
+          const newBackgroundGradient = formatGradientsFromObject(
+            state.gradientList,
+          )
+
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
+
+          updateParentGradient(state.gradientList, parentId)
+
+          return {
+            backgroundGradient: newBackgroundGradient,
+          }
+        })
+      },
+
+      setGradientAt: (at: string, parentId: string) => {
+        set((state: GradientStore) => {
+          const parentArray = findObj(parentId, state.gradientList)
+
+          parentArray.at = at
+
+          // Update the background gradient
+          const newBackgroundGradient = formatGradientsFromObject(
+            state.gradientList,
+          )
+
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
             "background-image",
             newBackgroundGradient,
           ])

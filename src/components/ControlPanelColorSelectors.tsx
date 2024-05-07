@@ -148,7 +148,7 @@ export default function ColorSelectors({
           </div>
         </div>
         {collapse ? (
-          <div className={bem("color-slide-group")}>
+          <div>
             <div className="d-flex justify-content-between align-items-center">
               {/* <HexInput
                 hsla={convertHslToHex(hsla)}

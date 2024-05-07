@@ -4,6 +4,8 @@ export interface GradientObj {
   disabled: boolean
   gradient: string
   locked: boolean
+  type: "linear" | "radial" | "conic"
+  at: string
   colors: HslaObj[]
 }
 

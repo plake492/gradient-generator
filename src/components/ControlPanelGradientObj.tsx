@@ -1,6 +1,8 @@
 import React from "react"
 import { useGradientStore } from "../store"
 import ControlPanelColorSelectors from "./ControlPanelColorSelectors"
+import ControlPanelTypeSelection from "./ControlPanelTypeSelection"
+import ControlPanelPositionPad from "./ControlPanelPositionPad"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { GradientObj, ClassValue } from "../types"
 import {
@@ -39,6 +41,7 @@ export default function ControlPanelGradientObj({
     disabled,
     gradient,
     locked,
+    type,
   } = gradientObj
 
   const {
@@ -53,6 +56,9 @@ export default function ControlPanelGradientObj({
 
   const handleDisable = () => setGradientDisabled(parentId)
   const handleLock = () => setGradeintLock(parentId)
+
+  const showDegrees = type !== "radial"
+  const showPositionPad = type === "conic"
 
   const [expand, setExpand] = React.useState<boolean>(false)
 
@@ -116,23 +122,34 @@ export default function ControlPanelGradientObj({
       <div ref={gradientParent} className={bem("color-children")}>
         {collapseGradient ? (
           <>
-            <div className={bem("slider-wrapper", "--child", "mb-md")}>
-              <label htmlFor="rotate" className={bem("label")}>
-                Rotate ({rotate}deg)
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="360"
-                step="1"
-                id="rotate"
-                value={rotate}
-                onChange={(e) =>
-                  setGradientRotate(Number(e.target.value), parentId)
-                }
-                className={bem("slider", "--parent")}
-              />
-            </div>
+            <ControlPanelTypeSelection
+              bem={bem}
+              type={type}
+              parentId={parentId}
+            />
+            {showDegrees ? (
+              <div className={bem("slider-wrapper", "--child", "mb-md")}>
+                <label htmlFor="rotate" className={bem("label")}>
+                  Rotate ({rotate}deg)
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="360"
+                  step="1"
+                  id="rotate"
+                  value={rotate}
+                  onChange={(e) =>
+                    setGradientRotate(Number(e.target.value), parentId)
+                  }
+                  className={bem("slider", "--parent")}
+                />
+              </div>
+            ) : null}
+
+            {showPositionPad ? (
+              <ControlPanelPositionPad parentId={parentId} />
+            ) : null}
 
             <div ref={colorParent}>
               {colors.map((colorGroup, index, arr) => (
