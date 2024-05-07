@@ -76,7 +76,6 @@ export default function ControlPanelGlobalSettings({
             type="range"
             min="100"
             max="500"
-            step="50"
             id="bgWidth"
             value={bgWidth}
             onChange={(e) => setBgWidth(Number(e.target.value))}

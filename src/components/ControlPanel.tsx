@@ -49,6 +49,7 @@ export default function ControlPanel() {
             {/* Gradient Section */}
             {gradientList.map((gradientObj, parentIndex, arr) => (
               <ControlPanelGradient
+                key={gradientObj.id}
                 gradientObj={gradientObj}
                 parentIndex={parentIndex}
                 bem={bem}

@@ -36,7 +36,6 @@ export interface CssProps {
   height: "100vh" | "100%"
   "z-index": string
   "background-size": string
-  "background-position": string
   "background-image": string
   css: string
 }

@@ -73,22 +73,22 @@ export default function GradientBg() {
 
   // useAnimationFrame(animation, targetColor)
 
-  const { bgWidth, backgroundGradient, isWindowHeight } = useGradientStore()
+  // const { bgWidth, backgroundGradient, isWindowHeight } = useGradientStore()
+  const { cssProps } = useGradientStore()
 
   return (
     <>
       <GradientGrid />
       <div
         style={{
-          backgroundImage: backgroundGradient,
-          position: isWindowHeight ? "fixed" : "absolute",
+          backgroundImage: cssProps["background-image"],
+          position: cssProps.position,
           left: 0,
           top: 0,
           zIndex: -1,
           width: "100vw",
-          height: isWindowHeight ? "100vh" : "100%",
-          backgroundSize: `${bgWidth}% 100%`,
-          backgroundPosition: "33% 33%", // Start the gradient from the middle of the div
+          height: cssProps.height,
+          backgroundSize: cssProps["background-size"],
         }}
       ></div>
     </>

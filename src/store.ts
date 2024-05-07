@@ -9,6 +9,10 @@ import {
 } from "./types"
 import { v4 as uuid } from "uuid"
 
+interface Identifiable {
+  id: string
+}
+
 interface GradientStore {
   cssProps: CssProps
   gradientList: GradientList
@@ -52,10 +56,6 @@ type GradientStoreSetters = {
 
 type GradientStoreState = GradientStore & GradientStoreSetters
 
-interface Identifiable {
-  id: string
-}
-
 const defaultGradientList: GradientList = [
   {
     id: uuid(),
@@ -63,7 +63,7 @@ const defaultGradientList: GradientList = [
     disabled: false,
     locked: false,
     gradient:
-      "linear-gradient(0deg, hsla(0, 100%, 50%), hsla(180, 100%, 50%, 0.5))",
+      "linear-gradient(0deg, hsla(0, 100%, 50%, 0.5), hsla(180, 100%, 50%, 0.5))",
     colors: [
       {
         id: uuid(),
@@ -95,7 +95,7 @@ const defaultGradientList: GradientList = [
     disabled: false,
     locked: false,
     gradient:
-      "linear-gradient(90deg, hsla(45, 100%, 50%), hsla(225, 100%, 50%, 0))",
+      "linear-gradient(90deg, hsla(45, 100%, 50%, 1), hsla(225, 100%, 50%, 0.1))",
     colors: [
       {
         id: uuid(),
@@ -104,7 +104,7 @@ const defaultGradientList: GradientList = [
         lightness: 50,
         position: 0,
         alpha: 1,
-        hsla: "hsla(45, 100%, 50%)",
+        hsla: "hsla(45, 100%, 50%, 1)",
         disabled: false,
         locked: false,
       },
@@ -115,7 +115,7 @@ const defaultGradientList: GradientList = [
         lightness: 50,
         position: 100,
         alpha: 0,
-        hsla: "hsla(225, 100%, 50%, 0)",
+        hsla: "hsla(225, 100%, 50%, 0.1)",
         disabled: false,
         locked: false,
       },
@@ -123,6 +123,47 @@ const defaultGradientList: GradientList = [
   },
 ]
 
+const startingLinearBackground =
+  "linear-gradient(0deg, hsla(0, 100%, 50%, 0.5) 0%, hsla(180, 100%, 50%, 0.5) 100%), linear-gradient(90deg, hsla(45, 100%, 50%, 1) 0%, hsla(225, 100%, 50%, 0.1) 100%)"
+
+const defualtCss: CssProps = {
+  position: "fixed",
+  left: "0px",
+  top: "0px",
+  width: "100vw",
+  height: "100vh",
+  "z-index": "-1",
+  "background-size": "100% 100%",
+  "background-image": startingLinearBackground,
+
+  css: `
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background-size: 100% 100%;
+    background-image: ${startingLinearBackground}
+  `,
+}
+
+/**
+ * Constructs a CSS string from the provided CSS properties and style properties.
+ *
+ * @param cssProps - An object containing CSS properties. The `css` property of this object is ignored.
+ * @param styleProps - An array of tuples, where each tuple contains a key of `cssProps` and a string.
+ *                     If a key from `styleProps` matches a key in `cssProps`, the value from `styleProps`
+ *                     is used in the resulting CSS string.
+ *
+ * @returns A string representing the CSS styles. Each property is followed by a colon, a space,
+ *          the property value, and a semicolon. For example, "color: red; width: 100px;".
+ *
+ * @example
+ * const cssProps = { css: "", color: "blue", width: "200px" };
+ * const styleProps = [["color", "red"]];
+ * cssStringConstructor(cssProps, ...styleProps); // Returns "color: red; width: 200px;"
+ */
 const cssStringCunstructor = (
   cssProps: CssProps,
   ...styleProps: [keyof CssProps, string][]
@@ -135,41 +176,16 @@ const cssStringCunstructor = (
     styleProps.forEach((prop) => {
       if (prop[0] === cur[0]) {
         styleValue = prop[1]
+
+        // @ts-expect-error the follwing gives the error - Type 'string' is not assignable to type 'never'
+        // But this works as expected because props[0] is a key of CssProps
+        cssProps[prop[0]] = prop[1]
       }
     })
     return (acc += `${cur[0]}: ${styleValue};`)
   }, "")
 
-  console.log(cssString)
-
   return cssString
-}
-
-const defualtCss: CssProps = {
-  position: "fixed",
-  left: "0px",
-  top: "0px",
-  width: "100vw",
-  height: "100vh",
-  "z-index": "-1",
-  "background-size": "100% 100%",
-  "background-position": "50% 50%",
-  "background-image": `
-    linear-gradient(0deg, hsla(0, 100%, 50%, 0.5) 0%, hsla(180, 100%, 50%, 0.5)) 100%),
-    linear-gradient(90deg, hsla(45, 100%, 50%) 0%, hsla(225, 100%, 50%, 0)) 100%)
-  `,
-
-  css: `
-    position: fixed;
-    left: 0px;
-    top: 0px;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-    background-size: 100% 100%;
-    background-position: 50% 50%;
-    background-image: linear-gradient(0deg, hsla(0, 100%, 50%, 0.5) 0%, hsla(180, 100%, 50%, 0.5)) 100%), linear-gradient(90deg, hsla(45, 100%, 50%) 0%, hsla(225, 100%, 50%, 0)) 100%)
-  `,
 }
 
 /**
@@ -209,8 +225,8 @@ const formatGradientsFromObject = (gradientList: GradientList): string => {
  *
  * @returns {GradientObj | undefined} The parent gradient object if found, otherwise undefined.
  */
-const findObj = <T extends Identifiable>(id: string, array: T[]): T => {
-  const item = array.find((group: T) => group.id === id)
+const findObj = <T extends Identifiable>(id: string, gradientList: T[]): T => {
+  const item = gradientList.find((group: T) => group.id === id)
 
   if (!item) {
     throw new Error(`No item with id ${id} found`)
@@ -233,7 +249,6 @@ const findObj = <T extends Identifiable>(id: string, array: T[]): T => {
  * @param gradientList - The list of gradient objects.
  * @param parentId - The ID of the parent object to update.
  */
-
 const updateParentGradient = (
   gradientList: GradientList,
   parentId?: string,
@@ -262,13 +277,21 @@ export const useGradientStore = create<GradientStoreState>()(
   persist(
     (set) => ({
       noiseOn: true,
+
       particlesOn: true,
+
       gridOn: false,
+
       isWindowHeight: true,
+
       bgWidth: 100,
+
       widthSmall: false,
+
       gradientList: defaultGradientList,
+
       backgroundGradient: formatGradientsFromObject(defaultGradientList),
+
       cssProps: defualtCss,
 
       // ******************* Global setters ******************* //
@@ -277,6 +300,8 @@ export const useGradientStore = create<GradientStoreState>()(
       setParticlesOn: (particlesOn: boolean) => set({ particlesOn }),
 
       setGridOn: (gridOn: boolean) => set({ gridOn }),
+
+      setWidthSmall: (widthSmall: boolean) => set({ widthSmall }),
 
       setIsWindowHeight: (isWindowHeight: boolean) =>
         set((state: GradientStore) => {
@@ -304,8 +329,6 @@ export const useGradientStore = create<GradientStoreState>()(
           ])
           return { bgWidth: width }
         }),
-
-      setWidthSmall: (widthSmall: boolean) => set({ widthSmall }),
       // ******************************************************** //
 
       // ******************* Garient setters ******************* //
@@ -446,7 +469,7 @@ export const useGradientStore = create<GradientStoreState>()(
             state.gradientList,
           )
           // Update the css prop obj
-          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+          const css = cssStringCunstructor(state.cssProps, [
             "background-image",
             newBackgroundGradient,
           ])
