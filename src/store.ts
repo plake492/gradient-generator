@@ -24,6 +24,7 @@ const defaultGradientList: GradientList = [
     gradient: `linear-gradient(0deg, ${startingColor1}, ${startingColor2})`,
     type: "linear",
     at: "50% 50%",
+    radialType: "ellipse",
     colors: [
       {
         id: uuid(),
@@ -55,6 +56,7 @@ const defaultGradientList: GradientList = [
     disabled: false,
     locked: false,
     at: "50% 50%",
+    radialType: "ellipse",
     gradient: `linear-gradient(90deg, ${startingColor3}, ${startingColor4})`,
     type: "linear",
     colors: [
@@ -141,7 +143,7 @@ const cssStringCunstructor = (
         styleValue = prop[1]
 
         // @ts-expect-error the follwing gives the error - Type 'string' is not assignable to type 'never'
-        // But this works as expected because props[0] is a key of CssProps
+        // But this works as expected because props[0] is constrained to be a key of CssProps
         cssProps[prop[0]] = prop[1]
       }
     })
@@ -150,6 +152,18 @@ const cssStringCunstructor = (
 
   return cssString
 }
+
+const linearGradient = (rotate: number, colors: string[]) =>
+  `linear-gradient(${rotate}deg, ${colors})`
+
+const radialGradient = (
+  radialType: "ellipse" | "circle",
+  at: string,
+  colors: string[],
+) => `radial-gradient(${radialType} at ${at}, ${colors})`
+
+const conicGradient = (rotate: number, at: string, colors: string[]) =>
+  `conic-gradient(from ${rotate}deg at ${at}, ${colors})`
 
 /**
  * Formats a CSS gradient string based on the provided type, rotation angle, and colors.
@@ -169,22 +183,16 @@ const formatGradientString = (
   type: string,
   rotate: number,
   at: string,
+  radialType: "ellipse" | "circle",
   colors: string[],
 ) => {
-  const linearGradient = (rotate: number, colors: string[]) =>
-    `linear-gradient(${rotate}deg, ${colors})`
-
-  const radialGradient = (colors: string[]) =>
-    `radial-gradient(circle at 100%, ${colors})`
-
-  const conicGradient = (rotate: number, at: string, colors: string[]) =>
-    `conic-gradient(from ${rotate}deg at ${at}, ${colors})`
+  console.log("radialType ==>", radialType)
 
   switch (type) {
     case "linear":
       return linearGradient(rotate, colors)
     case "radial":
-      return radialGradient(colors)
+      return radialGradient(radialType, at, colors)
     case "conic":
       return conicGradient(rotate, at, colors)
     default:
@@ -217,6 +225,7 @@ const formatGradientsFromObject = (gradientList: GradientList): string =>
           group.type,
           group.rotate,
           group.at,
+          group.radialType,
           hslColors,
         )
 
@@ -272,6 +281,7 @@ const updateParentGradient = (
         group.type,
         group.rotate,
         group.at,
+        group.radialType,
         hslColors,
       )
     })
@@ -285,6 +295,7 @@ const updateParentGradient = (
       parentArray.type,
       parentArray.rotate,
       parentArray.at,
+      parentArray.radialType,
       hslColors,
     )
   }
@@ -354,6 +365,7 @@ export const useGradientStore = create<GradientStoreState>()(
             gradient: `linear-gradient(0deg, hsla(${randomColor1}, 100%, 50%, 0.5), hsla(${randomColor2}, 100%, 50%, 0.5))`,
             type: "linear",
             at: "50% 50%",
+            radialType: "ellipse",
             colors: [
               {
                 id: uuid(),
@@ -523,8 +535,34 @@ export const useGradientStore = create<GradientStoreState>()(
       setGradientAt: (at: string, parentId: string) => {
         set((state: GradientStore) => {
           const parentArray = findObj(parentId, state.gradientList)
-
           parentArray.at = at
+
+          // Update the background gradient
+          const newBackgroundGradient = formatGradientsFromObject(
+            state.gradientList,
+          )
+
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
+
+          updateParentGradient(state.gradientList, parentId)
+
+          return {
+            backgroundGradient: newBackgroundGradient,
+          }
+        })
+      },
+
+      setGradientRadialType: (
+        radialType: "ellipse" | "circle",
+        parentId: string,
+      ) => {
+        set((state: GradientStore) => {
+          const parentArray = findObj(parentId, state.gradientList)
+          parentArray.radialType = radialType
 
           // Update the background gradient
           const newBackgroundGradient = formatGradientsFromObject(

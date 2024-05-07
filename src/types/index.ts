@@ -6,6 +6,7 @@ export interface GradientObj {
   locked: boolean
   type: "linear" | "radial" | "conic"
   at: string
+  radialType: "ellipse" | "circle"
   colors: HslaObj[]
 }
 

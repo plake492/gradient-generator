@@ -23,8 +23,6 @@ export default function ControlPanelPositionPad({
   parentId: string
   at: string
 }) {
-  console.log("at ==>", at)
-
   const { setGradientAt } = useGradientStore()
   const [position, setPosition] = React.useState(foramtAtValue(at))
 

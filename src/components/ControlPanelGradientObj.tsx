@@ -43,6 +43,7 @@ export default function ControlPanelGradientObj({
     locked,
     type,
     at,
+    radialType,
   } = gradientObj
 
   const {
@@ -53,15 +54,15 @@ export default function ControlPanelGradientObj({
     randomGradient,
     widthSmall,
     setGradeintLock,
+    setGradientRadialType,
   } = useGradientStore()
 
   const handleDisable = () => setGradientDisabled(parentId)
   const handleLock = () => setGradeintLock(parentId)
 
   const showDegrees = type !== "radial"
-  const showPositionPad = type === "conic"
-
-  console.log("at ==>", at)
+  const showPositionPad = type === "conic" || type === "radial"
+  const showRadialType = type === "radial"
 
   const [expand, setExpand] = React.useState<boolean>(false)
 
@@ -150,6 +151,33 @@ export default function ControlPanelGradientObj({
               </div>
             ) : null}
 
+            {showRadialType ? (
+              <div className={bem("slider-wrapper", "--child", "mb-md")}>
+                <div className={bem("select-type-wrapper")}>
+                  {!widthSmall ? (
+                    <div className={bem("select-type-label")}>Type:</div>
+                  ) : null}
+                  <div
+                    onClick={() => setGradientRadialType("circle", parentId)}
+                    className={bem("select-type", [
+                      radialType === "circle",
+                      "active",
+                    ])}
+                  >
+                    Circle
+                  </div>
+                  <div
+                    onClick={() => setGradientRadialType("ellipse", parentId)}
+                    className={bem("select-type", [
+                      radialType === "ellipse",
+                      "active",
+                    ])}
+                  >
+                    Ellipse
+                  </div>
+                </div>
+              </div>
+            ) : null}
             {showPositionPad ? (
               <ControlPanelPositionPad parentId={parentId} at={at} />
             ) : null}

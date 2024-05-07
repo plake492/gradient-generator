@@ -34,6 +34,10 @@ export type GradientStoreSetters = {
     parentId: string,
   ) => void
   setGradientAt: (at: string, parentId: string) => void
+  setGradientRadialType: (
+    radialType: "ellipse" | "circle",
+    parentId: string,
+  ) => void
 
   setColorValue: (
     id: string,
