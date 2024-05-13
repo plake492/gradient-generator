@@ -70,11 +70,16 @@
 
     &__select-type-wrapper {
         display: flex;
-        gap: $space-md;
+        column-gap: $space-md;
+        row-gap: $space-sm;
+        flex-wrap: wrap;
+        padding-bottom: $space-sm;
+        border-bottom: solid 1px #cccccc;
     }
 
     &__select-type-label {
-        @extend .text-sm;
+        @extend .text-md;
+        font-weight: 700;
         margin-bottom: 0 !important;
     }
 
@@ -87,18 +92,8 @@
         cursor: pointer;
 
         &.active {
-            color: #dddddd;
+            color: #eeeeee;
 
-            &::after {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                border-radius: 40px;
-                height: 1px;
-                background-color: #cccccc;
-            }
         }
     }
 
@@ -106,10 +101,6 @@
         display: flex;
         flex-direction: column;
         margin: $space-sm 0;
-
-        // &--child {
-        //     margin-left: calc(48px + 0.5rem);
-        // }
     }
 
     &__gradient-group {

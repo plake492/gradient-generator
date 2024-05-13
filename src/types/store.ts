@@ -1,4 +1,4 @@
-import { GradientList, HslaColorOptions, CssProps } from "./index"
+import { GradientList, HslaColorOptions, CssProps, GradientObj } from "./index"
 
 export interface Identifiable {
   id: string
@@ -28,15 +28,9 @@ export type GradientStoreSetters = {
   removeGradient: (id: string) => void
   setGradientDisabled: (id: string) => void
   setGradeintLock: (id: string) => void
-  setGradientRotate: (rotate: number, parentId: string) => void
-  setGradientType: (
-    type: "linear" | "radial" | "conic",
-    parentId: string,
-  ) => void
-  setGradientAt: (at: string, parentId: string) => void
-  setGradientRadialType: (
-    radialType: "ellipse" | "circle",
-    parentId: string,
+  setGradientValue: (
+    id: string,
+    { key, value }: { key: keyof GradientObj; value: number | string | null },
   ) => void
 
   setColorValue: (

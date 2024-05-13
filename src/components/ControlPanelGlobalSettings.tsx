@@ -23,12 +23,12 @@ export default function ControlPanelGlobalSettings({
     setNoise,
     isWindowHeight,
     setIsWindowHeight,
-    // particlesOn,
-    // setParticlesOn,
-    gridOn,
-    setGridOn,
     setWidthSmall,
     widthSmall,
+    // particlesOn,
+    // setParticlesOn,
+    // gridOn,
+    // setGridOn,
   } = useGradientStore()
 
   const handleGrowShrinkClick = () => {
@@ -112,7 +112,7 @@ export default function ControlPanelGlobalSettings({
           </label>
         </div>
 
-        <div>
+        {/* <div>
           <input
             id="gridOn"
             className="mr-sm"
@@ -123,7 +123,7 @@ export default function ControlPanelGlobalSettings({
           <label htmlFor="gridOn" className="text-xs font-weight-700 d-inline">
             Grid overlay
           </label>
-        </div>
+        </div> */}
 
         {/* <div>
           <input

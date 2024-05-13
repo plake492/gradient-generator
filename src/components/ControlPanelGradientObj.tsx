@@ -1,10 +1,12 @@
 import React from "react"
 import { useGradientStore } from "../store"
 import ControlPanelColorSelectors from "./ControlPanelColorSelectors"
-import ControlPanelTypeSelection from "./ControlPanelTypeSelection"
-import ControlPanelPositionPad from "./ControlPanelPositionPad"
+import ControlPanelSelectList from "./ControlPanelSelectList"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { GradientObj, ClassValue } from "../types"
+import ControlPanelRadialOptions from "./ControlPanelRadialOptions"
+import ControlPanelConicOptions from "./ControlPanelConicOptions"
+import ControlPanelLinearOptions from "./ControlPanelLinearOptions"
 import {
   IconPlusList,
   IconBxCollapseVertical,
@@ -25,6 +27,8 @@ interface ControlPanelGradientObjProps {
   disableOffOptions: boolean
 }
 
+type ValueType = number | string | null | undefined
+
 export default function ControlPanelGradientObj({
   gradientObj,
   parentIndex,
@@ -32,37 +36,27 @@ export default function ControlPanelGradientObj({
   disableOffOptions,
 }: ControlPanelGradientObjProps) {
   const [collapseGradient, setCollapseGradient] = React.useState(false)
+  const [collapseOptions, setCollapseOptions] = React.useState(false)
   const [gradientParent] = useAutoAnimate()
   const [colorParent] = useAutoAnimate()
-  const {
-    id: parentId,
-    colors,
-    rotate,
-    disabled,
-    gradient,
-    locked,
-    type,
-    at,
-    radialType,
-  } = gradientObj
+  const { id: parentId, colors, disabled, gradient, locked, type } = gradientObj
 
   const {
     addColor,
-    setGradientRotate,
     removeGradient,
     setGradientDisabled,
     randomGradient,
     widthSmall,
     setGradeintLock,
-    setGradientRadialType,
+    setGradientValue,
   } = useGradientStore()
 
   const handleDisable = () => setGradientDisabled(parentId)
   const handleLock = () => setGradeintLock(parentId)
 
-  const showDegrees = type !== "radial"
-  const showPositionPad = type === "conic" || type === "radial"
-  const showRadialType = type === "radial"
+  const isLinear = type === "linear"
+  const isRadial = type === "radial"
+  const isConic = type === "conic"
 
   const [expand, setExpand] = React.useState<boolean>(false)
 
@@ -126,60 +120,79 @@ export default function ControlPanelGradientObj({
       <div ref={gradientParent} className={bem("color-children")}>
         {collapseGradient ? (
           <>
-            <ControlPanelTypeSelection
+            <ControlPanelSelectList
               bem={bem}
-              type={type}
-              parentId={parentId}
+              list={[
+                {
+                  label: "Linear",
+                  value: "linear",
+                },
+                {
+                  label: "Radial",
+                  value: "radial",
+                },
+                {
+                  label: "Conic",
+                  value: "conic",
+                },
+              ]}
+              value={type}
+              label="Type:"
+              onClick={(type: ValueType) =>
+                setGradientValue(parentId, {
+                  key: "type",
+                  value: type as string,
+                })
+              }
             />
-            {showDegrees ? (
-              <div className={bem("slider-wrapper", "--child", "mb-md")}>
-                <label htmlFor="rotate" className={bem("label")}>
-                  Rotate ({rotate}deg)
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="360"
-                  step="1"
-                  id="rotate"
-                  value={rotate}
-                  onChange={(e) =>
-                    setGradientRotate(Number(e.target.value), parentId)
-                  }
-                  className={bem("slider", "--parent")}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+              className="mb-sm"
+            >
+              <p className="mb-none">Type Options</p>
+              {collapseOptions ? (
+                <IconBxCollapseVertical
+                  tooltip="Collapse"
+                  width={16}
+                  height={16}
+                  onClick={() => setCollapseOptions((prev) => !prev)}
+                  border
                 />
-              </div>
-            ) : null}
-
-            {showRadialType ? (
-              <div className={bem("slider-wrapper", "--child", "mb-md")}>
-                <div className={bem("select-type-wrapper")}>
-                  {!widthSmall ? (
-                    <div className={bem("select-type-label")}>Type:</div>
-                  ) : null}
-                  <div
-                    onClick={() => setGradientRadialType("circle", parentId)}
-                    className={bem("select-type", [
-                      radialType === "circle",
-                      "active",
-                    ])}
-                  >
-                    Circle
-                  </div>
-                  <div
-                    onClick={() => setGradientRadialType("ellipse", parentId)}
-                    className={bem("select-type", [
-                      radialType === "ellipse",
-                      "active",
-                    ])}
-                  >
-                    Ellipse
-                  </div>
-                </div>
-              </div>
-            ) : null}
-            {showPositionPad ? (
-              <ControlPanelPositionPad parentId={parentId} at={at} />
+              ) : (
+                <IconBxExpandVertical
+                  tooltip="Expand"
+                  width={16}
+                  height={16}
+                  onClick={() => setCollapseOptions((prev) => !prev)}
+                  border
+                />
+              )}
+            </div>
+            {!collapseOptions ? (
+              <>
+                {isLinear ? (
+                  <ControlPanelLinearOptions
+                    bem={bem}
+                    gradientObj={gradientObj}
+                  />
+                ) : null}
+                {isRadial ? (
+                  <ControlPanelRadialOptions
+                    bem={bem}
+                    gradientObj={gradientObj}
+                  />
+                ) : null}
+                {isConic ? (
+                  <ControlPanelConicOptions
+                    bem={bem}
+                    gradientObj={gradientObj}
+                  />
+                ) : null}
+              </>
             ) : null}
 
             <div ref={colorParent}>

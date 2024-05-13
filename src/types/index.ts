@@ -7,8 +7,16 @@ export interface GradientObj {
   type: "linear" | "radial" | "conic"
   at: string
   radialType: "ellipse" | "circle"
+  radialSize:
+    | "closest-side"
+    | "closest-corner"
+    | "farthest-side"
+    | "farthest-corner"
+  radialHue: "in hsl shorter hue" | "in hsl longer hue" | undefined | null
   colors: HslaObj[]
 }
+
+export type GradientValueOptions = "rotate" | "type" | "at" | "radialType"
 
 export interface HslaObj {
   id: string

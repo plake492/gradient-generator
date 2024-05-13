@@ -55,6 +55,8 @@ export default function ColorSelectors({
     locked,
   } = colorGroup
 
+  console.log("hsla ==>", hsla)
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setColorValue(colorGroup.id, parentId, {
       key: e.target.name as HslaColorOptions,
