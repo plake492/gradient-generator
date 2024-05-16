@@ -44,7 +44,7 @@ export interface CssProps {
   left: string
   top: string
   width: string
-  height: "100vh" | "100%"
+  height: "100dvh" | "100%"
   "z-index": string
   "background-size": string
   "background-image": string

@@ -100,7 +100,7 @@ const defualtCss: CssProps = {
   left: "0px",
   top: "0px",
   width: "100vw",
-  height: "100vh",
+  height: "100dvh",
   "z-index": "-1",
   "background-size": "100% 100%",
   "background-image": startingLinearBackground,
@@ -110,7 +110,7 @@ const defualtCss: CssProps = {
     left: 0px;
     top: 0px;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     z-index: -1;
     background-size: 100% 100%;
     background-image: ${startingLinearBackground}
@@ -348,7 +348,7 @@ export const useGradientStore = create<GradientStoreState>()(
 
       setIsWindowHeight: (isWindowHeight: boolean) =>
         set((state: GradientStore) => {
-          const height = isWindowHeight ? "100vh" : "100%"
+          const height = isWindowHeight ? "100dvh" : "100%"
           const position = isWindowHeight ? "fixed" : "absolute"
           // Update the css prop objstate.cssProps.height = height
           state.cssProps.position = position

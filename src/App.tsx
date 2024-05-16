@@ -15,7 +15,7 @@ function App() {
         <ControlPanel />
         <div
           className="container d-flex flex-col justify-content-center align-items-center"
-          style={{ minHeight: "100vh", width: "100%" }}
+          style={{ minHeight: "100dvh", width: "100%" }}
         >
           <h1>
             Hello <i>There</i>
@@ -29,7 +29,7 @@ function App() {
 
         <div
           className="container d-flex flex-col justify-content-center align-items-center"
-          style={{ minHeight: "100vh", width: "100%" }}
+          style={{ minHeight: "100dvh", width: "100%" }}
         >
           <h1>
             Hello <i>There</i>
@@ -43,7 +43,7 @@ function App() {
 
         <div
           className="container d-flex flex-col justify-content-center align-items-center"
-          style={{ minHeight: "100vh", width: "100%" }}
+          style={{ minHeight: "100dvh", width: "100%" }}
         >
           <h1>
             Hello <i>There</i>
