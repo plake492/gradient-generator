@@ -27,7 +27,6 @@ export default function ControlPanel() {
     "--width": `${widthSmall ? 250 : 500}px`,
     // "--position": position,
   } as React.CSSProperties
-  console.log("gradientList ==>", gradientList)
 
   return (
     <>

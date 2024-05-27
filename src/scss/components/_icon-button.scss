@@ -25,6 +25,7 @@
         background-color: var(--base-color);
     }
 
+
     width: var(--width);
     height: var(--height);
     position: relative;
@@ -35,6 +36,7 @@
     border-radius: 50%;
     display: grid;
     place-content: center;
+    align-items: center;
 
     &--border {
         border: 2px solid var(--base-color);
@@ -46,6 +48,16 @@
         grid-gap: $space-md;
         border-radius: 40px;
         width: fit-content;
+    }
+
+    &--small {
+        --width: 16px;
+        --height: 16px;
+
+        svg {
+            width: 16px;
+            height: 16px;
+        }
     }
 
     &__append-text {

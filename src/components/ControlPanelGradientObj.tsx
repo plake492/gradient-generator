@@ -221,9 +221,6 @@ export default function ControlPanelGradientObj({
                     appendText={!widthSmall ? "Random" : undefined}
                   />
                 </div>
-                {/* <div>
-                  <DropMenu>Test</DropMenu>
-                </div> */}
               </div>
             </div>
           </>

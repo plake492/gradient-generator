@@ -12,9 +12,8 @@ import {
   IconUnlock,
   IconLock,
 } from "./BaseIcons"
-// import DropMenu from "./DropMenu"
-// import HexInput from "./HexInput"
-// import { convertHexToHsl, convertHslToHex } from "../helpers/utils"
+import HexInput from "./HexInput"
+import { convertHexToHsl, convertHslToHex } from "../helpers/utils"
 
 interface ColorSelectorsProps {
   colorGroup: HslaObj
@@ -41,7 +40,7 @@ export default function ColorSelectors({
     removeColor,
     setColorDisabled,
     setColorLock,
-    // setGradientHsl,
+    setGradientHsl,
   } = useGradientStore()
   const {
     id,
@@ -54,8 +53,6 @@ export default function ColorSelectors({
     disabled,
     locked,
   } = colorGroup
-
-  console.log("hsla ==>", hsla)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setColorValue(colorGroup.id, parentId, {
@@ -77,20 +74,15 @@ export default function ColorSelectors({
     }
   }
 
+  const handleSubmitHexValue = (value: string) => {
+    setGradientHsl(id, parentId, convertHexToHsl(value))
+  }
+
   const handleDisable = () => setColorDisabled(id, parentId)
   const handleLock = () => setColorLock(id, parentId)
 
   return (
     <section className={bem("slide-group-wrapper")}>
-      <div>
-        {/* {!disableRemove ? (
-          disabled ? (
-            <IconLightOff onClick={handleDisable} width={16} height={16} />
-          ) : (
-            <IconLightOn onClick={handleDisable} width={16} height={16} />
-          )
-        ) : null} */}
-      </div>
       <div
         ref={parent}
         className={bem("slide-group", "--child", "flex-1")}
@@ -151,12 +143,11 @@ export default function ColorSelectors({
         </div>
         {collapse ? (
           <div>
-            <div className="d-flex justify-content-between align-items-center">
-              {/* <HexInput
-                hsla={convertHslToHex(hsla)}
-                onSubmit={(value) => setGradientHsl(id, convertHexToHsl(value))}
-              /> */}
-            </div>
+            <HexInput
+              hsla={convertHslToHex(hsla)}
+              onSubmit={handleSubmitHexValue}
+            />
+
             <div className={bem("slider-wrapper")}>
               <label htmlFor="slider" className={bem("label")}>
                 Color ({hue.toFixed(0)})

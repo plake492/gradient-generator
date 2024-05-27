@@ -7,10 +7,12 @@ interface IconProps {
   variant?: "light" | "dark"
   width?: number
   height?: number
-  onClick?: React.MouseEventHandler<HTMLDivElement>
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
   tooltip?: string
   appendText?: string
   border?: boolean
+  small?: boolean
+  type?: "submit" | "button" | "reset"
 }
 
 function IconWrapper({
@@ -19,20 +21,15 @@ function IconWrapper({
   height = 24,
   onClick,
   variant,
-  // tooltip,
   appendText,
   border,
+  small,
+  type = "button",
 }: IconProps & { children: React.ReactNode }) {
   const bem = useBemify("icon-btn")
 
   return (
-    <div
-      className={bem(
-        "",
-        [!!variant, `--${variant}`],
-        [!!appendText, "--with-text"],
-        [!!border, "--border"],
-      )}
+    <button
       style={
         {
           "--width": `${width}px`,
@@ -40,13 +37,24 @@ function IconWrapper({
         } as React.CSSProperties
       }
       onClick={onClick}
+      type={type}
     >
-      {/* {tooltip ? <div className={bem("tooltip")}>{tooltip}</div> : null} */}
-      {children}
-      {appendText ? (
-        <span className={bem("append-text")}>{appendText}</span>
-      ) : null}
-    </div>
+      <div
+        className={bem(
+          "",
+          [!!variant, `--${variant}`],
+          [!!appendText, "--with-text"],
+          [!!border, "--border"],
+          [!!small, "--small"],
+        )}
+      >
+        {/* {tooltip ? <div className={bem("tooltip")}>{tooltip}</div> : null} */}
+        {children}
+        {appendText ? (
+          <span className={bem("append-text")}>{appendText}</span>
+        ) : null}
+      </div>
+    </button>
   )
 }
 
@@ -292,6 +300,21 @@ export function IconChevronRight(iconProps: IconProps) {
         <path
           fillRule="evenodd"
           d="M4.646 1.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L10.293 8 4.646 2.354a.5.5 0 010-.708z"
+        />
+      </svg>
+    </IconWrapper>
+  )
+}
+
+export function IconUpdate(iconProps: IconProps) {
+  return (
+    <IconWrapper {...iconProps}>
+      <svg fill="currentColor" viewBox="0 0 15 15" height="100%" width="100%">
+        <path
+          fill="currentColor"
+          fillRule="evenodd"
+          d="M1.903 7.297c0 3.044 2.207 5.118 4.686 5.547a.521.521 0 11-.178 1.027C3.5 13.367.861 10.913.861 7.297c0-1.537.699-2.745 1.515-3.663.585-.658 1.254-1.193 1.792-1.602H2.532a.5.5 0 010-1h3a.5.5 0 01.5.5v3a.5.5 0 01-1 0V2.686l-.001.002c-.572.43-1.27.957-1.875 1.638-.715.804-1.253 1.776-1.253 2.97zm11.108.406c0-3.012-2.16-5.073-4.607-5.533a.521.521 0 11.192-1.024c2.874.54 5.457 2.98 5.457 6.557 0 1.537-.699 2.744-1.515 3.663-.585.658-1.254 1.193-1.792 1.602h1.636a.5.5 0 110 1h-3a.5.5 0 01-.5-.5v-3a.5.5 0 111 0v1.845h.002c.571-.432 1.27-.958 1.874-1.64.715-.803 1.253-1.775 1.253-2.97z"
+          clipRule="evenodd"
         />
       </svg>
     </IconWrapper>

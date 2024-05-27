@@ -42,7 +42,7 @@ export type GradientStoreSetters = {
   removeColor: (id: string, parentId: string) => void
   setColorDisabled: (id: string, parentId: string) => void
   setColorLock: (id: string, parentId: string) => void
-  setGradientHsl: (id: string, hsla: string) => void
+  setGradientHsl: (id: string, parentId: string, value: string) => void
 
   randomAll: () => void
   randomGradient: (id: string) => void

@@ -10,6 +10,14 @@ import {
 import { Identifiable, GradientStore, GradientStoreState } from "./types/store"
 import { v4 as uuid } from "uuid"
 
+type HSLA = {
+  hue: number
+  saturation: number
+  lightness: number
+  alpha: number
+  hsla: string
+}
+
 const startingColor1 = "hsla(0, 100%, 50%, 0.5)"
 const startingColor2 = "hsla(180, 100%, 50%, 0.5)"
 const startingColor3 = "hsla(45, 100%, 50%, 1)"
@@ -34,8 +42,8 @@ const defaultGradientList: GradientList = [
         saturation: 100,
         lightness: 50,
         alpha: 0.5,
-        position: 0,
         hsla: startingColor1,
+        position: 0,
         disabled: false,
         locked: false,
       },
@@ -321,6 +329,26 @@ const updateParentGradient = (
       parentArray.radialHue,
       hslColors,
     )
+  }
+}
+
+function parseHSLA(hsla: string): HSLA | null {
+  const hslaRegex =
+    /^hsla?\(\s*([0-9]+)\s*,\s*([0-9]+)%\s*,\s*([0-9]+)%\s*(?:,\s*([0-9.]+)\s*)?\)$/i
+  const match = hsla.match(hslaRegex)
+
+  if (!match) {
+    return null // Invalid HSLA string
+  }
+
+  const [, h, s, l, a = "1"] = match // Default alpha to 1 if not provided
+
+  return {
+    hue: parseInt(h, 10),
+    saturation: parseInt(s, 10),
+    lightness: parseInt(l, 10),
+    alpha: parseFloat(a),
+    hsla: hsla,
   }
 }
 
@@ -717,35 +745,40 @@ export const useGradientStore = create<GradientStoreState>()(
       },
 
       // TODO Complete this
-      setGradientHsl: () => {
-        // set((state: GradientStore) => {
-        //   const updatedGradient = state.gradient.map((colorGroup) => {
-        //     if (colorGroup.id === id) {
-        //       const [hue, saturation, lightness, alpha] = hsla
-        //         .replace(/hsla\(|hsla\(|\)|%/g, "")
-        //         .split(",")
-        //         .map((value) => Number(value))
-        //       return {
-        //         ...colorGroup,
-        //         hue,
-        //         saturation,
-        //         lightness,
-        //         alpha,
-        //         hsla,
-        //       }
-        //     }
-        //     return colorGroup
-        //   })
-        //   // Update the background gradient
-        //   const newBackgroundGradient = setBackgroundGradient(
-        //     updatedGradient,
-        //     state.rotate,
-        //   )
-        //   return {
-        //     gradient: updatedGradient,
-        //     backgroundGradient: newBackgroundGradient,
-        //   }
-        // })
+      setGradientHsl: (id: string, parentId: string, value: string) => {
+        set((state: GradientStore) => {
+          const parentArray = findObj(parentId, state.gradientList)
+          console.log("value ==>", value)
+
+          const color = findObj(id, parentArray.colors)
+
+          const hslaValues = parseHSLA(value)!
+
+          Object.entries(hslaValues).forEach(([key, value]) => {
+            if (key in color) {
+              // @ts-expect-error this will be fixed later!!!!
+              color[key] = value
+            }
+          })
+          console.log("hslaValues ==>", hslaValues)
+          // console.log("value ==>", value)
+
+          // Update the background gradient
+          const newBackgroundGradient = formatGradientsFromObject(
+            state.gradientList,
+          )
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
+
+          updateParentGradient(state.gradientList, parentId)
+
+          return {
+            backgroundGradient: newBackgroundGradient,
+          }
+        })
       },
       // ******************************************************** //
 
