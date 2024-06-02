@@ -1,6 +1,12 @@
+.icon-btn-wrapper:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+
+}
+
 .icon-btn {
-    --width: 24px;
-    --height: 24px;
+    --width: 18px;
+    --height: 18px;
     --base-color: #dddddd11;
     --hover: #13131322;
     --active: #13131344;
@@ -25,6 +31,22 @@
         background-color: var(--base-color);
     }
 
+    &--disabled {
+        position: relative;
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50%;
+            height: 2px;
+            transform-origin: center;
+            transform: translate(-50%, -50%) rotate(45deg);
+            background-color: #ffffff;
+
+        }
+    }
 
     width: var(--width);
     height: var(--height);
@@ -51,13 +73,7 @@
     }
 
     &--small {
-        --width: 16px;
-        --height: 16px;
-
-        svg {
-            width: 16px;
-            height: 16px;
-        }
+        padding: 14px;
     }
 
     &__append-text {

@@ -52,9 +52,7 @@
             background-color: #cccccc;
         }
 
-        // &--child {
-        //     margin-left: $space-sm;
-        // }
+
     }
 
     &__slide-group-color-indicator {
@@ -64,8 +62,6 @@
         border-radius: 50%;
         background-color: var(--child-gradient);
         vertical-align: middle;
-
-        margin-right: $space-sm;
     }
 
     &__select-type-wrapper {
@@ -78,7 +74,7 @@
     }
 
     &__select-type-label {
-        @extend .text-md;
+        @extend .text-sm;
         font-weight: 700;
         margin-bottom: 0 !important;
     }
@@ -102,6 +98,7 @@
         flex-direction: column;
         margin: $space-sm 0;
     }
+
 
     &__gradient-group {
         --linear-gradient: #00000000;
@@ -129,7 +126,6 @@
         border-radius: 50%;
         background: var(--linear-gradient);
         vertical-align: middle;
-        margin-right: $space-sm;
         transition: all 300ms;
         cursor: pointer;
 

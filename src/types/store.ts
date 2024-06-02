@@ -32,6 +32,7 @@ export type GradientStoreSetters = {
     id: string,
     { key, value }: { key: keyof GradientObj; value: number | string | null },
   ) => void
+  reorderGradient: (sourceIndex: number, destinationIndex: number) => void
 
   setColorValue: (
     id: string,
@@ -43,6 +44,11 @@ export type GradientStoreSetters = {
   setColorDisabled: (id: string, parentId: string) => void
   setColorLock: (id: string, parentId: string) => void
   setGradientHsl: (id: string, parentId: string, value: string) => void
+  reorderColors: (
+    parentId: string,
+    sourceIndex: number,
+    destinationIndex: number,
+  ) => void
 
   randomAll: () => void
   randomGradient: (id: string) => void

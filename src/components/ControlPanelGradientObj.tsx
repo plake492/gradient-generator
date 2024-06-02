@@ -2,7 +2,6 @@ import React from "react"
 import { useGradientStore } from "../store"
 import ControlPanelColorSelectors from "./ControlPanelColorSelectors"
 import ControlPanelSelectList from "./ControlPanelSelectList"
-import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { GradientObj, ClassValue } from "../types"
 import ControlPanelRadialOptions from "./ControlPanelRadialOptions"
 import ControlPanelConicOptions from "./ControlPanelConicOptions"
@@ -17,7 +16,14 @@ import {
   IconRandomArrows,
   IconLock,
   IconUnlock,
+  IconDrag,
 } from "./BaseIcons"
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "react-beautiful-dnd"
 // import DropMenu from "./DropMenu"
 
 interface ControlPanelGradientObjProps {
@@ -25,6 +31,7 @@ interface ControlPanelGradientObjProps {
   parentIndex: number
   bem: (block: string, ...rest: ClassValue[]) => string
   disableOffOptions: boolean
+  DragIcon: React.ReactNode
 }
 
 type ValueType = number | string | null | undefined
@@ -34,11 +41,10 @@ export default function ControlPanelGradientObj({
   parentIndex,
   bem,
   disableOffOptions,
+  DragIcon,
 }: ControlPanelGradientObjProps) {
   const [collapseGradient, setCollapseGradient] = React.useState(false)
   const [collapseOptions, setCollapseOptions] = React.useState(false)
-  const [gradientParent] = useAutoAnimate()
-  const [colorParent] = useAutoAnimate()
   const { id: parentId, colors, disabled, gradient, locked, type } = gradientObj
 
   const {
@@ -49,6 +55,7 @@ export default function ControlPanelGradientObj({
     widthSmall,
     setGradeintLock,
     setGradientValue,
+    reorderColors,
   } = useGradientStore()
 
   const handleDisable = () => setGradientDisabled(parentId)
@@ -59,6 +66,10 @@ export default function ControlPanelGradientObj({
   const isConic = type === "conic"
 
   const [expand, setExpand] = React.useState<boolean>(false)
+
+  const handleDragEnd = (result: DropResult) => {
+    reorderColors(parentId, result.source.index, result.destination!.index)
+  }
 
   return (
     <div
@@ -71,11 +82,14 @@ export default function ControlPanelGradientObj({
     >
       <div className="d-flex justify-content-between align-items-center">
         <div className="mb-none no-wrap d-flex align-items-center gap-sm">
+          {DragIcon}
           <span
             onClick={() => setExpand((prev) => !prev)}
             className={bem("gradient-indicator", [expand, "expand"])}
           ></span>
-          <span>{!widthSmall ? `Gradient: ${parentIndex + 1}` : ""}</span>
+          <span className="text-sm">
+            {!widthSmall ? `Gradient: ${parentIndex + 1}` : ""}
+          </span>
         </div>
         <div className="d-flex align-item-center gap-sm">
           {!locked ? (
@@ -117,7 +131,7 @@ export default function ControlPanelGradientObj({
         </div>
       </div>
 
-      <div ref={gradientParent} className={bem("color-children")}>
+      <div className={bem("color-children")}>
         {collapseGradient ? (
           <>
             <ControlPanelSelectList
@@ -153,7 +167,7 @@ export default function ControlPanelGradientObj({
               }}
               className="mb-sm"
             >
-              <p className="mb-none">Type Options</p>
+              <p className="mb-none text-sm">Type Options</p>
               {collapseOptions ? (
                 <IconBxCollapseVertical
                   tooltip="Collapse"
@@ -195,32 +209,62 @@ export default function ControlPanelGradientObj({
               </>
             ) : null}
 
-            <div ref={colorParent}>
-              {colors.map((colorGroup, index, arr) => (
-                <ControlPanelColorSelectors
-                  key={colorGroup.id}
-                  colorGroup={colorGroup}
-                  index={index}
-                  parentId={parentId}
-                  disableRemove={arr.length === 2}
-                  positionDefault={Number(
-                    ((index / (arr.length - 1)) * 100).toFixed(0),
-                  )}
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="droppable">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {colors.map((colorGroup, index) => (
+                      <Draggable
+                        key={colorGroup.id}
+                        draggableId={colorGroup.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                          >
+                            <ControlPanelColorSelectors
+                              key={colorGroup.id}
+                              colorGroup={colorGroup}
+                              index={index}
+                              parentId={parentId}
+                              disableRemove={colors.length === 2}
+                              positionDefault={Number(
+                                ((index / (colors.length - 1)) * 100).toFixed(
+                                  0,
+                                ),
+                              )}
+                              DragIcon={
+                                <div
+                                  {...provided.dragHandleProps}
+                                  style={{ cursor: "grab" }}
+                                >
+                                  <IconDrag small />
+                                </div>
+                              }
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+            <div className="d-flex align-items-center justify-content-between">
+              <div className="d-flex align-items-center gap-sm">
+                <IconPlusList
+                  onClick={() => addColor(parentId)}
+                  border
+                  appendText={!widthSmall ? "Add color" : undefined}
                 />
-              ))}
-              <div className="d-flex align-items-center justify-content-between">
-                <div className="d-flex align-items-center gap-sm">
-                  <IconPlusList
-                    onClick={() => addColor(parentId)}
-                    border
-                    appendText={!widthSmall ? "Add color" : undefined}
-                  />
-                  <IconRandomArrows
-                    onClick={() => randomGradient(parentId)}
-                    border
-                    appendText={!widthSmall ? "Random" : undefined}
-                  />
-                </div>
+                <IconRandomArrows
+                  onClick={() => randomGradient(parentId)}
+                  border
+                  appendText={!widthSmall ? "Random" : undefined}
+                />
               </div>
             </div>
           </>

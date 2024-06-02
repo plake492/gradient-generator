@@ -13,6 +13,7 @@ interface IconProps {
   border?: boolean
   small?: boolean
   type?: "submit" | "button" | "reset"
+  disabled?: boolean
 }
 
 function IconWrapper({
@@ -24,6 +25,7 @@ function IconWrapper({
   appendText,
   border,
   small,
+  disabled,
   type = "button",
 }: IconProps & { children: React.ReactNode }) {
   const bem = useBemify("icon-btn")
@@ -38,6 +40,8 @@ function IconWrapper({
       }
       onClick={onClick}
       type={type}
+      disabled={disabled}
+      className="icon-btn-wrapper"
     >
       <div
         className={bem(
@@ -46,6 +50,7 @@ function IconWrapper({
           [!!appendText, "--with-text"],
           [!!border, "--border"],
           [!!small, "--small"],
+          [!!disabled, "--disabled"],
         )}
       >
         {/* {tooltip ? <div className={bem("tooltip")}>{tooltip}</div> : null} */}
@@ -315,6 +320,44 @@ export function IconUpdate(iconProps: IconProps) {
           fillRule="evenodd"
           d="M1.903 7.297c0 3.044 2.207 5.118 4.686 5.547a.521.521 0 11-.178 1.027C3.5 13.367.861 10.913.861 7.297c0-1.537.699-2.745 1.515-3.663.585-.658 1.254-1.193 1.792-1.602H2.532a.5.5 0 010-1h3a.5.5 0 01.5.5v3a.5.5 0 01-1 0V2.686l-.001.002c-.572.43-1.27.957-1.875 1.638-.715.804-1.253 1.776-1.253 2.97zm11.108.406c0-3.012-2.16-5.073-4.607-5.533a.521.521 0 11.192-1.024c2.874.54 5.457 2.98 5.457 6.557 0 1.537-.699 2.744-1.515 3.663-.585.658-1.254 1.193-1.792 1.602h1.636a.5.5 0 110 1h-3a.5.5 0 01-.5-.5v-3a.5.5 0 111 0v1.845h.002c.571-.432 1.27-.958 1.874-1.64.715-.803 1.253-1.775 1.253-2.97z"
           clipRule="evenodd"
+        />
+      </svg>
+    </IconWrapper>
+  )
+}
+
+export function IconArrowUpShort(iconProps: IconProps) {
+  return (
+    <IconWrapper {...iconProps}>
+      <svg fill="currentColor" viewBox="0 0 16 16" height="100%" width="100%">
+        <path
+          fillRule="evenodd"
+          d="M8 12a.5.5 0 00.5-.5V5.707l2.146 2.147a.5.5 0 00.708-.708l-3-3a.5.5 0 00-.708 0l-3 3a.5.5 0 10.708.708L7.5 5.707V11.5a.5.5 0 00.5.5z"
+        />
+      </svg>
+    </IconWrapper>
+  )
+}
+
+export function IconArrowDownShort(iconProps: IconProps) {
+  return (
+    <IconWrapper {...iconProps}>
+      <svg fill="currentColor" viewBox="0 0 16 16" height="100%" width="100%">
+        <path
+          fillRule="evenodd"
+          d="M8 4a.5.5 0 01.5.5v5.793l2.146-2.147a.5.5 0 01.708.708l-3 3a.5.5 0 01-.708 0l-3-3a.5.5 0 11.708-.708L7.5 10.293V4.5A.5.5 0 018 4z"
+        />
+      </svg>
+    </IconWrapper>
+  )
+}
+export function IconDrag(iconProps: IconProps) {
+  return (
+    <IconWrapper {...iconProps}>
+      <svg fill="none" viewBox="0 0 15 15" height="100%" width="100%">
+        <path
+          stroke="currentColor"
+          d="M9.5 3a.5.5 0 110-1 .5.5 0 010 1zM9.5 8a.5.5 0 110-1 .5.5 0 010 1zM9.5 13a.5.5 0 110-1 .5.5 0 010 1zM5.5 3a.5.5 0 110-1 .5.5 0 010 1zM5.5 8a.5.5 0 110-1 .5.5 0 010 1zM5.5 13a.5.5 0 110-1 .5.5 0 010 1z"
         />
       </svg>
     </IconWrapper>

@@ -573,6 +573,30 @@ export const useGradientStore = create<GradientStoreState>()(
           }
         })
       },
+
+      reorderGradient: (startingIndex: number, destinationIndex: number) => {
+        set((state: GradientStore) => {
+          const updatedGradientList = [...state.gradientList]
+
+          const [movedItem] = updatedGradientList.splice(startingIndex, 1)
+          updatedGradientList.splice(destinationIndex, 0, movedItem)
+
+          // Update the background gradient
+          const newBackgroundGradient =
+            formatGradientsFromObject(updatedGradientList)
+
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
+
+          return {
+            gradientList: updatedGradientList,
+            backgroundGradient: newBackgroundGradient,
+          }
+        })
+      },
       // ******************************************************** //
 
       // ********************* Color setters ******************** //
@@ -744,24 +768,20 @@ export const useGradientStore = create<GradientStoreState>()(
         })
       },
 
-      // TODO Complete this
       setGradientHsl: (id: string, parentId: string, value: string) => {
         set((state: GradientStore) => {
           const parentArray = findObj(parentId, state.gradientList)
-          console.log("value ==>", value)
-
           const color = findObj(id, parentArray.colors)
 
           const hslaValues = parseHSLA(value)!
 
           Object.entries(hslaValues).forEach(([key, value]) => {
             if (key in color) {
+              // TODO
               // @ts-expect-error this will be fixed later!!!!
               color[key] = value
             }
           })
-          console.log("hslaValues ==>", hslaValues)
-          // console.log("value ==>", value)
 
           // Update the background gradient
           const newBackgroundGradient = formatGradientsFromObject(
@@ -780,6 +800,170 @@ export const useGradientStore = create<GradientStoreState>()(
           }
         })
       },
+
+      reorderColors: (
+        parentId: string,
+        startingIndex: number,
+        destinationIndex: number,
+      ) => {
+        set((state: GradientStore) => {
+          const parentArray = findObj(parentId, state.gradientList)
+
+          const updatedColors = [...parentArray.colors]
+          const [movedItem] = updatedColors.splice(startingIndex, 1)
+          updatedColors.splice(destinationIndex, 0, movedItem)
+
+          // Update positions of existing colors
+          const updatedGroup = updatedColors.map((color, index) => ({
+            ...color,
+            position: (100 * index) / updatedColors.length,
+          }))
+
+          parentArray.colors = updatedGroup
+
+          // Update the background gradient
+          const newBackgroundGradient = formatGradientsFromObject(
+            state.gradientList,
+          )
+          // Update the css prop obj
+          state.cssProps.css = cssStringCunstructor(state.cssProps, [
+            "background-image",
+            newBackgroundGradient,
+          ])
+
+          updateParentGradient(state.gradientList, parentId)
+
+          return {
+            backgroundGradient: newBackgroundGradient,
+          }
+        })
+      },
+
+      // moveColorDown: (id: string, parentId: string) => {
+      //   set((state: GradientStore) => {
+      //     const parentArray = findObj(parentId, state.gradientList)
+
+      //     /**
+      //      * Swaps an item in the array with the following item.
+      //      *
+      //      * @param {T[]} array - The array containing the items.
+      //      * @param {number} index - The index of the item to swap with the following item.
+      //      *
+      //      * @returns {T[]} The modified array with the items swapped.
+      //      */
+      //     function moveRight<T>(array: T[], index: number): T[] {
+      //       if (index < 0 || index >= array.length - 1) {
+      //         throw new Error(
+      //           "Index out of bounds or no following item to swap with.",
+      //         )
+      //       }
+
+      //       // Swap the item with the next item
+      //       const temp = array[index]
+      //       array[index] = array[index + 1]
+      //       array[index + 1] = temp
+
+      //       return array
+      //     }
+
+      //     const colorIndex = parentArray.colors.findIndex(
+      //       (group) => group.id === id,
+      //     )
+
+      //     moveRight(parentArray.colors, colorIndex)
+
+      //     // Update positions of existing colors
+      //     const colorWithNewPosition = parentArray.colors.map(
+      //       (color, index, arr) => ({
+      //         ...color,
+      //         position:
+      //           index !== arr.length - 1
+      //             ? (100 * index) / parentArray.colors.length
+      //             : 100,
+      //       }),
+      //     )
+      //     parentArray.colors = colorWithNewPosition
+
+      //     const newBackgroundGradient = formatGradientsFromObject(
+      //       state.gradientList,
+      //     )
+      //     // Update the css prop obj
+      //     state.cssProps.css = cssStringCunstructor(state.cssProps, [
+      //       "background-image",
+      //       newBackgroundGradient,
+      //     ])
+
+      //     updateParentGradient(state.gradientList, parentId)
+
+      //     return {
+      //       backgroundGradient: newBackgroundGradient,
+      //     }
+      //   })
+      // },
+
+      // moveColorUp: (id: string, parentId: string) => {
+      //   set((state: GradientStore) => {
+      //     const parentArray = findObj(parentId, state.gradientList)
+
+      //     /**
+      //      * Moves an item in the array to the left by one position.
+      //      *
+      //      * @param {T[]} array - The array containing the items.
+      //      * @param {number} index - The index of the item to move to the left.
+      //      *
+      //      * @returns {T[]} The modified array with the item moved to the left.
+      //      */
+      //     function moveLeft<T>(array: T[], index: number): T[] {
+      //       if (index <= 0 || index >= array.length) {
+      //         throw new Error(
+      //           "Index out of bounds or no preceding item to move to.",
+      //         )
+      //       }
+
+      //       // Create a copy of the array to avoid mutating the original array
+
+      //       // Move the item to the left
+      //       const temp = array[index]
+      //       array[index] = array[index - 1]
+      //       array[index - 1] = temp
+
+      //       return array
+      //     }
+
+      //     const colorIndex = parentArray.colors.findIndex(
+      //       (group) => group.id === id,
+      //     )
+
+      //     moveLeft(parentArray.colors, colorIndex)
+
+      //     // Update positions of existing colors
+      //     const colorWithNewPosition = parentArray.colors.map(
+      //       (color, index, arr) => ({
+      //         ...color,
+      //         position:
+      //           index !== arr.length - 1
+      //             ? (100 * index) / parentArray.colors.length
+      //             : 100,
+      //       }),
+      //     )
+      //     parentArray.colors = colorWithNewPosition
+
+      //     const newBackgroundGradient = formatGradientsFromObject(
+      //       state.gradientList,
+      //     )
+      //     // Update the css prop obj
+      //     state.cssProps.css = cssStringCunstructor(state.cssProps, [
+      //       "background-image",
+      //       newBackgroundGradient,
+      //     ])
+
+      //     updateParentGradient(state.gradientList, parentId)
+
+      //     return {
+      //       backgroundGradient: newBackgroundGradient,
+      //     }
+      //   })
+      // },
       // ******************************************************** //
 
       // ********************* Randomize setters ******************** //

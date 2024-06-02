@@ -2,7 +2,7 @@ import React from "react"
 import { useGradientStore } from "../store"
 import useBemify from "../hooks/useBemify"
 import { HslaObj, HslaColorOptions } from "../types"
-import { useAutoAnimate } from "@formkit/auto-animate/react"
+// import { useAutoAnimate } from "@formkit/auto-animate/react"
 import {
   IconBxCollapseVertical,
   IconBxExpandVertical,
@@ -21,6 +21,7 @@ interface ColorSelectorsProps {
   index: number
   disableRemove: boolean
   positionDefault: number
+  DragIcon: React.ReactNode
 }
 
 export default function ColorSelectors({
@@ -29,8 +30,9 @@ export default function ColorSelectors({
   index,
   disableRemove,
   positionDefault,
+  DragIcon,
 }: ColorSelectorsProps) {
-  const [parent] = useAutoAnimate()
+  // const [parent] = useAutoAnimate()
   const [collapse, setCollapse] = React.useState(false)
   const bem = useBemify("control-panel")
 
@@ -84,7 +86,7 @@ export default function ColorSelectors({
   return (
     <section className={bem("slide-group-wrapper")}>
       <div
-        ref={parent}
+        // ref={parent}
         className={bem("slide-group", "--child", "flex-1")}
         style={
           {
@@ -93,35 +95,36 @@ export default function ColorSelectors({
         }
       >
         <div className="d-flex justify-content-between align-items-center">
-          <p className="text-sm mb-none text-end no-wrap">
+          <div className="d-flex align-items-center gap-sm">
+            {DragIcon}
             <span className={bem("slide-group-color-indicator")}></span>
-            {!widthSmall ? `Color: ${index + 1}` : ""}
-          </p>
+            <p className="text-sm mb-none text-end no-wrap">
+              {!widthSmall ? `Color: ${index + 1}` : ""}
+            </p>
+          </div>
           <div className="d-flex align-items-center gap-">
-            {/* <DropMenu>
-              <p className="text-xs mb-none text-end mr-sm">{hsla}</p>
-            </DropMenu> */}
-            {!disableRemove ? (
-              disabled ? (
-                <IconLightOff onClick={handleDisable} width={16} height={16} />
-              ) : (
-                <IconLightOn onClick={handleDisable} width={16} height={16} />
-              )
-            ) : null}
             {!locked ? (
               <IconUnlock onClick={handleLock} width={16} height={16} />
             ) : (
               <IconLock onClick={handleLock} width={16} height={16} />
             )}
-            {!disableRemove ? (
-              <IconTrash
-                onClick={() => removeColor(id, parentId)}
+            {disabled ? (
+              <IconLightOff onClick={handleDisable} width={16} height={16} />
+            ) : (
+              <IconLightOn
+                disabled={disableRemove}
+                onClick={handleDisable}
                 width={16}
                 height={16}
               />
-            ) : (
-              <div></div>
             )}
+            <IconTrash
+              onClick={() => removeColor(id, parentId)}
+              width={16}
+              height={16}
+              disabled={disableRemove}
+            />
+
             {collapse ? (
               <IconBxCollapseVertical
                 tooltip="Collapse"
@@ -142,7 +145,7 @@ export default function ColorSelectors({
           </div>
         </div>
         {collapse ? (
-          <div>
+          <div className="ml-lg">
             <HexInput
               hsla={convertHslToHex(hsla)}
               onSubmit={handleSubmitHexValue}
