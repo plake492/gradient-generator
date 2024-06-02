@@ -28,16 +28,16 @@ export default function ControlPanelSelectList({
     <div className={bem("slider-wrapper", "--child", "mb-md")}>
       <div className={bem("select-type-wrapper")}>
         {!widthSmall ? (
-          <div className={bem("select-type-label")}>{label}</div>
+          <p className={bem("select-type-label")}>{label}</p>
         ) : null}
         {list.map((item) => (
-          <div
+          <p
             key={item.value}
             onClick={() => handleSelect(item.value)}
             className={bem("select-type", [value === item.value, "active"])}
           >
             {item.label}
-          </div>
+          </p>
         ))}
       </div>
     </div>

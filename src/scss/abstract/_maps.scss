@@ -26,6 +26,7 @@ $spacers: (
 );
 
 $breakpoints: (
+    xs: 0,
     sm: $screen-sm-min,
     md: $screen-md-min,
     lg: $screen-lg-min,
@@ -38,26 +39,26 @@ $breakpoints: (
 // **************************************************
 
 $font-xs-sizes: (
-    md: rem(14),
-    lg: rem($base-font-size),
+    xs: rem(14),
+    // lg: rem($base-font-size),
 );
 
 $font-sm-sizes: (
-    sm: rem(14),
+    // xs: rem(14),
     md: rem($base-font-size),
-    xl: if($font-increase-on-xl, rem(18), rem($base-font-size)),
+    // xl: if($font-increase-on-xl, rem(18), rem($base-font-size)),
 );
 
 $font-base-sizes: (
-    sm: rem($base-font-size),
+    // xs: rem($base-font-size),
     md: rem(18),
-    xl: if($font-increase-on-xl, rem(20), rem(18)),
+    // xl: if($font-increase-on-xl, rem(20), rem(18)),
 );
 
 $font-lg-sizes: (
-    sm: rem(18),
+    // xs: rem(18),
     md: rem(20),
-    xl: if($font-increase-on-xl, rem(22), rem(20)),
+    // xl: if($font-increase-on-xl, rem(22), rem(20)),
 );
 
 $font-weights: (
