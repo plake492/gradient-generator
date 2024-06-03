@@ -58,3 +58,11 @@ export type ClassValue =
   | [boolean, string]
   | [string, string, string | null]
   | [string, string]
+
+export type HSLA = {
+  hue: number
+  saturation: number
+  lightness: number
+  alpha: number
+  hsla: string
+}

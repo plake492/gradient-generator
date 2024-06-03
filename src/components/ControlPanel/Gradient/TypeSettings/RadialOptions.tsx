@@ -1,7 +1,7 @@
-import { GradientObj, ClassValue } from "../types"
-import { useGradientStore } from "../store"
-import ControlPanelPositionPad from "./ControlPanelPositionPad"
-import ControlPanelSelectList from "./ControlPanelSelectList"
+import { GradientObj, ClassValue } from "../../../../types"
+import { useGradientStore } from "../../../../store"
+import ControlPanelPositionPad from "./PositionPad"
+import ControlPanelSelectList from "../../SelectList"
 
 interface ControlPanelRadialOptionsProps {
   gradientObj: GradientObj

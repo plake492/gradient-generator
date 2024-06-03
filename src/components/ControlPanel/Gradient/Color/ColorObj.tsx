@@ -1,19 +1,11 @@
 import React from "react"
-import { useGradientStore } from "../store"
-import useBemify from "../hooks/useBemify"
-import { HslaObj, HslaColorOptions } from "../types"
-// import { useAutoAnimate } from "@formkit/auto-animate/react"
-import {
-  IconBxCollapseVertical,
-  IconBxExpandVertical,
-  IconTrash,
-  IconLightOn,
-  IconLightOff,
-  IconUnlock,
-  IconLock,
-} from "./BaseIcons"
 import HexInput from "./HexInput"
-import { convertHexToHsl, convertHslToHex } from "../helpers/utils"
+import ColorActions from "./ColorActions"
+import { convertHexToHsl, convertHslToHex } from "../../../../helpers/utils"
+import { HslaObj, HslaColorOptions } from "../../../../types"
+import { useGradientStore } from "../../../../store"
+import useBemify from "../../../../hooks/useBemify"
+// import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 interface ColorSelectorsProps {
   colorGroup: HslaObj
@@ -24,7 +16,7 @@ interface ColorSelectorsProps {
   DragIcon: React.ReactNode
 }
 
-export default function ColorSelectors({
+export default function ColorObj({
   colorGroup,
   parentId,
   index,
@@ -36,14 +28,8 @@ export default function ColorSelectors({
   const [collapse, setCollapse] = React.useState(false)
   const bem = useBemify("control-panel")
 
-  const {
-    widthSmall,
-    setColorValue,
-    removeColor,
-    setColorDisabled,
-    setColorLock,
-    setGradientHsl,
-  } = useGradientStore()
+  const { widthSmall, setColorValue, setGradientHsl } = useGradientStore()
+
   const {
     id,
     hue,
@@ -80,9 +66,6 @@ export default function ColorSelectors({
     setGradientHsl(id, parentId, convertHexToHsl(value))
   }
 
-  const handleDisable = () => setColorDisabled(id, parentId)
-  const handleLock = () => setColorLock(id, parentId)
-
   return (
     <section className={bem("slide-group-wrapper")}>
       <div
@@ -94,6 +77,7 @@ export default function ColorSelectors({
           } as React.CSSProperties
         }
       >
+        {/* Color Header */}
         <div className="d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center gap-sm">
             {DragIcon}
@@ -102,47 +86,15 @@ export default function ColorSelectors({
               {!widthSmall ? `Color: ${index + 1}` : ""}
             </p>
           </div>
-          <div className="d-flex align-items-center gap-">
-            {!locked ? (
-              <IconUnlock onClick={handleLock} width={16} height={16} />
-            ) : (
-              <IconLock onClick={handleLock} width={16} height={16} />
-            )}
-            {disabled ? (
-              <IconLightOff onClick={handleDisable} width={16} height={16} />
-            ) : (
-              <IconLightOn
-                disabled={disableRemove}
-                onClick={handleDisable}
-                width={16}
-                height={16}
-              />
-            )}
-            <IconTrash
-              onClick={() => removeColor(id, parentId)}
-              width={16}
-              height={16}
-              disabled={disableRemove}
-            />
-
-            {collapse ? (
-              <IconBxCollapseVertical
-                tooltip="Collapse"
-                width={16}
-                height={16}
-                onClick={() => setCollapse((prev) => !prev)}
-                border
-              />
-            ) : (
-              <IconBxExpandVertical
-                tooltip="Expand"
-                width={16}
-                height={16}
-                onClick={() => setCollapse((prev) => !prev)}
-                border
-              />
-            )}
-          </div>
+          <ColorActions
+            id={id}
+            parentId={parentId}
+            collapse={collapse}
+            setCollapse={setCollapse}
+            locked={locked}
+            disabled={disabled}
+            disableRemove={disableRemove}
+          />
         </div>
         {collapse ? (
           <div className="ml-lg">

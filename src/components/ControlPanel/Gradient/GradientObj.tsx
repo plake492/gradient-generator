@@ -1,23 +1,18 @@
 import React from "react"
-import { useGradientStore } from "../store"
-import ControlPanelColorSelectors from "./ControlPanelColorSelectors"
-import ControlPanelSelectList from "./ControlPanelSelectList"
-import { GradientObj, ClassValue } from "../types"
-import ControlPanelRadialOptions from "./ControlPanelRadialOptions"
-import ControlPanelConicOptions from "./ControlPanelConicOptions"
-import ControlPanelLinearOptions from "./ControlPanelLinearOptions"
+import GradientActions from "./GradientActions"
+import ColorObj from "./Color/ColorObj"
+import ControlPanelSelectList from "../SelectList"
+import GradientTypeSettings from "./GradientTypeSettings"
 import {
   IconPlusList,
   IconBxCollapseVertical,
   IconBxExpandVertical,
-  IconTrash,
-  IconLightOn,
-  IconLightOff,
   IconRandomArrows,
-  IconLock,
-  IconUnlock,
   IconDrag,
-} from "./BaseIcons"
+} from "../../BaseIcons"
+import { useGradientStore } from "../../../store"
+import { gradientTypeList } from "../../../lib/gradientObject"
+import { GradientObj as GradientObjType, ClassValue } from "../../../types"
 import {
   DragDropContext,
   Droppable,
@@ -27,7 +22,7 @@ import {
 // import DropMenu from "./DropMenu"
 
 interface ControlPanelGradientObjProps {
-  gradientObj: GradientObj
+  gradientObj: GradientObjType
   parentIndex: number
   bem: (block: string, ...rest: ClassValue[]) => string
   disableOffOptions: boolean
@@ -36,7 +31,7 @@ interface ControlPanelGradientObjProps {
 
 type ValueType = number | string | null | undefined
 
-export default function ControlPanelGradientObj({
+export default function GradientObj({
   gradientObj,
   parentIndex,
   bem,
@@ -44,28 +39,25 @@ export default function ControlPanelGradientObj({
   DragIcon,
 }: ControlPanelGradientObjProps) {
   const [collapseGradient, setCollapseGradient] = React.useState(false)
+  const [expand, setExpand] = React.useState<boolean>(false)
   const [collapseOptions, setCollapseOptions] = React.useState(false)
+
   const { id: parentId, colors, disabled, gradient, locked, type } = gradientObj
 
   const {
     addColor,
-    removeGradient,
-    setGradientDisabled,
     randomGradient,
     widthSmall,
-    setGradeintLock,
     setGradientValue,
     reorderColors,
   } = useGradientStore()
 
-  const handleDisable = () => setGradientDisabled(parentId)
-  const handleLock = () => setGradeintLock(parentId)
-
-  const isLinear = type === "linear"
-  const isRadial = type === "radial"
-  const isConic = type === "conic"
-
-  const [expand, setExpand] = React.useState<boolean>(false)
+  const handleGradientTypeClick = (type: ValueType) => {
+    setGradientValue(parentId, {
+      key: "type",
+      value: type as string,
+    })
+  }
 
   const handleDragEnd = (result: DropResult) => {
     reorderColors(parentId, result.source.index, result.destination!.index)
@@ -80,7 +72,9 @@ export default function ControlPanelGradientObj({
         } as React.CSSProperties
       }
     >
+      {/* Gradeitn Header */}
       <div className="d-flex justify-content-between align-items-center">
+        {/* Title Info */}
         <div className="mb-none no-wrap d-flex align-items-center gap-sm">
           {DragIcon}
           <span
@@ -91,44 +85,16 @@ export default function ControlPanelGradientObj({
             {!widthSmall ? `Gradient: ${parentIndex + 1}` : ""}
           </span>
         </div>
-        <div className="d-flex align-item-center gap-sm">
-          {!locked ? (
-            <IconUnlock onClick={handleLock} width={16} height={16} />
-          ) : (
-            <IconLock onClick={handleLock} width={16} height={16} />
-          )}
-          {!disableOffOptions ? (
-            !disabled ? (
-              <IconLightOn onClick={handleDisable} width={16} height={16} />
-            ) : (
-              <IconLightOff onClick={handleDisable} width={16} height={16} />
-            )
-          ) : null}
-          {!disableOffOptions ? (
-            <IconTrash
-              onClick={() => removeGradient(parentId)}
-              width={16}
-              height={16}
-            />
-          ) : null}
-          {collapseGradient ? (
-            <IconBxCollapseVertical
-              tooltip="Collapse"
-              width={16}
-              height={16}
-              onClick={() => setCollapseGradient((prev) => !prev)}
-              border
-            />
-          ) : (
-            <IconBxExpandVertical
-              tooltip="Expand"
-              width={16}
-              height={16}
-              onClick={() => setCollapseGradient((prev) => !prev)}
-              border
-            />
-          )}
-        </div>
+
+        {/* Action Buttons */}
+        <GradientActions
+          parentId={parentId}
+          disabled={disabled}
+          locked={locked}
+          collapseGradient={collapseGradient}
+          setCollapseGradient={setCollapseGradient}
+          disableOffOptions={disableOffOptions}
+        />
       </div>
 
       <div className={bem("color-children")}>
@@ -136,29 +102,13 @@ export default function ControlPanelGradientObj({
           <>
             <ControlPanelSelectList
               bem={bem}
-              list={[
-                {
-                  label: "Linear",
-                  value: "linear",
-                },
-                {
-                  label: "Radial",
-                  value: "radial",
-                },
-                {
-                  label: "Conic",
-                  value: "conic",
-                },
-              ]}
+              list={gradientTypeList}
               value={type}
               label="Type:"
-              onClick={(type: ValueType) =>
-                setGradientValue(parentId, {
-                  key: "type",
-                  value: type as string,
-                })
-              }
+              onClick={handleGradientTypeClick}
             />
+
+            {/* Expandable */}
             <div
               style={{
                 display: "flex",
@@ -186,29 +136,16 @@ export default function ControlPanelGradientObj({
                 />
               )}
             </div>
+            {/* Type Settings */}
             {!collapseOptions ? (
-              <>
-                {isLinear ? (
-                  <ControlPanelLinearOptions
-                    bem={bem}
-                    gradientObj={gradientObj}
-                  />
-                ) : null}
-                {isRadial ? (
-                  <ControlPanelRadialOptions
-                    bem={bem}
-                    gradientObj={gradientObj}
-                  />
-                ) : null}
-                {isConic ? (
-                  <ControlPanelConicOptions
-                    bem={bem}
-                    gradientObj={gradientObj}
-                  />
-                ) : null}
-              </>
+              <GradientTypeSettings
+                gradientObj={gradientObj}
+                type={type}
+                bem={bem}
+              />
             ) : null}
 
+            {/* Colors  */}
             <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="droppable">
                 {(provided) => (
@@ -224,7 +161,7 @@ export default function ControlPanelGradientObj({
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                           >
-                            <ControlPanelColorSelectors
+                            <ColorObj
                               key={colorGroup.id}
                               colorGroup={colorGroup}
                               index={index}
@@ -253,6 +190,7 @@ export default function ControlPanelGradientObj({
                 )}
               </Droppable>
             </DragDropContext>
+
             <div className="d-flex align-items-center justify-content-between">
               <div className="d-flex align-items-center gap-sm">
                 <IconPlusList

@@ -1,20 +1,18 @@
-import { GradientObj, ClassValue } from "../types"
-import { useGradientStore } from "../store"
-import ControlPanelPositionPad from "./ControlPanelPositionPad"
+import { GradientObj, ClassValue } from "../../../../types"
+import { useGradientStore } from "../../../../store"
 
-interface ControlPanelConicOptionsProps {
+interface ControlPanelLinearOptionsProps {
   gradientObj: GradientObj
   bem: (block: string, ...rest: ClassValue[]) => string
 }
 
-export default function ControlPanelConicOptions({
+export default function ControlPanelLinearOptions({
   bem,
   gradientObj,
-}: ControlPanelConicOptionsProps) {
-  const { id: parentId, at, rotate } = gradientObj
+}: ControlPanelLinearOptionsProps) {
+  const { id: parentId, rotate } = gradientObj
 
   const { setGradientValue } = useGradientStore()
-
   return (
     <div className="ml-md">
       <div className={bem("slider-wrapper", "--child", "mb-md")}>
@@ -37,8 +35,6 @@ export default function ControlPanelConicOptions({
           className={bem("slider", "--parent")}
         />
       </div>
-
-      <ControlPanelPositionPad parentId={parentId} at={at} bem={bem} />
     </div>
   )
 }

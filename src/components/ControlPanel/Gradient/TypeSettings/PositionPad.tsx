@@ -4,8 +4,8 @@ import Draggable, {
   DraggableProps,
   DraggableEvent,
 } from "react-draggable"
-import { useGradientStore } from "../store"
-import { ClassValue } from "../types"
+import { useGradientStore } from "../../../../store"
+import { ClassValue } from "../../../../types"
 
 const size = 150
 const adjustedSize = size - size * 0.14 // Adjust the size

@@ -1,7 +1,7 @@
 import React from "react"
-import { useGradientStore } from "../store"
+import { useGradientStore } from "../../../store"
 
-export default function ControlPanelCodeDisplay() {
+export default function CodeDisplay() {
   const [showHslText, setShowHslText] = React.useState(false)
   const [cursorPos, setCursorPos] = React.useState({ x: 0, y: 0 })
   const [showCopyText, setShowCopyText] = React.useState(false)

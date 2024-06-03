@@ -1,5 +1,5 @@
-import { useGradientStore } from "../store"
-import { ClassValue } from "../types"
+import { useGradientStore } from "../../store"
+import { ClassValue } from "../../types"
 
 type ValueType = number | string | null | undefined
 

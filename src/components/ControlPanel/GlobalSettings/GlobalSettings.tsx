@@ -1,8 +1,8 @@
 import React from "react"
-import { useGradientStore } from "../store"
-import { IconClose, IconGrow, IconShrink } from "./BaseIcons"
-import ControlPanelCodeDisplay from "./ControlPanelCodeDisplay"
-import { ClassValue } from "../types"
+import { useGradientStore } from "../../../store"
+import { IconClose, IconGrow, IconShrink } from "../../BaseIcons"
+import CodeDisplay from "./CodeDisplay"
+import { ClassValue } from "../../../types"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 interface ControlPanelGlobalSettingsProps {
@@ -10,7 +10,7 @@ interface ControlPanelGlobalSettingsProps {
   handleSetShow: () => void
 }
 
-export default function ControlPanelGlobalSettings({
+export default function GlobalSettings({
   bem,
   handleSetShow,
 }: ControlPanelGlobalSettingsProps) {
@@ -58,7 +58,7 @@ export default function ControlPanelGlobalSettings({
         )}
       </div>
 
-      <ControlPanelCodeDisplay />
+      <CodeDisplay />
 
       <div
         className={bem("slide-group")}

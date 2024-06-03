@@ -1,6 +1,6 @@
 import React from "react"
-import { IconUpdate } from "./BaseIcons"
-import useBemify from "../hooks/useBemify"
+import { IconUpdate } from "../../../BaseIcons"
+import useBemify from "../../../../hooks/useBemify"
 
 interface HexInputProps {
   onSubmit: (hex: string) => void
