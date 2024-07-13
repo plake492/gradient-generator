@@ -5,6 +5,7 @@ import { convertHexToHsl, convertHslToHex } from "../../../../helpers/utils"
 import { HslaObj, HslaColorOptions } from "../../../../types"
 import { useGradientStore } from "../../../../store"
 import useBemify from "../../../../hooks/useBemify"
+import useHandleAltClick from "../../../../hooks/useHandleAltClick"
 // import { useAutoAnimate } from "@formkit/auto-animate/react"
 
 interface ColorSelectorsProps {
@@ -49,22 +50,18 @@ export default function ColorObj({
     })
   }
 
-  const handleAltClick = (
-    e: React.MouseEvent<HTMLInputElement>,
-    value: number,
-  ) => {
-    if (e.altKey) {
-      const target = e.target as HTMLInputElement
-      setColorValue(colorGroup.id, parentId, {
-        key: target.name as HslaColorOptions,
-        value: value,
-      })
-    }
-  }
+  const handleAltClick = useHandleAltClick<HslaColorOptions>((name, value) => {
+    setColorValue(colorGroup.id, parentId, {
+      key: name,
+      value: value,
+    })
+  })
 
   const handleSubmitHexValue = (value: string) => {
     setGradientHsl(id, parentId, convertHexToHsl(value))
   }
+
+  const hexValue = convertHslToHex(hsla)
 
   return (
     <section className={bem("slide-group-wrapper")}>
@@ -99,8 +96,9 @@ export default function ColorObj({
         {collapse ? (
           <div className="ml-lg">
             <HexInput
-              hsla={convertHslToHex(hsla)}
+              hsla={hexValue}
               onSubmit={handleSubmitHexValue}
+              widthSmall={widthSmall}
             />
 
             <div className={bem("slider-wrapper")}>

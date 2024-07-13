@@ -9,6 +9,7 @@ import {
   IconLock,
 } from "../../../BaseIcons"
 import { useGradientStore } from "../../../../store"
+import MenuWrapper from "../../../MenuWrapper"
 
 interface ColorActionsProps {
   id: string
@@ -36,27 +37,29 @@ export default function ColorActions({
 
   return (
     <div className="d-flex align-items-center gap-sm">
-      {!locked ? (
-        <IconUnlock onClick={handleLock} width={16} height={16} />
-      ) : (
-        <IconLock onClick={handleLock} width={16} height={16} />
-      )}
-      {disabled ? (
-        <IconLightOff onClick={handleDisable} width={16} height={16} />
-      ) : (
-        <IconLightOn
-          disabled={disableRemove}
-          onClick={handleDisable}
+      <MenuWrapper>
+        {!locked ? (
+          <IconUnlock onClick={handleLock} width={16} height={16} />
+        ) : (
+          <IconLock onClick={handleLock} width={16} height={16} />
+        )}
+        {disabled ? (
+          <IconLightOff onClick={handleDisable} width={16} height={16} />
+        ) : (
+          <IconLightOn
+            disabled={disableRemove}
+            onClick={handleDisable}
+            width={16}
+            height={16}
+          />
+        )}
+        <IconTrash
+          onClick={() => removeColor(id, parentId)}
           width={16}
           height={16}
+          disabled={disableRemove}
         />
-      )}
-      <IconTrash
-        onClick={() => removeColor(id, parentId)}
-        width={16}
-        height={16}
-        disabled={disableRemove}
-      />
+      </MenuWrapper>
 
       {collapse ? (
         <IconBxCollapseVertical

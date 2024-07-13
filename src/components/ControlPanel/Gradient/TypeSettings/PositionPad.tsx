@@ -6,6 +6,7 @@ import Draggable, {
 } from "react-draggable"
 import { useGradientStore } from "../../../../store"
 import { ClassValue } from "../../../../types"
+import useHandleAltClick from "../../../../hooks/useHandleAltClick"
 
 const size = 150
 const adjustedSize = size - size * 0.14 // Adjust the size
@@ -31,15 +32,13 @@ export default function ControlPanelPositionPad({
   at: string
   bem: (block: string, ...rest: ClassValue[]) => string
 }) {
-  const { setGradientValue } = useGradientStore()
+  const { setGradientValue, widthSmall } = useGradientStore()
   const [position, setPosition] = React.useState(foramtAtValue(at))
 
   const handleDrag = (_e: DraggableEvent, data: DraggableData) => {
     const x = data.x
     const y = data.y
     setPosition({ x, y })
-
-    // const adjustedSize = size - size * 0.14 // Adjust the size
     const xPercentage = getPercentage(x)
     const yPercentage = getPercentage(y)
     const at = `${xPercentage}% ${yPercentage}%`
@@ -52,18 +51,35 @@ export default function ControlPanelPositionPad({
     position: position,
   }
 
-  // const handleAtSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const key = e.target.name
-  //   const value = Number(e.target.value)
-  //   setPosition((prev) => ({ ...prev, [key]: value }))
-  //   setGradientValue(parentId, {
-  //     key: "at",
-  //     value: `${position.x}% ${position.y}%`,
-  //   })
-  // }
+  const handleAtSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const key = e.target.name
+    const value = Number(e.target.value)
+
+    setPosition((prev) => ({ ...prev, [key]: value }))
+
+    let xPercentage: string | number = position.x
+    let yPercentage: string | number = position.y
+
+    if (key === "x") {
+      xPercentage = getPercentage(value)
+    }
+    if (key === "y") {
+      yPercentage = getPercentage(value)
+    }
+    const at = `${xPercentage}% ${yPercentage}%`
+    setGradientValue(parentId, { key: "at", value: at })
+  }
+
+  const handleAltClick = useHandleAltClick<"x" | "y">((key, value) => {
+    setPosition((prev) => ({ ...prev, [key]: value }))
+    const xPercentage = getPercentage(value)
+    const yPercentage = getPercentage(value)
+    const at = `${xPercentage}% ${yPercentage}%`
+    setGradientValue(parentId, { key: "at", value: at })
+  })
 
   return (
-    <div className="d-flex gap-md">
+    <div className={`d-flex gap-md ${widthSmall ? "flex-col" : "flex-row"}`}>
       <div
         style={{
           width: `${size}px`,
@@ -89,24 +105,21 @@ export default function ControlPanelPositionPad({
       </div>
 
       <div className="flex-1">
-        <p className={bem("label")}>X ({getPercentage(position.x)}%)</p>
-
-        <p className={bem("label")}>Y ({getPercentage(position.y)}%)</p>
-
-        {/* <div className={bem("slider-wrapper", "--child", "mb-md")}>
+        <div className={bem("slider-wrapper", "--child", "mb-md")}>
           <label htmlFor="rotate" className={bem("label")}>
             X ({getPercentage(position.x)}%)
           </label>
           <input
             type="range"
             min="0"
-            max="100"
+            max={adjustedSize}
             step="1"
             id="rotate"
             value={position.x}
             className={bem("slider", "--parent")}
             name="x"
-            // onChange={handleAtSlider}
+            onChange={handleAtSlider}
+            onClick={(e) => handleAltClick(e, adjustedSize / 2)}
           />
         </div>
 
@@ -117,15 +130,16 @@ export default function ControlPanelPositionPad({
           <input
             type="range"
             min="0"
-            max="100"
+            max={adjustedSize}
             step="1"
             id="rotate"
             value={position.y}
             className={bem("slider", "--parent")}
             name="y"
-            // onChange={handleAtSlider}
+            onChange={handleAtSlider}
+            onClick={(e) => handleAltClick(e, adjustedSize / 2)}
           />
-        </div> */}
+        </div>
       </div>
     </div>
   )

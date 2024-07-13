@@ -14,6 +14,8 @@ interface IconProps {
   small?: boolean
   type?: "submit" | "button" | "reset"
   disabled?: boolean
+  className?: string
+  ref?: React.RefObject<HTMLButtonElement>
 }
 
 function IconWrapper({
@@ -27,8 +29,12 @@ function IconWrapper({
   small,
   disabled,
   type = "button",
-}: IconProps & { children: React.ReactNode }) {
+  className = "",
+}: // ref,
+IconProps & { children: React.ReactNode }) {
   const bem = useBemify("icon-btn")
+  // const wrapperRef = ref ? ref : React.useRef<HTMLButtonElement>(null)
+  // console.log("wrapperRef ==>", wrapperRef)
 
   return (
     <button
@@ -41,7 +47,8 @@ function IconWrapper({
       onClick={onClick}
       type={type}
       disabled={disabled}
-      className="icon-btn-wrapper"
+      className={`icon-btn-wrapper ${className}`}
+      // ref={wrapperRef}
     >
       <div
         className={bem(

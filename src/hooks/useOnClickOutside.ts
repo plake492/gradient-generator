@@ -1,8 +1,8 @@
-import { useEffect, useRef, MutableRefObject } from "react"
+import React, { useEffect, useRef } from "react"
 
 export const useOnClickOutside = <T extends HTMLElement | undefined>(
   handler: (e: Event) => void,
-  exception?: MutableRefObject<HTMLElement> | undefined,
+  exception?: React.RefObject<HTMLElement> | undefined,
 ): React.RefObject<T> => {
   const reference = useRef<T>(null)
 

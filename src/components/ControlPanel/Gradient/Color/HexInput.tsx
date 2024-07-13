@@ -1,10 +1,12 @@
 import React from "react"
 import { IconUpdate } from "../../../BaseIcons"
 import useBemify from "../../../../hooks/useBemify"
+import { convertToRgba } from "../../../../helpers/utils"
 
 interface HexInputProps {
   onSubmit: (hex: string) => void
   hsla: string
+  widthSmall: boolean
 }
 
 const testValue = (v: string) =>
@@ -14,7 +16,11 @@ const testValue = (v: string) =>
  * A component that renders an input box for hex color values.
  * It automatically triggers the `onSubmit` function when a valid hex color is entered.
  */
-export default function HexInput({ onSubmit, hsla }: HexInputProps) {
+export default function HexInput({
+  onSubmit,
+  hsla,
+  widthSmall,
+}: HexInputProps) {
   const [value, setValue] = React.useState(hsla)
   const [error, setError] = React.useState(false)
 
@@ -48,7 +54,12 @@ export default function HexInput({ onSubmit, hsla }: HexInputProps) {
   const bem = useBemify("input")
 
   return (
-    <form className="d-flex gap-md py-md " onSubmit={handleSubmit}>
+    <form
+      className={`d-flex py-md ${
+        widthSmall ? "flex-col gap-sm" : "flex-row gap-md"
+      }`}
+      onSubmit={handleSubmit}
+    >
       <input
         className={bem("", [error, "error"])}
         type="text"
@@ -65,6 +76,7 @@ export default function HexInput({ onSubmit, hsla }: HexInputProps) {
         height={14}
         small
         type="submit"
+        className={widthSmall ? "w-100" : ""}
       />
     </form>
   )

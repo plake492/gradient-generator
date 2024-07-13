@@ -10,6 +10,7 @@ import {
   IconLock,
   IconUnlock,
 } from "../../BaseIcons"
+import MenuWrapper from "../../MenuWrapper"
 
 interface GradientActionsProps {
   parentId: string
@@ -35,25 +36,27 @@ export default function GradientActions({
 
   return (
     <div className="d-flex align-item-center gap-sm">
-      {!locked ? (
-        <IconUnlock onClick={handleLock} width={16} height={16} />
-      ) : (
-        <IconLock onClick={handleLock} width={16} height={16} />
-      )}
-      {!disableOffOptions ? (
-        !disabled ? (
-          <IconLightOn onClick={handleDisable} width={16} height={16} />
+      <MenuWrapper>
+        {!locked ? (
+          <IconUnlock onClick={handleLock} width={16} height={16} />
         ) : (
-          <IconLightOff onClick={handleDisable} width={16} height={16} />
-        )
-      ) : null}
-      {!disableOffOptions ? (
-        <IconTrash
-          onClick={() => removeGradient(parentId)}
-          width={16}
-          height={16}
-        />
-      ) : null}
+          <IconLock onClick={handleLock} width={16} height={16} />
+        )}
+        {!disableOffOptions ? (
+          !disabled ? (
+            <IconLightOn onClick={handleDisable} width={16} height={16} />
+          ) : (
+            <IconLightOff onClick={handleDisable} width={16} height={16} />
+          )
+        ) : null}
+        {!disableOffOptions ? (
+          <IconTrash
+            onClick={() => removeGradient(parentId)}
+            width={16}
+            height={16}
+          />
+        ) : null}
+      </MenuWrapper>
       {collapseGradient ? (
         <IconBxCollapseVertical
           tooltip="Collapse"

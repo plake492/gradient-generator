@@ -97,7 +97,7 @@ export default function GradientObj({
         />
       </div>
 
-      <div className={bem("color-children")}>
+      <div className={bem("color-children", [widthSmall, "--reduce-margin"])}>
         {collapseGradient ? (
           <>
             <ControlPanelSelectList

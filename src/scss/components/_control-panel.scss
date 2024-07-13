@@ -1,257 +1,256 @@
 .control-panel {
-    $offset: $space-sm;
+  $offset: $space-sm;
 
-    --width: 550px;
-    --position: 0;
+  --width: 550px;
+  --position: 0;
 
+  position: fixed;
+  left: var(--position);
+  top: 0;
+  margin: $offset;
+  background-color: #131313aa;
+  backdrop-filter: blur(8px);
+  box-shadow: 8px 8px 32px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  color: #eeeeee;
+  padding: $space-md $space-lg $space-md $space-md;
+  width: min(var(--width), calc(100% - (2 * $offset)));
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - ($offset * 8));
+  overflow: auto;
+  transition: width 300ms, left 300ms;
+
+  &__open-btn {
     position: fixed;
-    left: var(--position);
+    left: 0;
     top: 0;
-    margin: $offset;
-    background-color: #131313aa;
-    backdrop-filter: blur(8px);
-    box-shadow: 8px 8px 32px 4px rgba(0, 0, 0, 0.5);
-    border-radius: 16px;
-    color: #eeeeee;
-    padding: $space-md $space-lg $space-md $space-md;
-    width: min(var(--width), calc(100% - (2 * $offset)));
+    margin: calc($offset + $space-md);
+  }
+
+  &__color-children {
+    margin-left: $space-lg;
+
+    &--reduce-margin {
+      margin-left: $space-sm;
+    }
+  }
+
+  &__slide-group {
+    --slider-thumb-color: 0;
+    --slider-thumb-saturation: 100%;
+    --slider-thumb-lightness: 50%;
+
+    position: relative;
+    padding-bottom: $space-sm;
+    margin-bottom: $space-sm;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: calc(100%);
+      border-radius: 40px;
+      height: 1px;
+      background-color: #cccccc;
+    }
+  }
+
+  &__slide-group-color-indicator {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--child-gradient);
+    vertical-align: middle;
+  }
+
+  &__select-type-wrapper {
+    display: flex;
+    column-gap: $space-md;
+    row-gap: $space-sm;
+    flex-wrap: wrap;
+    padding-bottom: $space-sm;
+    border-bottom: solid 1px #cccccc;
+  }
+
+  &__select-type-label {
+    @extend .text-sm;
+    font-weight: 700;
+    margin-bottom: 0 !important;
+  }
+
+  &__select-type {
+    @extend .text-sm;
+    margin-bottom: 0 !important;
+    color: #999999;
+    transition: all 300ms;
+    position: relative;
+    cursor: pointer;
+
+    &.active {
+      color: #eeeeee;
+    }
+  }
+
+  &__slider-wrapper {
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - ($offset * 8));
-    overflow: auto;
-    transition: width 300ms, left 300ms;
+    margin: $space-sm 0;
+  }
 
-    &__open-btn {
-        position: fixed;
-        left: 0;
-        top: 0;
-        margin: calc($offset + $space-md);
+  &__gradient-group {
+    --linear-gradient: #00000000;
+    position: relative;
+    padding-bottom: $space-sm;
+    margin-bottom: $space-sm;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: calc(100%);
+      border-radius: 40px;
+      height: 1px;
+      background-color: #cccccc;
+    }
+  }
+
+  &__gradient-indicator {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--linear-gradient);
+    vertical-align: middle;
+    transition: all 300ms;
+    cursor: pointer;
+    transform-origin: center center;
+
+    &.expand {
+      transform: scale(2);
+      margin-right: $space-md;
+    }
+  }
+
+  &__label {
+    --base-font-size: var(--text-xs-size);
+    --base-line-height: calc(
+      var(--text-xs-size) * var(--line-height-ratio) * 1.15
+    );
+    margin-bottom: $space-xs;
+    text-align: start;
+    line-height: var(--base-line-height);
+    font-size: var(--base-font-size);
+  }
+
+  &__slider {
+    &--child {
+      --thumb-color: var(--child-gradient);
     }
 
-    &__color-children {
-        margin-left: $space-lg;
+    &--parent {
+      --thumb-color: var(--parent-gradient, #ffffff);
     }
 
-    &__slide-group {
-        --slider-thumb-color: 0;
-        --slider-thumb-saturation: 100%;
-        --slider-thumb-lightness: 50%;
+    width: 100%; // Make the slider full width
 
-        position: relative;
-        padding-bottom: $space-sm;
-        margin-bottom: $space-sm;
-
-        &::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: calc(100%);
-            border-radius: 40px;
-            height: 1px;
-            background-color: #cccccc;
-        }
-
-
+    /********** Range Input Styles **********/
+    /*Range Reset*/
+    &[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+      width: 100%;
     }
 
-    &__slide-group-color-indicator {
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background-color: var(--child-gradient);
-        vertical-align: middle;
+    /* Removes default focus */
+    &[type="range"]:focus {
+      outline: none;
     }
 
-    &__select-type-wrapper {
-        display: flex;
-        column-gap: $space-md;
-        row-gap: $space-sm;
-        flex-wrap: wrap;
-        padding-bottom: $space-sm;
-        border-bottom: solid 1px #cccccc;
+    /***** Chrome, Safari, Opera and Edge Chromium styles *****/
+    /* slider track */
+    &[type="range"]::-webkit-slider-runnable-track {
+      background-color: #dddddd;
+      border-radius: 0.5rem;
+      height: 0.5rem;
     }
 
-    &__select-type-label {
-        @extend .text-sm;
-        font-weight: 700;
-        margin-bottom: 0 !important;
+    /* slider thumb */
+    &[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      /* Override default look */
+      appearance: none;
+      margin-top: -8px;
+      /* Centers thumb on the track */
+
+      /*custom styles*/
+      background: var(--thumb-color);
+      border-radius: 50%;
+      height: 24px;
+      width: 24px;
+      border: 2px solid #dddddd;
     }
 
-    &__select-type {
-        @extend .text-sm;
-        margin-bottom: 0 !important;
-        color: #999999;
-        transition: all 300ms;
-        position: relative;
-        cursor: pointer;
-
-        &.active {
-            color: #eeeeee;
-
-        }
+    &[type="range"]:focus::-webkit-slider-thumb {
+      border: 1px solid #053a5f;
+      outline: 3px solid #053a5f;
+      outline-offset: 0.125rem;
     }
 
-    &__slider-wrapper {
-        display: flex;
-        flex-direction: column;
-        margin: $space-sm 0;
+    /******** Firefox styles ********/
+    /* slider track */
+    &[type="range"]::-moz-range-track {
+      background-color: #053a5f;
+      border-radius: 0.5rem;
+      height: 0.5rem;
     }
 
+    /* slider thumb */
+    &[type="range"]::-moz-range-thumb {
+      border: none;
+      /*Removes extra border that FF applies*/
+      border-radius: 0;
+      /*Removes default border-radius that FF applies*/
 
-    &__gradient-group {
-        --linear-gradient: #00000000;
-        position: relative;
-        padding-bottom: $space-sm;
-        margin-bottom: $space-sm;
-
-        &::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: calc(100%);
-            border-radius: 40px;
-            height: 1px;
-            background-color: #cccccc;
-
-        }
+      /*custom styles*/
+      background-color: #5cd5eb;
+      height: 1rem;
+      width: 1rem;
     }
 
-    &__gradient-indicator {
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background: var(--linear-gradient);
-        vertical-align: middle;
-        transition: all 300ms;
-        cursor: pointer;
+    &[type="range"]:focus::-moz-range-thumb {
+      border: 1px solid #053a5f;
+      outline: 3px solid #053a5f;
+      outline-offset: 0.125rem;
+    }
+  }
 
-        &.expand {
-            width: 48px;
-            height: 48px;
-        }
+  &__animation {
+    &-enter {
+      opacity: 0;
+      transform: scale(0.95) translateX(-100%);
     }
 
-
-    &__label {
-        --base-font-size: var(--text-xs-size);
-        --base-line-height: calc(var(--text-xs-size) * var(--line-height-ratio) * 1.15);
-        margin-bottom: $space-xs;
-        text-align: start;
-        line-height: var(--base-line-height);
-        font-size: var(--base-font-size);
+    &-enter-active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      transition: opacity 300ms, transform 300ms;
     }
 
-    &__slider {
-        &--child {
-            --thumb-color: var(--child-gradient);
-        }
-
-        &--parent {
-            --thumb-color: var(--parent-gradient, #ffffff);
-        }
-
-        width: 100%; // Make the slider full width
-
-        /********** Range Input Styles **********/
-        /*Range Reset*/
-        &[type="range"] {
-            -webkit-appearance: none;
-            appearance: none;
-            background: transparent;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        /* Removes default focus */
-        &[type="range"]:focus {
-            outline: none;
-        }
-
-        /***** Chrome, Safari, Opera and Edge Chromium styles *****/
-        /* slider track */
-        &[type="range"]::-webkit-slider-runnable-track {
-            background-color: #dddddd;
-            border-radius: 0.5rem;
-            height: 0.5rem;
-        }
-
-        /* slider thumb */
-        &[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            /* Override default look */
-            appearance: none;
-            margin-top: -8px;
-            /* Centers thumb on the track */
-
-            /*custom styles*/
-            background: var(--thumb-color);
-            border-radius: 50%;
-            height: 24px;
-            width: 24px;
-            border: 2px solid #dddddd;
-        }
-
-        &[type="range"]:focus::-webkit-slider-thumb {
-            border: 1px solid #053a5f;
-            outline: 3px solid #053a5f;
-            outline-offset: 0.125rem;
-        }
-
-        /******** Firefox styles ********/
-        /* slider track */
-        &[type="range"]::-moz-range-track {
-            background-color: #053a5f;
-            border-radius: 0.5rem;
-            height: 0.5rem;
-        }
-
-        /* slider thumb */
-        &[type="range"]::-moz-range-thumb {
-            border: none;
-            /*Removes extra border that FF applies*/
-            border-radius: 0;
-            /*Removes default border-radius that FF applies*/
-
-            /*custom styles*/
-            background-color: #5cd5eb;
-            height: 1rem;
-            width: 1rem;
-        }
-
-        &[type="range"]:focus::-moz-range-thumb {
-            border: 1px solid #053a5f;
-            outline: 3px solid #053a5f;
-            outline-offset: 0.125rem;
-        }
-
-
+    &-exit {
+      opacity: 1;
     }
 
-    &__animation {
-        &-enter {
-            opacity: 0;
-            transform: scale(0.95) translateX(-100%);
-        }
+    &-exit-active {
+      opacity: 0;
+      transform: scale(0.95) translateX(-100%);
 
-        &-enter-active {
-            opacity: 1;
-            transform: translateX(0) scale(1);
-            transition: opacity 300ms, transform 300ms;
-        }
-
-        &-exit {
-            opacity: 1;
-        }
-
-        &-exit-active {
-            opacity: 0;
-            transform: scale(0.95) translateX(-100%);
-
-            transition: opacity 300ms, transform 300ms;
-        }
+      transition: opacity 300ms, transform 300ms;
     }
+  }
 }

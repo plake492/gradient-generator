@@ -101,3 +101,46 @@ export const convertHslToHex = (hsla: string): string => {
     .toString(16)
     .padStart(2, "0")}`
 }
+
+export const convertToRgba = (color: string): string => {
+  // Determine if the input is HEX or HSL
+  if (color.startsWith('#')) { // HEX
+    let r = 0, g = 0, b = 0, a = 1;
+    if (color.length === 7) { // #RRGGBB
+      r = parseInt(color.slice(1, 3), 16);
+      g = parseInt(color.slice(3, 5), 16);
+      b = parseInt(color.slice(5, 7), 16);
+    } else if (color.length === 9) { // #RRGGBBAA
+      r = parseInt(color.slice(1, 3), 16);
+      g = parseInt(color.slice(3, 5), 16);
+      b = parseInt(color.slice(5, 7), 16);
+      a = parseInt(color.slice(7, 9), 16) / 255;
+    }
+    return `rgba(${r}, ${g}, ${b}, ${a.toFixed(2)})`;
+  } else if (color.startsWith('hsl')) { // HSL
+    const [h, s, l, a = 1] = color.match(/\d+(\.\d+)?/g)!.map(Number);
+    const c = (1 - Math.abs(2 * l / 100 - 1)) * s / 100;
+    const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    const m = l / 100 - c / 2;
+    let r = 0, g = 0, b = 0;
+    if (h >= 0 && h < 60) {
+      r = c; g = x; b = 0;
+    } else if (h >= 60 && h < 120) {
+      r = x; g = c; b = 0;
+    } else if (h >= 120 && h < 180) {
+      r = 0; g = c; b = x;
+    } else if (h >= 180 && h < 240) {
+      r = 0; g = x; b = c;
+    } else if (h >= 240 && h < 300) {
+      r = x; g = 0; b = c;
+    } else if (h >= 300 && h < 360) {
+      r = c; g = 0; b = x;
+    }
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+    return `rgba(${r}, ${g}, ${b}, ${a.toFixed(2)})`;
+  } else {
+    throw new Error('Unsupported color format');
+  }
+}

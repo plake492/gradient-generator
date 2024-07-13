@@ -1,10 +1,12 @@
 .drop-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    padding: $space-md;
-    border-radius: 8px;
-    background: #000000;
-    z-index: 10;
-    width: max-content;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  padding: $space-md;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(3px);
+  z-index: 10;
+  width: max-content;
+  transform: translateX(-50%);
 }
