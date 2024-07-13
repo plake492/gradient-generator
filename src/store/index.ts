@@ -242,14 +242,8 @@ export const useGradientStore = create<GradientStoreState>()(
           const color = findObj(id, parentArray.colors)
 
           color[key] = value
-          color.vars = {
-            [`--hue-${parentId}--${id}`]: color.hue,
-            "--sat1": color.saturation,
-            "--light1": color.lightness,
-            "--alpha1": color.alpha,
-          }
+
           color.hsla = `hsla(${color.hue}, ${color.saturation}%, ${color.lightness}%, ${color.alpha})`
-          console.log("color ==>", color)
 
           return setGradeintAndUpdateParent(state, state.gradientList, parentId)
         }),
