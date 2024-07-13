@@ -1,7 +1,7 @@
 import React from "react"
 import { IconUpdate } from "../../../BaseIcons"
 import useBemify from "../../../../hooks/useBemify"
-import { convertToRgba } from "../../../../helpers/utils"
+// import { convertToRgba } from "../../../../helpers/utils"
 
 interface HexInputProps {
   onSubmit: (hex: string) => void
